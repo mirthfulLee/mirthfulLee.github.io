@@ -18,4 +18,279 @@
 <p>More info: <a class="link"   href="https://hexo.io/docs/one-command-deployment.html" >Deployment <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 ]]></content>
   </entry>
+  <entry>
+    <title>时间序列预测的多粒度残差学习</title>
+    <url>/2022/06/24/clash%E4%BB%A3%E7%90%86%E4%B8%8Enotion%E7%9A%84%E5%86%B2%E7%AA%81/</url>
+    <content><![CDATA[<h1 id="情景描述"><a href="#情景描述" class="headerlink" title="情景描述"></a>情景描述</h1><p>当打开clash代理之后，notion就无法上传图片</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2022/06/24/clash%E4%BB%A3%E7%90%86%E4%B8%8Enotion%E7%9A%84%E5%86%B2%E7%AA%81/image-1656073091111.png"
+                      class=""
+                >
+
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p><strong>这里是描述我解决问题的过程，如果只需要解决方法，可以直接看到最后面的部分</strong></p>
+<h3 id="初步尝试"><a href="#初步尝试" class="headerlink" title="初步尝试"></a>初步尝试</h3><p>第一时间想到的当然是去设置转发规则，设置parser，添加DIRECT规则：</p>
+<div class="highlight-container" data-rel="Yaml"><figure class="iseeu highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">parsers:</span> <span class="comment"># array</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">url:</span> <span class="string">-----</span> <span class="string">subscribe</span> <span class="string">url</span> <span class="string">--------</span></span><br><span class="line">    <span class="attr">yaml:</span></span><br><span class="line">      <span class="attr">prepend-rules:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">DOMAIN-SUFFIX,</span> <span class="string">notion.so,DIRECT</span></span><br></pre></td></tr></table></figure></div>
+<p>然后更新订阅profile</p>
+<p>此时再去查看notion相关的链接：</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2022/06/24/clash%E4%BB%A3%E7%90%86%E4%B8%8Enotion%E7%9A%84%E5%86%B2%E7%AA%81/image-1656073252115.png"
+                      class=""
+                >
+<h3 id="正解"><a href="#正解" class="headerlink" title="正解"></a>正解</h3><p>然而问题是，即使这里采用DIRECT规则，依旧无法上传图片，只有把clash的System Proxy关闭才能上传图片，就很奇怪。<br>将代理改成DIRECT之后，发现也是可以成功的，说明是加入的规则不正确，没有涵盖上传图片的api。</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2022/06/24/clash%E4%BB%A3%E7%90%86%E4%B8%8Enotion%E7%9A%84%E5%86%B2%E7%AA%81/image-1656073478536.png"
+                      class=""
+                >
+<p>经过测试，才发现，原来notion的文件管理使用的是亚马逊的云服务</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2022/06/24/clash%E4%BB%A3%E7%90%86%E4%B8%8Enotion%E7%9A%84%E5%86%B2%E7%AA%81/image-1656073672219.png"
+                      class=""
+                >
+<p>通过选中notion中图片，并View Original，就可以发现图片在亚马逊云上的链接：”<a class="link"   href="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/xxxxxxxxxxxxxxxxxxxxx%22%EF%BC%8C" >https://s3.us-west-2.amazonaws.com/secure.notion-static.com/xxxxxxxxxxxxxxxxxxxxx&quot;， <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> 而且这个链接是没有被墙的，所以我们就可以在parser中添加这条规则：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">parsers: # array</span><br><span class="line">  - url: ----- subscribe url --------</span><br><span class="line">    yaml:</span><br><span class="line">      prepend-rules:</span><br><span class="line">        - DOMAIN-SUFFIX, notion.so,DIRECT</span><br><span class="line">        - DOMAIN-SUFFIX, amazonaws.com,DIRECT</span><br></pre></td></tr></table></figure></div>
+<p>至此，问题解决。</p>
+]]></content>
+      <categories>
+        <category>折腾</category>
+        <category>代理</category>
+      </categories>
+      <tags>
+        <tag>clash</tag>
+        <tag>notion</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用jupyter进行数据分析</title>
+    <url>/2022/06/24/%E4%BD%BF%E7%94%A8jupyter%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/</url>
+    <content><![CDATA[<h2 id="需求描述"><a href="#需求描述" class="headerlink" title="需求描述"></a>需求描述</h2><p>数据挖掘过程往往是一步一步推进的，前一步的结果很大程度上会影响下一步的方法；同时，在设计具体方法时，数据分析师需要根据当前结果不断地进行调整。这种情况下，jupyter的代码与markdown交叉的形式，以及代码按照模块执行的方法，十分契合数据分析的过程。<br>因此，这篇文章就来讲一讲在使用jupyter notebook时可能要注意的点。</p>
+<h2 id="安装与环境配置"><a href="#安装与环境配置" class="headerlink" title="安装与环境配置"></a>安装与环境配置</h2><p>网上现成的教程很多，利用pip安装也很方便，只需要注意启动的jupyter内核应该和使用的python环境一致；如果使用的docker，记得为镜像中的8888端口设置对应接口。</p>
+<h2 id="使用时踩的坑"><a href="#使用时踩的坑" class="headerlink" title="使用时踩的坑"></a>使用时踩的坑</h2><p>虽然刚刚开始使用，但是也经历一些小坑，在此做一些记录。</p>
+<h3 id="引入自定义包"><a href="#引入自定义包" class="headerlink" title="引入自定义包"></a>引入自定义包</h3><p>python中，我们常常会习惯把不同功能的函数放到不同的.py模块下，而jupyter notebook不建议这种方式。一个notebook虽然也可以使用<strong>同一目录下</strong>其他notebook定义的函数，但是很容易出现一些奇奇怪怪的问题。<br>jupyter更加建议这样的一种模式：</p>
+<ul>
+<li>每个notebook都是一个完整的内容，除了开头引入工具包（库），不调用其他自定义模块</li>
+<li>尽量不定义函数，尤其是不把没有返回值的过程定义为函数</li>
+<li>利用markdown的分级标题（多个‘#’）把代码分为不同的模块</li>
+</ul>
+<h3 id="markdown换行"><a href="#markdown换行" class="headerlink" title="markdown换行"></a>markdown换行</h3><p>jupyter notebook的文字部分为markdown格式，但是在换行上有些问题，刚开始时，会发现明明敲了回车，但是还是会渲染为同一行。正确的操作是： 在行尾添加两个空格，再回车，这样就换行了。</p>
+]]></content>
+      <categories>
+        <category>学习</category>
+        <category>机器学习</category>
+      </categories>
+      <tags>
+        <tag>ML</tag>
+        <tag>AI</tag>
+        <tag>environment</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>分位数损失</title>
+    <url>/2022/06/18/%E5%88%86%E4%BD%8D%E6%95%B0%E6%8D%9F%E5%A4%B1/</url>
+    <content><![CDATA[<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ol>
+<li><a class="link"   href="https://www.jianshu.com/p/073bc0b0bbfa"  title="使用分位数回归预测目标的取值范围">使用分位数回归预测目标的取值范围 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+<li><a class="link"   href="https://www.payititi.com/aicommunity/show-27.html"  title="分位数损失（Quantile Loss）">分位数损失（Quantile Loss） <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ol>
+<h2 id="场景描述"><a href="#场景描述" class="headerlink" title="场景描述"></a>场景描述</h2><p>在大多数真实世界的预测问题中，我们常常希望得到我们预测结果的不确定度。通过预测出一个取值区间而不是一个个具体的取值点对于具体业务流程中的决策至关重要。于是提出了分位数的概念。分位数（英语：Quantile），亦称分位点，是指用分割点（cut point）将一个随机变量的概率分布范围分为几个具有相同概率的连续区间。<br>quantile_r(X) &#x3D; b 等价于 P(X &lt; b) &#x3D; r</p>
+<h2 id="分位数回归"><a href="#分位数回归" class="headerlink" title="分位数回归"></a>分位数回归</h2><p>不同于普通的回归分析，分位数回归能够更好地表达数据的实际分布，对实际决策有重要意义。对下图来说，左右两个分布的期望值（预测值）相近，但是实际的分布有显著差距，因此在实际决策中需要考虑，这个时候就需要用到分位值。<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://www.payititi.com/file/upload/202105/14/154456111.jpeg"
+                      alt="分位数回归的意义" title="分位数回归的意义"
+                ><br>上下两条虚线基于0.05和0.95的分位数损失得到的取值区间。从图中可以清晰地看到建模后预测值得取值范围。分位数回归的目标在于估计给定预测值的条件分位数。实际上分位数回归就是平均绝对误差的一种拓展（当分位数为第50个百分位时其值就是平均绝对误差）<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://www.payititi.com/file/upload/202105/14/154503701.png"
+                      alt="分位值" title="分位值"
+                ></p>
+<h2 id="分位数损失"><a href="#分位数损失" class="headerlink" title="分位数损失"></a>分位数损失</h2><p>为了能够实现对分位数的预测，设计了如下的损失函数：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://blog.muzi.fun/wp-content/uploads/2022/06/12577832-5c01d1524f471b8f.webp"
+                      alt="损失函数"
+                ><br>其中γ是损失函数的参数，从实际意义上可以理解为是我们需要的分位数，这个损失函数从结构上看，就是以一定的概率γ惩罚预测值大于实际值，同时鼓励预测值小于实际值，这样的效果就是学得了目标y的γ分位数期望值。</p>
+]]></content>
+      <categories>
+        <category>学习</category>
+        <category>机器学习</category>
+        <category>损失函数</category>
+      </categories>
+      <tags>
+        <tag>ML</tag>
+        <tag>AI</tag>
+        <tag>loss</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>利用docker和nginx配置wordpress服务器</title>
+    <url>/2022/06/18/%E5%88%A9%E7%94%A8docker%E5%92%8Cnginx%E9%85%8D%E7%BD%AEwordpress%E6%9C%8D%E5%8A%A1%E5%99%A8/</url>
+    <content><![CDATA[<h2 id="故事的开始"><a href="#故事的开始" class="headerlink" title="故事的开始"></a>故事的开始</h2><p>之前服务器因为redis配置失误，遭到挖矿木马的攻击，整个瘫痪掉了。不得已狠下心来，重装系统，从头开始配置服务器上的环境。<br>机缘巧合，了解倒了docker这个牛哄哄的部署神器。于是想着使用docker来进行配置wordpress。</p>
+<p>那么我们的目标就定了：使用docker配置mysql和wordpress容器，nginx因为需要频繁使用，就直接使用yum下载；配置博客的https。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>一开始配置，走了许多弯路，docker容器删删改改浪费了好多时间，最后还是通过多个优质博客成功了：</p>
+<ol>
+<li><a class="link"   href="https://blog.jimmytinsley.com/2020/06/10/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95-docker%E9%83%A8%E7%BD%B2wordpressnginx%E5%B9%B6%E5%90%AF%E7%94%A8ssl/" >https://blog.jimmytinsley.com/2020/06/10/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95-docker%E9%83%A8%E7%BD%B2wordpressnginx%E5%B9%B6%E5%90%AF%E7%94%A8ssl/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+<li><a class="link"   href="https://www.yuribacciarini.com/set-up-docker-wordpress-behind-docker-nginx-with-ssl/" >https://www.yuribacciarini.com/set-up-docker-wordpress-behind-docker-nginx-with-ssl/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+<li><a class="link"   href="https://www.idc1680.com/1320.html" >https://www.idc1680.com/1320.html <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>不知道为什么，明明几乎照着实现，但还是会有一些问题，好在最后还是成功了。</li>
+</ol>
+<h2 id="配置容器"><a href="#配置容器" class="headerlink" title="配置容器"></a>配置容器</h2><h3 id="编写docker-compose-yml"><a href="#编写docker-compose-yml" class="headerlink" title="编写docker-compose.yml"></a>编写docker-compose.yml</h3><div class="highlight-container" data-rel="Yml"><figure class="iseeu highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">wordpress-db:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql:5.6</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db_data:/var/lib/mysql</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">13306</span><span class="string">:3306</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">somewordpress</span></span><br><span class="line">      <span class="attr">MYSQL_DATABASE:</span> <span class="string">wordpress</span></span><br><span class="line">      <span class="attr">MYSQL_USER:</span> <span class="string">wp</span></span><br><span class="line">      <span class="attr">MYSQL_PASSWORD:</span> <span class="string">wppwd</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">my-wordpress:</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">wordpress-db</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">wordpress:latest</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./config/php.conf.uploads.ini:/usr/local/etc/php/conf.d/uploads.ini</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./wp-app:/var/www/html</span> <span class="comment"># Full wordpress project</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">13080</span><span class="string">:80</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_HOST:</span> <span class="string">wordpress-db:3306</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_USER:</span> <span class="string">wp</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_PASSWORD:</span> <span class="string">wppwd</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_NAME:</span> <span class="string">wordpress</span></span><br><span class="line"></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">db_data:</span> &#123;&#125;</span><br></pre></td></tr></table></figure></div>
+<ul>
+<li>服务名称可以修改；</li>
+<li>ports部分的左边端口号为本地监听的端口，可以根据自己的喜好or需要进行修改；</li>
+<li>environment中的变量，根据自己的需要进行修改即可，但是改完之后要保持两个容器中变量的一致性；</li>
+</ul>
+<h3 id="编写php-conf-uploads-ini"><a href="#编写php-conf-uploads-ini" class="headerlink" title="编写php.conf.uploads.ini"></a>编写php.conf.uploads.ini</h3><div class="highlight-container" data-rel="Yml"><figure class="iseeu highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="string">file_uploads</span> <span class="string">=</span> <span class="string">On</span></span><br><span class="line"><span class="string">max_execution_time</span> <span class="string">=</span> <span class="number">600</span></span><br><span class="line"><span class="string">memory_limit</span> <span class="string">=</span> <span class="string">512M</span></span><br><span class="line"><span class="string">post_max_size</span> <span class="string">=</span> <span class="string">32M</span></span><br><span class="line"><span class="string">upload_max_filesize</span> <span class="string">=</span> <span class="string">32M</span></span><br></pre></td></tr></table></figure></div>
+
+<h2 id="配置WORKSPACE"><a href="#配置WORKSPACE" class="headerlink" title="配置WORKSPACE"></a>配置WORKSPACE</h2><p>根据自己的习惯，设置一个wordpress的workspace；我个人的话就是把&#x2F;usr&#x2F;wp-blog作为WORKSPACE。</p>
+<ol>
+<li>在该目录下新建两个目录wp和nginx, 用来存放相关的配置文件；</li>
+<li>在wp目录下新建一个wp-app文件夹用来存放映射的WordPress程序文件，把之前的docker-compose.yml放在wp目录下,php.conf.uploads.ini放在wp-app目录下；</li>
+</ol>
+<p>打工告成<code>cd WORKSPACE/wp; docker-compose up -d</code>启动镜像<br>在浏览器上输入you_ip_address:13080, 如果能够显示wordpress初始化界面，就成功了一大半。但是先不急着初始化。</p>
+<h2 id="配置nginx和ssl证书"><a href="#配置nginx和ssl证书" class="headerlink" title="配置nginx和ssl证书"></a>配置nginx和ssl证书</h2><p>通过各种渠道申请到ssl证书后，就可以通过nginx进行配置啦。<br>假设nginx的配置都是最初始的，那么首先在nginx目录下创建一个cert文件夹用来存放证书文件.<br>然后设置nginx.conf,关键部分如下</p>
+<div class="highlight-container" data-rel="Json"><figure class="iseeu highlight json"><table><tr><td class="code"><pre><span class="line">server <span class="punctuation">&#123;</span></span><br><span class="line">       #SSL 访问端口号为 <span class="number">443</span></span><br><span class="line">       listen <span class="number">443</span> ssl; </span><br><span class="line">       #填写绑定证书的域名</span><br><span class="line">       server_name blog.muzi.fun; </span><br><span class="line">       #证书文件名称</span><br><span class="line">       ssl_certificate cert/blog.muzi.fun_bundle.crt; </span><br><span class="line">       #私钥文件名称</span><br><span class="line">       ssl_certificate_key cert/blog.muzi.fun.key; </span><br><span class="line">       ssl_session_timeout <span class="number">5</span>m;</span><br><span class="line">       #请按照以下协议配置</span><br><span class="line">       ssl_protocols TLSv1<span class="number">.2</span> TLSv1<span class="number">.3</span>; </span><br><span class="line">       #请按照以下套件配置，配置加密套件，写法遵循 openssl 标准。</span><br><span class="line">       ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256<span class="punctuation">:</span>HIGH<span class="punctuation">:</span>!aNULL<span class="punctuation">:</span>!MD5<span class="punctuation">:</span>!RC4<span class="punctuation">:</span>!DHE; </span><br><span class="line">       ssl_prefer_server_ciphers on;</span><br><span class="line"></span><br><span class="line">       location / <span class="punctuation">&#123;</span></span><br><span class="line">           proxy_pass         http<span class="punctuation">:</span><span class="comment">//127.0.0.1:13080;</span></span><br><span class="line">           # proxy_ssl_server_name on;</span><br><span class="line">           proxy_redirect     off;</span><br><span class="line">           proxy_set_header   Host $host;</span><br><span class="line">           proxy_set_header   X-Real-IP $remote_addr;</span><br><span class="line">           proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">           proxy_set_header   X-Forwarded-Host $server_name;</span><br><span class="line">       <span class="punctuation">&#125;</span></span><br><span class="line">   <span class="punctuation">&#125;</span></span><br><span class="line">   server <span class="punctuation">&#123;</span></span><br><span class="line">       listen <span class="number">80</span>;</span><br><span class="line">       server_name blog.muzi.fun;    </span><br><span class="line">       location / <span class="punctuation">&#123;</span></span><br><span class="line">           return <span class="number">301</span> https<span class="punctuation">:</span><span class="comment">//blog.muzi.fun$request_uri;</span></span><br><span class="line">       <span class="punctuation">&#125;</span></span><br><span class="line">   <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></div>
+<p>注意，具体的ssl配置规则以发放ssl证书厂商为准，可以灵活修改。<br>在启动nginx镜像前, 请先确保80和443端口没有被占用, 再确保WordPress在http协议下的ip:port的访问是否正常, 再再确保你的WordPress是全新的或做好了资料备份的. 一切OK的话, 前往WordPress的设置-&gt;常规中把站点地址和WordPress地址都改成<a class="link"   href="https://your_domain.com/" >https://your_domain.com <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>. 这一步有风险, 请不要在WordPress有资料且未备份的情况下执行操作!<br>然后启动nginx。<br>这时尝试<a class="link"   href="https://your_domain.com/" >https://your_domain.com <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>, 如果能够显示主页，就接近成功啦！为什么是接近呢？因为wordpress的镜像在配置ssl证书之后可能存在一些问题，所以我们需要修改一下内容。</p>
+<h3 id="修改wp-config-php"><a href="#修改wp-config-php" class="headerlink" title="修改wp-config.php"></a>修改wp-config.php</h3><p>打开WORKSPACE&#x2F;wp&#x2F;wp-app，在最上面（<code>&lt;?php</code>下边）添加三行即可，注意要加到上面，我之前尝试过加到文件最后面，就无效了，大概这几个变量在该文件中的几个函数里就被重复使用了。</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">$_SERVER[&#x27;HTTPS&#x27;] = &#x27;on&#x27;;</span><br><span class="line">define(&#x27;FORCE_SSL_LOGIN&#x27;, true);</span><br><span class="line">define(&#x27;FORCE_SSL_ADMIN&#x27;, true);</span><br></pre></td></tr></table></figure></div>
+
+<p>至此，我的wordpress就部署好了，等待大家的好消息！</p>
+]]></content>
+      <categories>
+        <category>折腾</category>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>nginx</tag>
+        <tag>wordpress</tag>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>动态规划-奇怪的打印机</title>
+    <url>/2022/09/14/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E5%A5%87%E6%80%AA%E7%9A%84%E6%89%93%E5%8D%B0%E6%9C%BA/</url>
+    <content><![CDATA[<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p><img lazyload="" src="/images/loading.svg" data-src="/image-1663160009734.png" alt="原题"></p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>dp[i][j] 表示打印字符串第i位到第j位所需的最少打印次数。而且可以保证的是，打印这个子串时，最优先打印的一定是s[i]这个字符（可能不是唯一方案，但一定是最优方案之一）这点比较难理解。设每次打印的起始位置为start[i]，可以证明的是必然存在最优方案（打印次数为k)，对任意i,j满足1&lt;=i&lt;j&lt;=k，同时满足start[i]&lt;start[j]。可以自己举几个例子就明白了。<br>当理解上面这点之后，思路就比较清晰了。dp[i][k-1]和dp[k][j]都是最优方案，此时如果s[i]==s[k]，就说明打印[i,k-1]子串和[k,j]子串时的第一步是相同的，因此打印[i,j]子串的方案可能为先打印s[i]字符，再分别按照dp[i][k-1]和dp[k][j]的方案打印上面几层字符。</p>
+<h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">    string s;</span><br><span class="line">    cin &gt;&gt; s;</span><br><span class="line">    <span class="type">int</span> l = s.<span class="built_in">length</span>();</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">dp</span>(l, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(l));</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; l;i++)</span><br><span class="line">        dp[i][i] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> len = <span class="number">2</span>; len &lt;= l;len++)</span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= l - len;i++)</span><br><span class="line">        {</span><br><span class="line">            <span class="type">int</span> j = i + len - <span class="number">1</span>;</span><br><span class="line">            dp[i][j] = dp[i + <span class="number">1</span>][j] + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> k = i + <span class="number">1</span>; k &lt;= j;k++){</span><br><span class="line">                <span class="keyword">if</span> (s[i] == s[k])</span><br><span class="line">				<span class="comment">// 关键的状态转移方程</span></span><br><span class="line">                    dp[i][j] = <span class="built_in">min</span>(dp[i][j], dp[i][k - <span class="number">1</span>] + dp[k][j] - <span class="number">1</span>);</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    cout &lt;&lt; dp[<span class="number">0</span>][l - <span class="number">1</span>];</span><br><span class="line">}</span><br></pre></td></tr></table></figure></div>]]></content>
+      <categories>
+        <category>学习</category>
+        <category>算法</category>
+        <category>PAT</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>刷题</tag>
+        <tag>PAT</tag>
+        <tag>动态规划</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何处理溢出问题</title>
+    <url>/2022/09/12/%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E6%BA%A2%E5%87%BA%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h2 id="PAT题目"><a href="#PAT题目" class="headerlink" title="PAT题目"></a>PAT题目</h2><p>题目来源：<a class="link" href="https://pintia.cn/problem-sets/994805342720868352/problems/994805406352654336">https://pintia.cn/problem-sets/994805342720868352/problems/994805406352654336 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="柳神的题解"><a href="#柳神的题解" class="headerlink" title="柳神的题解"></a>柳神的题解</h2><p>分析：<br>因为A、B的大小为[-2^63, 2^63]，用long long 存储A和B的值，以及他们相加的值sum：<br>如果A &gt; 0, B &lt; 0 或者 A &lt; 0, B &gt; 0，sum是不可能溢出的<br>如果A &gt; 0, B &gt; 0，sum可能会溢出，sum范围理应为(0, 2^64 – 2]，溢出得到的结果应该是[-2^63, -2]是个负数，所以sum &lt; 0时候说明溢出了<br>如果A &lt; 0, B &lt; 0，sum可能会溢出，同理，sum溢出后结果是大于0的，所以sum &gt; 0 说明溢出了</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>{</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>, &amp;n);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) {</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> a, b, c;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%lld %lld %lld"</span>, &amp;a, &amp;b, &amp;c);</span><br><span class="line">        <span class="type">long</span> <span class="type">long</span> sum = a + b;</span><br><span class="line">        <span class="keyword">if</span>(a &gt; <span class="number">0</span> &amp;&amp; b &gt; <span class="number">0</span> &amp;&amp; sum &lt; <span class="number">0</span>) {</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"Case #%d: true\n"</span>, i + <span class="number">1</span>);</span><br><span class="line">        } <span class="keyword">else</span> <span class="keyword">if</span>(a &lt; <span class="number">0</span> &amp;&amp; b &lt; <span class="number">0</span> &amp;&amp; sum &gt;= <span class="number">0</span>){</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"Case #%d: false\n"</span>, i + <span class="number">1</span>);</span><br><span class="line">        } <span class="keyword">else</span> <span class="keyword">if</span>(sum &gt; c) {</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"Case #%d: true\n"</span>, i + <span class="number">1</span>);</span><br><span class="line">        } <span class="keyword">else</span> {</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"Case #%d: false\n"</span>, i + <span class="number">1</span>);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="我的题解"><a href="#我的题解" class="headerlink" title="我的题解"></a>我的题解</h2><p>将a,b,c通过除法和求余计算，分成Significant部分和Least Significant部分。看a+b-c是否大于0来判断a+b是否大于c。</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1065 A+B and C (64bit)</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    <span class="type">const</span> <span class="type">long</span> <span class="type">long</span> denom = <span class="number">0xffffffff</span>;</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> a, b, c, sumS, sumL;</span><br><span class="line">    <span class="type">bool</span> result;</span><br><span class="line">    cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n;i++){</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%lld %lld %lld"</span>, &amp;a, &amp;b, &amp;c);</span><br><span class="line">        <span class="comment">// a+b-c</span></span><br><span class="line">        sumL = a % denom + b % denom - c % denom;</span><br><span class="line">        sumS = a / denom + b / denom - c / denom + sumL / denom ;</span><br><span class="line">        sumL %= denom;</span><br><span class="line">        result = (sumS &gt; <span class="number">0</span>) || (sumS == <span class="number">0</span> &amp;&amp; sumL &gt; <span class="number">0</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Case #%d: %s\n"</span>, i, result ? <span class="string">"true"</span> : <span class="string">"false"</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure></div>]]></content>
+      <categories>
+        <category>学习</category>
+        <category>算法</category>
+        <category>PAT</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>刷题</tag>
+        <tag>PAT</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>时间序列预测的多粒度残差学习</title>
+    <url>/2022/06/19/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B%E7%9A%84%E5%A4%9A%E7%B2%92%E5%BA%A6%E6%AE%8B%E5%B7%AE%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<h2 id="论文"><a href="#论文" class="headerlink" title="论文"></a>论文</h2><p>传统的时序预测，不管是单步还是多步任务，采用的输入和输出往往都是相同粒度的数据。但是直觉上来说，粗粒度的数据能够提供的语义信息，细粒度中也应该包含；而粗粒度数据中突出的信息，也应该能够用来过滤到细粒度任务下的无关语义。因此对某个预测任务，使用不同粒度的数据应该能够有提升效果。<br>Hou, Min, Chang Xu, Zhi Li, Yang Liu, Weiqing Liu, Enhong Chen, and Jiang Bian. 2022. “**Multi-Granularity Residual Learning with Confidence Estimation for Time Series Prediction.**” WWW 2022 - Proceedings of the ACM Web Conference 2022, 112–21. <a class="link" href="https://doi.org/10.1145/3485447.3512056">https://doi.org/10.1145/3485447.3512056 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>.</p>
+<h2 id="基本描述"><a href="#基本描述" class="headerlink" title="基本描述"></a>基本描述</h2><ul>
+<li>基本问题：时序数据预测</li>
+<li>拓展任务：多粒度数据在预测任务中的信息融合</li>
+<li>难点：不同粒度之间的信息存在冗余；不同的预测目标（粒度）对输入数据粒度的侧重也有差异。</li>
+<li>创新点or思路：</li>
+</ul>
+<ol>
+<li>从粗粒度数据中获取信息作为细粒度数据的先验知识；细粒度数据对粗粒度数据做残差，从而过滤到冗余信息。</li>
+<li>设计一个辨别器来判断该粒度数据是否对目标任务有价值</li>
+</ol>
+<h2 id="论文细节"><a href="#论文细节" class="headerlink" title="论文细节"></a>论文细节</h2><h3 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h3><ul>
+<li>输出：输出很简单，即某个粒度的预测任务</li>
+<li>输入：输入为多个粒度profile数据。<br>$$<br>\hat{y} = \mathcal{F}<em>{\Theta}\left(X^{1}, \cdots, X^{M}\right)\<br>X^{m}=\left[x</em>{1}^{m}, \cdots, x_{T}^{m}\right] \in \mathbb{R}^{D \times K^{m} \times T}\<br>\lambda / K^{m} \rarr granularity\ of\ X^m<br>$$<br>其中λ是最粗粒度的时间间隔</li>
+</ul>
+]]></content>
+      <categories>
+        <category>学习</category>
+        <category>机器学习</category>
+        <category>论文</category>
+      </categories>
+      <tags>
+        <tag>ML</tag>
+        <tag>AI</tag>
+        <tag>prediction</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网络运营服务商的DNS污染导致无法连接github</title>
+    <url>/2022/07/01/%E7%BD%91%E7%BB%9C%E8%BF%90%E8%90%A5%E6%9C%8D%E5%8A%A1%E5%95%86%E7%9A%84DNS%E6%B1%A1%E6%9F%93%E5%AF%BC%E8%87%B4%E6%97%A0%E6%B3%95%E8%BF%9E%E6%8E%A5github/</url>
+    <content><![CDATA[<h2 id="事情经过"><a href="#事情经过" class="headerlink" title="事情经过"></a>事情经过</h2><p>最近要去github上下载东西，结果发现github网页能打开，但是就是没办法git clone代码到本地，起初以为是自己的ssl没配置好，折腾了半天，没用；又以为是代理的问题，折腾半天，还是没用。</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2022/07/01/%E7%BD%91%E7%BB%9C%E8%BF%90%E8%90%A5%E6%9C%8D%E5%8A%A1%E5%95%86%E7%9A%84DNS%E6%B1%A1%E6%9F%93%E5%AF%BC%E8%87%B4%E6%97%A0%E6%B3%95%E8%BF%9E%E6%8E%A5github/image-1656656090562.png"
+                      class=""
+                >
+<p>几经周折，才发现是网络运营商的问题！！！！</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2022/07/01/%E7%BD%91%E7%BB%9C%E8%BF%90%E8%90%A5%E6%9C%8D%E5%8A%A1%E5%95%86%E7%9A%84DNS%E6%B1%A1%E6%9F%93%E5%AF%BC%E8%87%B4%E6%97%A0%E6%B3%95%E8%BF%9E%E6%8E%A5github/image-1656656155631.png"
+                      class=""
+                >
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2022/07/01/%E7%BD%91%E7%BB%9C%E8%BF%90%E8%90%A5%E6%9C%8D%E5%8A%A1%E5%95%86%E7%9A%84DNS%E6%B1%A1%E6%9F%93%E5%AF%BC%E8%87%B4%E6%97%A0%E6%B3%95%E8%BF%9E%E6%8E%A5github/image-1656655909546.png"
+                      class=""
+                >
+
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>看网上说有一些设置hosts的方法，但是我简单试了一下<br>打开网站<a class="link"   href="https://ipaddress.com/website/github.com%EF%BC%8C%E6%9F%A5%E7%9C%8B%E5%9F%9F%E5%90%8Dgithub.com%E5%AF%B9%E5%BA%94ip%EF%BC%8C%E5%9C%A8hosts%E4%B8%AD%E5%8A%A0%E4%B8%8A%E4%B8%80%E8%A1%8C%E3%80%82" >https://ipaddress.com/website/github.com，查看域名github.com对应ip，在hosts中加上一行。 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2022/07/01/%E7%BD%91%E7%BB%9C%E8%BF%90%E8%90%A5%E6%9C%8D%E5%8A%A1%E5%95%86%E7%9A%84DNS%E6%B1%A1%E6%9F%93%E5%AF%BC%E8%87%B4%E6%97%A0%E6%B3%95%E8%BF%9E%E6%8E%A5github/image-1656671309470.png"
+                      class=""
+                >
+<p>再在命令行中输入 <code>ipconfig /flushdns</code>，这样也能够成功clone和push等。</p>
+<p>这时我便有一个问题，为什么浏览器能够打开github的网页（开了代理），却不能下载代码？原来是因为本地的git工具需要主动配置代理，否则请求不会被代理。这大概和git本身发送请求的实现细节有关（猜测是直接使用的传输层协议而不是http之类的应用层请求，因此不会被代理工具如clash捕获）<br>之后进行相关设置即可：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global http.https://github.com.proxy socks5://127.0.0.1:7890</span><br><span class="line">git config --global https.https://github.com.proxy http://127.0.0.1:7890</span><br></pre></td></tr></table></figure></div>
+<p>这里的7890根据自己的代理工具进行修改。</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/2022/07/01/%E7%BD%91%E7%BB%9C%E8%BF%90%E8%90%A5%E6%9C%8D%E5%8A%A1%E5%95%86%E7%9A%84DNS%E6%B1%A1%E6%9F%93%E5%AF%BC%E8%87%B4%E6%97%A0%E6%B3%95%E8%BF%9E%E6%8E%A5github/image-1656657218478.png"
+                      class=""
+                >
+
+<p>注：下面这个方法后来失效了，原因有待确认。</p>
+]]></content>
+      <categories>
+        <category>折腾</category>
+        <category>代理</category>
+      </categories>
+      <tags>
+        <tag>clash</tag>
+        <tag>github</tag>
+      </tags>
+  </entry>
 </search>

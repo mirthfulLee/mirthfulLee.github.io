@@ -10,18 +10,18 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="https://mirthfullee.github.io/about/"/>
+    <link rel="canonical" href="https://mirthfullee.github.io/2022/06/18/分位数损失/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="about">
+    <meta property="og:title" content="分位数损失">
     <meta property="og:description" content="一个有追求的咸鱼少年">
-    <meta property="og:url" content="https://mirthfullee.github.ioabout/index.html">
+    <meta property="og:url" content="https://mirthfullee.github.io2022/06/18/分位数损失/">
     
     <meta property="og:site_name" content="MirthfulLee">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="about">
+    <meta name="twitter:title" content="分位数损失">
     <meta name="twitter:description" content="一个有追求的咸鱼少年">
     <meta name="twitter:image" content="/images/logo.png">
     <!--- Icon Part-->
@@ -32,7 +32,7 @@
     
     <title>
         
-            About -
+            分位数损失 -
         
         MirthfulLee
     </title>
@@ -249,26 +249,215 @@
 
                 
                     <div class="fade-in-down-animation">
-    <div class="page-template-container">
-        
-        
-        <div class="page-template-content markdown-body">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
             
-                <h2 id="博客名字"><a href="#博客名字" class="headerlink" title="博客名字"></a>博客名字</h2><p>总所周知，起名字一直是一件让人头疼的事情，思来想起，还是绕回来自己的名字，想在“欢”字上做文章，但是作为英语渣渣，脑子里只装得下一个“happy”…</p>
-<p>好不容易，借助翻译软件，搜到一个没见过的单词——“mirthfully”  意为欢乐的，用来代替happy一词非常合适。而Lee由恰巧可以放到这个单词后面，代替“ly”，构成一个没啥名堂的双关。行了，就这样吧。</p>
-<p>期望自己，也希望世上的所有人都能欢乐地生活😁</p>
-<h2 id="博客初心"><a href="#博客初心" class="headerlink" title="博客初心"></a>博客初心</h2><ol>
-<li>闲的😎</li>
-<li>想分享平时踩的一些坑，顺便记录一下自己的一些奇思怪想</li>
-<li>强迫自己养成做记录的习惯，防止堕落…</li>
+            
+                <div class="article-title">
+                    <h1 class="article-title-regular">分位数损失</h1>
+                </div>
+            
+                
+            
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/logo.png">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">Huan Lee</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="pc">2022-06-18 14:19:14</span>
+        <span class="mobile">2022-06-18 14:19</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="pc">2023-03-12 14:29:41</span>
+            <span class="mobile">2023-03-12 14:29</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        &gt; <a href="/categories/%E5%AD%A6%E4%B9%A0/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        &gt; <a href="/categories/%E5%AD%A6%E4%B9%A0/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0/">损失函数</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/ML/">ML</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/AI/">AI</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/loss/">loss</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ol>
+<li><a class="link"   target="_blank" rel="noopener" href="https://www.jianshu.com/p/073bc0b0bbfa"  title="使用分位数回归预测目标的取值范围">使用分位数回归预测目标的取值范围 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+<li><a class="link"   target="_blank" rel="noopener" href="https://www.payititi.com/aicommunity/show-27.html"  title="分位数损失（Quantile Loss）">分位数损失（Quantile Loss） <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
 </ol>
-<h2 id="联系方式"><a href="#联系方式" class="headerlink" title="联系方式"></a>联系方式</h2><p>为了减轻博客的压力，暂时没有开启评论模块，如果有什么想要表达的，十分十分欢迎邮件联系😊<br>| qq(foxmail)：<a class="link"   href="mailto:&#108;&#x69;&#104;&#117;&#x61;&#110;&#x30;&#53;&#x33;&#48;&#x40;&#102;&#x6f;&#x78;&#x6d;&#x61;&#105;&#108;&#46;&#99;&#111;&#x6d;" >&#108;&#x69;&#104;&#117;&#x61;&#110;&#x30;&#53;&#x33;&#48;&#x40;&#102;&#x6f;&#x78;&#x6d;&#x61;&#105;&#108;&#46;&#99;&#111;&#x6d; <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>| gmail：<a class="link"   href="mailto:&#108;&#105;&#x68;&#117;&#x61;&#x6e;&#x30;&#x35;&#x33;&#x30;&#x40;&#x67;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#111;&#x6d;" >&#108;&#105;&#x68;&#117;&#x61;&#x6e;&#x30;&#x35;&#x33;&#x30;&#x40;&#x67;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#111;&#x6d; <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="场景描述"><a href="#场景描述" class="headerlink" title="场景描述"></a>场景描述</h2><p>在大多数真实世界的预测问题中，我们常常希望得到我们预测结果的不确定度。通过预测出一个取值区间而不是一个个具体的取值点对于具体业务流程中的决策至关重要。于是提出了分位数的概念。分位数（英语：Quantile），亦称分位点，是指用分割点（cut point）将一个随机变量的概率分布范围分为几个具有相同概率的连续区间。<br>quantile_r(X) &#x3D; b 等价于 P(X &lt; b) &#x3D; r</p>
+<h2 id="分位数回归"><a href="#分位数回归" class="headerlink" title="分位数回归"></a>分位数回归</h2><p>不同于普通的回归分析，分位数回归能够更好地表达数据的实际分布，对实际决策有重要意义。对下图来说，左右两个分布的期望值（预测值）相近，但是实际的分布有显著差距，因此在实际决策中需要考虑，这个时候就需要用到分位值。<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://www.payititi.com/file/upload/202105/14/154456111.jpeg"
+                      alt="分位数回归的意义" title="分位数回归的意义"
+                ><br>上下两条虚线基于0.05和0.95的分位数损失得到的取值区间。从图中可以清晰地看到建模后预测值得取值范围。分位数回归的目标在于估计给定预测值的条件分位数。实际上分位数回归就是平均绝对误差的一种拓展（当分位数为第50个百分位时其值就是平均绝对误差）<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://www.payititi.com/file/upload/202105/14/154503701.png"
+                      alt="分位值" title="分位值"
+                ></p>
+<h2 id="分位数损失"><a href="#分位数损失" class="headerlink" title="分位数损失"></a>分位数损失</h2><p>为了能够实现对分位数的预测，设计了如下的损失函数：<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://blog.muzi.fun/wp-content/uploads/2022/06/12577832-5c01d1524f471b8f.webp"
+                      alt="损失函数"
+                ><br>其中γ是损失函数的参数，从实际意义上可以理解为是我们需要的分位数，这个损失函数从结构上看，就是以一定的概率γ惩罚预测值大于实际值，同时鼓励预测值小于实际值，这样的效果就是学得了目标y的γ分位数期望值。</p>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>Post title：分位数损失</li>
+        <li>Post author：Huan Lee</li>
+        <li>Create time：2022-06-18 14:19:14</li>
+        <li>
+            Post link：https://www.mirthfullee.com/2022/06/18/分位数损失/
+        </li>
+        <li>
+            Copyright Notice：All articles in this blog are licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> unless stating additionally.
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/ML/">#ML</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/AI/">#AI</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/loss/">#loss</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                            rel="prev"
+                            href="/2022/06/19/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B%E7%9A%84%E5%A4%9A%E7%B2%92%E5%BA%A6%E6%AE%8B%E5%B7%AE%E5%AD%A6%E4%B9%A0/"
+                            >
+                                <span class="left arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">时间序列预测的多粒度残差学习</span>
+                                    <span class="post-nav-item">Prev posts</span>
+                                </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                            rel="next"
+                            href="/2022/06/18/%E5%88%A9%E7%94%A8docker%E5%92%8Cnginx%E9%85%8D%E7%BD%AEwordpress%E6%9C%8D%E5%8A%A1%E5%99%A8/"
+                            >
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">利用docker和nginx配置wordpress服务器</span>
+                                    <span class="post-nav-item">Next posts</span>
+                                </span>
+                                <span class="right arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
 
             
         </div>
-        <div class="page-template-comments">
-            
-        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">分位数损失</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">1.</span> <span class="nav-text">参考文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.</span> <span class="nav-text">场景描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E4%BD%8D%E6%95%B0%E5%9B%9E%E5%BD%92"><span class="nav-number">3.</span> <span class="nav-text">分位数回归</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E4%BD%8D%E6%95%B0%E6%8D%9F%E5%A4%B1"><span class="nav-number">4.</span> <span class="nav-text">分位数损失</span></a></li></ol>
+
+    </div>
+</div>
+            </div>
+        
     </div>
 </div>
 
@@ -310,6 +499,23 @@
         </div>
     </div>
 
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
     
 
     <div class="right-bottom-side-tools">
@@ -431,6 +637,16 @@
 
 
 <div class="post-scripts pjax">
+    
+        
+<script src="/js/tools/toc-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
     
     
 </div>

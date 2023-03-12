@@ -10,18 +10,18 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="https://mirthfullee.github.io/about/"/>
+    <link rel="canonical" href="https://mirthfullee.github.io/2022/06/19/时间序列预测的多粒度残差学习/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="about">
+    <meta property="og:title" content="时间序列预测的多粒度残差学习">
     <meta property="og:description" content="一个有追求的咸鱼少年">
-    <meta property="og:url" content="https://mirthfullee.github.ioabout/index.html">
+    <meta property="og:url" content="https://mirthfullee.github.io2022/06/19/时间序列预测的多粒度残差学习/">
     
     <meta property="og:site_name" content="MirthfulLee">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="about">
+    <meta name="twitter:title" content="时间序列预测的多粒度残差学习">
     <meta name="twitter:description" content="一个有追求的咸鱼少年">
     <meta name="twitter:image" content="/images/logo.png">
     <!--- Icon Part-->
@@ -32,7 +32,7 @@
     
     <title>
         
-            About -
+            时间序列预测的多粒度残差学习 -
         
         MirthfulLee
     </title>
@@ -68,7 +68,119 @@
     
     
     
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 6.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 
 <body>
@@ -249,26 +361,208 @@
 
                 
                     <div class="fade-in-down-animation">
-    <div class="page-template-container">
-        
-        
-        <div class="page-template-content markdown-body">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
             
-                <h2 id="博客名字"><a href="#博客名字" class="headerlink" title="博客名字"></a>博客名字</h2><p>总所周知，起名字一直是一件让人头疼的事情，思来想起，还是绕回来自己的名字，想在“欢”字上做文章，但是作为英语渣渣，脑子里只装得下一个“happy”…</p>
-<p>好不容易，借助翻译软件，搜到一个没见过的单词——“mirthfully”  意为欢乐的，用来代替happy一词非常合适。而Lee由恰巧可以放到这个单词后面，代替“ly”，构成一个没啥名堂的双关。行了，就这样吧。</p>
-<p>期望自己，也希望世上的所有人都能欢乐地生活😁</p>
-<h2 id="博客初心"><a href="#博客初心" class="headerlink" title="博客初心"></a>博客初心</h2><ol>
-<li>闲的😎</li>
-<li>想分享平时踩的一些坑，顺便记录一下自己的一些奇思怪想</li>
-<li>强迫自己养成做记录的习惯，防止堕落…</li>
+            
+                <div class="article-title">
+                    <h1 class="article-title-regular">时间序列预测的多粒度残差学习</h1>
+                </div>
+            
+                
+            
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/logo.png">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">Huan Lee</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="pc">2022-06-19 14:19:14</span>
+        <span class="mobile">2022-06-19 14:19</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="pc">2023-03-12 14:38:31</span>
+            <span class="mobile">2023-03-12 14:38</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        &gt; <a href="/categories/%E5%AD%A6%E4%B9%A0/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        &gt; <a href="/categories/%E5%AD%A6%E4%B9%A0/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E8%AE%BA%E6%96%87/">论文</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/ML/">ML</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/AI/">AI</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/prediction/">prediction</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content markdown-body">
+                <h2 id="论文"><a href="#论文" class="headerlink" title="论文"></a>论文</h2><p>传统的时序预测，不管是单步还是多步任务，采用的输入和输出往往都是相同粒度的数据。但是直觉上来说，粗粒度的数据能够提供的语义信息，细粒度中也应该包含；而粗粒度数据中突出的信息，也应该能够用来过滤到细粒度任务下的无关语义。因此对某个预测任务，使用不同粒度的数据应该能够有提升效果。<br>Hou, Min, Chang Xu, Zhi Li, Yang Liu, Weiqing Liu, Enhong Chen, and Jiang Bian. 2022. “**Multi-Granularity Residual Learning with Confidence Estimation for Time Series Prediction.**” WWW 2022 - Proceedings of the ACM Web Conference 2022, 112–21. <a class="link" target="_blank" rel="noopener" href="https://doi.org/10.1145/3485447.3512056">https://doi.org/10.1145/3485447.3512056 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>.</p>
+<h2 id="基本描述"><a href="#基本描述" class="headerlink" title="基本描述"></a>基本描述</h2><ul>
+<li>基本问题：时序数据预测</li>
+<li>拓展任务：多粒度数据在预测任务中的信息融合</li>
+<li>难点：不同粒度之间的信息存在冗余；不同的预测目标（粒度）对输入数据粒度的侧重也有差异。</li>
+<li>创新点or思路：</li>
+</ul>
+<ol>
+<li>从粗粒度数据中获取信息作为细粒度数据的先验知识；细粒度数据对粗粒度数据做残差，从而过滤到冗余信息。</li>
+<li>设计一个辨别器来判断该粒度数据是否对目标任务有价值</li>
 </ol>
-<h2 id="联系方式"><a href="#联系方式" class="headerlink" title="联系方式"></a>联系方式</h2><p>为了减轻博客的压力，暂时没有开启评论模块，如果有什么想要表达的，十分十分欢迎邮件联系😊<br>| qq(foxmail)：<a class="link"   href="mailto:&#108;&#x69;&#104;&#117;&#x61;&#110;&#x30;&#53;&#x33;&#48;&#x40;&#102;&#x6f;&#x78;&#x6d;&#x61;&#105;&#108;&#46;&#99;&#111;&#x6d;" >&#108;&#x69;&#104;&#117;&#x61;&#110;&#x30;&#53;&#x33;&#48;&#x40;&#102;&#x6f;&#x78;&#x6d;&#x61;&#105;&#108;&#46;&#99;&#111;&#x6d; <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>| gmail：<a class="link"   href="mailto:&#108;&#105;&#x68;&#117;&#x61;&#x6e;&#x30;&#x35;&#x33;&#x30;&#x40;&#x67;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#111;&#x6d;" >&#108;&#105;&#x68;&#117;&#x61;&#x6e;&#x30;&#x35;&#x33;&#x30;&#x40;&#x67;&#109;&#97;&#x69;&#108;&#x2e;&#99;&#111;&#x6d; <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="论文细节"><a href="#论文细节" class="headerlink" title="论文细节"></a>论文细节</h2><h3 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h3><ul>
+<li>输出：输出很简单，即某个粒度的预测任务</li>
+<li>输入：输入为多个粒度profile数据。<br>$$<br>\hat{y} = \mathcal{F}<em>{\Theta}\left(X^{1}, \cdots, X^{M}\right)\<br>X^{m}=\left[x</em>{1}^{m}, \cdots, x_{T}^{m}\right] \in \mathbb{R}^{D \times K^{m} \times T}\<br>\lambda / K^{m} \rarr granularity\ of\ X^m<br>$$<br>其中λ是最粗粒度的时间间隔</li>
+</ul>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    <div class="article-copyright-info-container">
+    <ul>
+        <li>Post title：时间序列预测的多粒度残差学习</li>
+        <li>Post author：Huan Lee</li>
+        <li>Create time：2022-06-19 14:19:14</li>
+        <li>
+            Post link：https://www.mirthfullee.com/2022/06/19/时间序列预测的多粒度残差学习/
+        </li>
+        <li>
+            Copyright Notice：All articles in this blog are licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> unless stating additionally.
+        </li>
+    </ul>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/ML/">#ML</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/AI/">#AI</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/prediction/">#prediction</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                            rel="prev"
+                            href="/2022/06/24/%E4%BD%BF%E7%94%A8jupyter%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/"
+                            >
+                                <span class="left arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </span>
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">使用jupyter进行数据分析</span>
+                                    <span class="post-nav-item">Prev posts</span>
+                                </span>
+                            </a>
+                        </div>
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                            rel="next"
+                            href="/2022/06/18/%E5%88%86%E4%BD%8D%E6%95%B0%E6%8D%9F%E5%A4%B1/"
+                            >
+                                <span class="title flex-center">
+                                    <span class="post-nav-title-item">分位数损失</span>
+                                    <span class="post-nav-item">Next posts</span>
+                                </span>
+                                <span class="right arrow-icon flex-center">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
 
             
         </div>
-        <div class="page-template-comments">
-            
-        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">时间序列预测的多粒度残差学习</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text">论文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.</span> <span class="nav-text">基本描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E7%BB%86%E8%8A%82"><span class="nav-number">3.</span> <span class="nav-text">论文细节</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89"><span class="nav-number">3.1.</span> <span class="nav-text">问题定义</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+            </div>
+        
     </div>
 </div>
 
@@ -310,6 +604,23 @@
         </div>
     </div>
 
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
     
 
     <div class="right-bottom-side-tools">
@@ -431,6 +742,16 @@
 
 
 <div class="post-scripts pjax">
+    
+        
+<script src="/js/tools/toc-toggle.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
     
     
 </div>
