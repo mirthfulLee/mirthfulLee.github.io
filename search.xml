@@ -175,7 +175,8 @@
   <entry>
     <title>动态规划-奇怪的打印机</title>
     <url>/2022/09/14/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E5%A5%87%E6%80%AA%E7%9A%84%E6%89%93%E5%8D%B0%E6%9C%BA/</url>
-    <content><![CDATA[<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p><img lazyload="" src="/images/loading.svg" data-src="/image-1663160009734.png" alt="原题"></p>
+    <content><![CDATA[<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><img lazyload="" src="/images/loading.svg" data-src="/2022/09/14/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E5%A5%87%E6%80%AA%E7%9A%84%E6%89%93%E5%8D%B0%E6%9C%BA/image-1663160009734.png" class="">
+
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>dp[i][j] 表示打印字符串第i位到第j位所需的最少打印次数。而且可以保证的是，打印这个子串时，最优先打印的一定是s[i]这个字符（可能不是唯一方案，但一定是最优方案之一）这点比较难理解。设每次打印的起始位置为start[i]，可以证明的是必然存在最优方案（打印次数为k)，对任意i,j满足1&lt;=i&lt;j&lt;=k，同时满足start[i]&lt;start[j]。可以自己举几个例子就明白了。<br>当理解上面这点之后，思路就比较清晰了。dp[i][k-1]和dp[k][j]都是最优方案，此时如果s[i]==s[k]，就说明打印[i,k-1]子串和[k,j]子串时的第一步是相同的，因此打印[i,j]子串的方案可能为先打印s[i]字符，再分别按照dp[i][k-1]和dp[k][j]的方案打印上面几层字符。</p>
 <h2 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h2><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">    string s;</span><br><span class="line">    cin &gt;&gt; s;</span><br><span class="line">    <span class="type">int</span> l = s.<span class="built_in">length</span>();</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">dp</span>(l, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(l));</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; l;i++)</span><br><span class="line">        dp[i][i] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> len = <span class="number">2</span>; len &lt;= l;len++)</span><br><span class="line">    {</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt;= l - len;i++)</span><br><span class="line">        {</span><br><span class="line">            <span class="type">int</span> j = i + len - <span class="number">1</span>;</span><br><span class="line">            dp[i][j] = dp[i + <span class="number">1</span>][j] + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> k = i + <span class="number">1</span>; k &lt;= j;k++){</span><br><span class="line">                <span class="keyword">if</span> (s[i] == s[k])</span><br><span class="line">				<span class="comment">// 关键的状态转移方程</span></span><br><span class="line">                    dp[i][j] = <span class="built_in">min</span>(dp[i][j], dp[i][k - <span class="number">1</span>] + dp[k][j] - <span class="number">1</span>);</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    cout &lt;&lt; dp[<span class="number">0</span>][l - <span class="number">1</span>];</span><br><span class="line">}</span><br></pre></td></tr></table></figure></div>]]></content>
       <categories>
@@ -291,6 +292,41 @@
       <tags>
         <tag>clash</tag>
         <tag>github</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>从wordpress到hexo的迁移</title>
+    <url>/2023/03/12/%E4%BB%8Ewordpress%E5%88%B0hexo%E7%9A%84%E8%BF%81%E7%A7%BB/</url>
+    <content><![CDATA[<h2 id="缘由"><a href="#缘由" class="headerlink" title="缘由"></a>缘由</h2><p>最近嫌弃腾讯云的带宽太小,精挑细选,选到了一个大带宽VPS服务商<a class="link"   href="https://my.yecaoyun.com/" >野草云 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>.购买了一年的香港服务器,于是准备抛弃腾讯云了.<br>换服务器比较麻烦的点,就是需要把之前部署好的服务全部迁移走. 而我的腾讯云上之前就部署了我的wordpress个人博客(虽然写的内容寥寥无几,但是终究是备了案的🤦‍♂️)于是就想着把网站迁移走. 然而, 折腾了半天, 还是没有弄好, 思来想去, 觉得wordpress这种结构, 不是很适合我这种极度轻量级个人用户, 于是又开始考虑换一个博客框架. 简单一搜, 就发现有很多”免费在github上搭建个人博客”的文章, 点进去一看, 全部都是hexo.<br>稍微了解一下这个框架, 就发现它的几个优点非常符合我的需求:</p>
+<ul>
+<li>全部由静态网页组成，方便迁移</li>
+<li>可以部署为github page</li>
+<li>对markdown原生支持！<br>于是, 就有了这篇文章.</li>
+</ul>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p>hexo官方文档：<a class="link"   href="https://hexo.io/docs/" >Documentation <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>优秀主题-redefine: <a class="link"   href="https://redefine-docs.ohevan.com/docs/intro" >项目介绍 | hexo-theme-redefine <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a><br>配置过程：<a class="link"   href="https://blog.csdn.net/yaorongke/article/details/119089190" >https://blog.csdn.net/yaorongke/article/details/119089190 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>我现在正使用的就是上面推荐的主题-redefine. 当时在官网的themes列表里点开很多, 有example page的都不多, 而这个主题不但设计得漂亮甚至还有文档! (作者好像是一个加拿大的国人学生, 真是用心了, 点赞!)</p>
+<p>我的配置:</p>
+<ul>
+<li>hexo配置在CentOS 7服务器上, 暂时使用VSCode Remote进行远程编辑;</li>
+<li>发布到Github Page</li>
+<li>同时通过nginx进行部署</li>
+<li>将posts备份到家里的NAS</li>
+<li>利用Let’s Encrypt获取免费SSL证书实现https</li>
+</ul>
+<p>后续目标:</p>
+<ul>
+<li>从Notion迁移到Obsidian</li>
+<li>通过脚本插件实现Obsidian的文章(markdown文件)自动添加到hexo</li>
+<li>后续将文章同步投放到国内支持markdown的博客平台, 如知乎, CSDN, 简书, 博客园等.</li>
+</ul>
+]]></content>
+      <categories>
+        <category>折腾</category>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>wordpress</tag>
+        <tag>hexo</tag>
       </tags>
   </entry>
 </search>
