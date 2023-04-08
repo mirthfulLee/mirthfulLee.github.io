@@ -331,7 +331,7 @@
   </entry>
   <entry>
     <title>clang工具链搭建踩坑</title>
-    <url>/2022/06/24/clang%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E8%B8%A9%E5%9D%91/</url>
+    <url>/2023/04/08/clang%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E8%B8%A9%E5%9D%91/</url>
     <content><![CDATA[<h2 id="目标环境"><a href="#目标环境" class="headerlink" title="目标环境"></a>目标环境</h2><ul>
 <li>VSCode + LunarVim</li>
 <li>clang for compile<ul>
