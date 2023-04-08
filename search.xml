@@ -368,7 +368,7 @@
 <li>14为clang版本号</li>
 </ul>
 <h3 id="VSCode中完成配置"><a href="#VSCode中完成配置" class="headerlink" title="VSCode中完成配置"></a>VSCode中完成配置</h3><p>下载所需插件:</p>
-<p><img lazyload src="/images/loading.svg" data-src="/clang%E5%B7%A5%E5%85%B7%E9%93%BE%E6%90%AD%E5%BB%BA%E8%B8%A9%E5%9D%91/Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/04/08/clang%E5%B7%A5%E5%85%B7%E9%93%BE%E6%90%AD%E5%BB%BA%E8%B8%A9%E5%9D%91/Untitled.png" alt="Untitled"></p>
 <p><img lazyload src="/images/loading.svg" data-src="/clang%E5%B7%A5%E5%85%B7%E9%93%BE%E6%90%AD%E5%BB%BA%E8%B8%A9%E5%9D%91/Untitled%201.png" alt="Untitled"></p>
 <p><img lazyload src="/images/loading.svg" data-src="/clang%E5%B7%A5%E5%85%B7%E9%93%BE%E6%90%AD%E5%BB%BA%E8%B8%A9%E5%9D%91/Untitled%202.png" alt="Untitled"></p>
 <p>编写tasks.json 和 launch.json</p>
