@@ -10,18 +10,18 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="https://mirthfullee.github.io/2022/06/24/使用jupyter进行数据分析/"/>
+    <link rel="canonical" href="https://mirthfullee.github.io/2022/06/24/clang环境搭建踩坑/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="使用jupyter进行数据分析">
+    <meta property="og:title" content="clang工具链搭建踩坑">
     <meta property="og:description" content="一个有追求的咸鱼少年">
-    <meta property="og:url" content="https://mirthfullee.github.io2022/06/24/使用jupyter进行数据分析/">
+    <meta property="og:url" content="https://mirthfullee.github.io2022/06/24/clang环境搭建踩坑/">
     
     <meta property="og:site_name" content="MirthfulLee">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="使用jupyter进行数据分析">
+    <meta name="twitter:title" content="clang工具链搭建踩坑">
     <meta name="twitter:description" content="一个有追求的咸鱼少年">
     <meta name="twitter:image" content="/images/logo.png">
     <!--- Icon Part-->
@@ -32,7 +32,7 @@
     
     <title>
         
-            使用jupyter进行数据分析 -
+            clang工具链搭建踩坑 -
         
         MirthfulLee
     </title>
@@ -255,7 +255,7 @@
             
             
                 <div class="article-title">
-                    <h1 class="article-title-regular">使用jupyter进行数据分析</h1>
+                    <h1 class="article-title-regular">clang工具链搭建踩坑</h1>
                 </div>
             
                 
@@ -282,8 +282,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="pc">2023-03-12 14:47:06</span>
-            <span class="mobile">2023-03-12 14:47</span>
+            <span class="pc">2023-04-08 01:54:04</span>
+            <span class="mobile">2023-04-08 01:54</span>
             <span class="hover-info">Updated</span>
         </span>
     
@@ -294,11 +294,11 @@
             <ul>
                 
                     <li>
-                        <a href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a>&nbsp;
+                        <a href="/categories/C/">C++</a>&nbsp;
                     </li>
                 
                     <li>
-                        &gt; <a href="/categories/%E5%AD%A6%E4%B9%A0/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>&nbsp;
+                        &gt; <a href="/categories/C/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">环境搭建</a>&nbsp;
                     </li>
                 
             </ul>
@@ -310,15 +310,19 @@
             <ul>
                 
                     <li>
-                        <a href="/tags/ML/">ML</a>&nbsp;
+                        <a href="/tags/C/">C++</a>&nbsp;
                     </li>
                 
                     <li>
-                        | <a href="/tags/AI/">AI</a>&nbsp;
+                        | <a href="/tags/clang/">clang</a>&nbsp;
                     </li>
                 
                     <li>
-                        | <a href="/tags/environment/">environment</a>&nbsp;
+                        | <a href="/tags/LLVM/">LLVM</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E7%BC%96%E8%AF%91/">编译</a>&nbsp;
                     </li>
                 
             </ul>
@@ -337,16 +341,69 @@
             
 
             <div class="article-content markdown-body">
-                <h2 id="需求描述"><a href="#需求描述" class="headerlink" title="需求描述"></a>需求描述</h2><p>数据挖掘过程往往是一步一步推进的，前一步的结果很大程度上会影响下一步的方法；同时，在设计具体方法时，数据分析师需要根据当前结果不断地进行调整。这种情况下，jupyter的代码与markdown交叉的形式，以及代码按照模块执行的方法，十分契合数据分析的过程。<br>因此，这篇文章就来讲一讲在使用jupyter notebook时可能要注意的点。</p>
-<h2 id="安装与环境配置"><a href="#安装与环境配置" class="headerlink" title="安装与环境配置"></a>安装与环境配置</h2><p>网上现成的教程很多，利用pip安装也很方便，只需要注意启动的jupyter内核应该和使用的python环境一致；如果使用的docker，记得为镜像中的8888端口设置对应接口。</p>
-<h2 id="使用时踩的坑"><a href="#使用时踩的坑" class="headerlink" title="使用时踩的坑"></a>使用时踩的坑</h2><p>虽然刚刚开始使用，但是也经历一些小坑，在此做一些记录。</p>
-<h3 id="引入自定义包"><a href="#引入自定义包" class="headerlink" title="引入自定义包"></a>引入自定义包</h3><p>python中，我们常常会习惯把不同功能的函数放到不同的.py模块下，而jupyter notebook不建议这种方式。一个notebook虽然也可以使用<strong>同一目录下</strong>其他notebook定义的函数，但是很容易出现一些奇奇怪怪的问题。<br>jupyter更加建议这样的一种模式：</p>
-<ul>
-<li>每个notebook都是一个完整的内容，除了开头引入工具包（库），不调用其他自定义模块</li>
-<li>尽量不定义函数，尤其是不把没有返回值的过程定义为函数</li>
-<li>利用markdown的分级标题（多个‘#’）把代码分为不同的模块</li>
+                <h2 id="目标环境"><a href="#目标环境" class="headerlink" title="目标环境"></a>目标环境</h2><ul>
+<li>VSCode + LunarVim</li>
+<li>clang for compile<ul>
+<li>Clangd for intelligent coding</li>
+<li>clang-format for document format</li>
+<li>LLDB for debug</li>
 </ul>
-<h3 id="markdown换行"><a href="#markdown换行" class="headerlink" title="markdown换行"></a>markdown换行</h3><p>jupyter notebook的文字部分为markdown格式，但是在换行上有些问题，刚开始时，会发现明明敲了回车，但是还是会渲染为同一行。正确的操作是： 在行尾添加两个空格，再回车，这样就换行了。</p>
+</li>
+</ul>
+<h2 id="踩坑"><a href="#踩坑" class="headerlink" title="踩坑"></a>踩坑</h2><ul>
+<li>在编译命令后加 -v 可以看到具体的报错信息</li>
+<li>libstdc++是gcc使用的C++标准库, 其中包括容器,io,算法,迭代器等, 而libc++是LLVM团队实现的, 需要单独安装(不会在安装clang时同时安装)</li>
+<li>clang编译时, 如果不加入-stdlib&#x3D;libc++, 则默认使用libstdc++, 即使用g++的标准实现<ul>
+<li>libc++是对c++标准库的实现，而libc++abi（application binary interface）提供内存管理，异常处理等底层支持。libc++依赖libc++abi或pathscale的libcxxrt或gcc的libsupcxx三者之一进行构建。</li>
+</ul>
+</li>
+</ul>
+<h3 id="clang-无法找到头文件iostream"><a href="#clang-无法找到头文件iostream" class="headerlink" title="clang++无法找到头文件iostream"></a>clang++无法找到头文件iostream</h3><p>通过apt install clang++之后, 进行编译测试</p>
+<p>clang main.cpp -o main报错: <strong>Clang++: fatal error: ‘iostream’ file not found</strong></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://stackoverflow.com/questions/54521402/locating-iostream-in-clang-fatal-error-iostream-file-not-found" >Locating iostream in Clang++: fatal error: ‘iostream’ file not found <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>根本原因: clang++在编译过程中, 需要使用g++中的头文件, 而具体使用的版本是通过gcc —version来确定的, 那么导致上诉错误的原因有两种:</p>
+<ol>
+<li>本地未安装gcc或g++</li>
+<li>gcc 版本与g++版本不一致: gcc版本高于g++导致无法找到gcc对应版本的g++头文件</li>
+</ol>
+<p>解决方法: 安装相同版本的gcc和g++, 保证gcc —version和g++ —version结果相同</p>
+<ul>
+<li>通过apt install新版gcc和g++, 到&#x2F;usr&#x2F;bin&#x2F;中重新构建gcc和g++的软链接</li>
+</ul>
+<h3 id="clang编译过程中加入-stdlib-x3D-libc-报错"><a href="#clang编译过程中加入-stdlib-x3D-libc-报错" class="headerlink" title="clang编译过程中加入-stdlib&#x3D;libc++报错"></a>clang编译过程中加入-stdlib&#x3D;libc++报错</h3><p>当使用-stdlib&#x3D;libstdc++时编译正常, 但是&#x3D;libc++时, 因为找不到头文件而编译失败了</p>
+<ul>
+<li>sudo apt install libc++-14-dev</li>
+<li>sudo apt install libc++abi-14-dev</li>
+<li>14为clang版本号</li>
+</ul>
+<h3 id="VSCode中完成配置"><a href="#VSCode中完成配置" class="headerlink" title="VSCode中完成配置"></a>VSCode中完成配置</h3><p>下载所需插件:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/clang%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E8%B8%A9%E5%9D%91/Untitled.png"
+                      alt="Untitled"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/clang%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E8%B8%A9%E5%9D%91/Untitled%201.png"
+                      alt="Untitled"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/clang%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E8%B8%A9%E5%9D%91/Untitled%202.png"
+                      alt="Untitled"
+                ></p>
+<p>编写tasks.json 和 launch.json</p>
+<div class="highlight-container" data-rel="Json"><figure class="iseeu highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;tasks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;process&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;label&quot;</span><span class="punctuation">:</span> <span class="string">&quot;clang++ build&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/usr/bin/clang++&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;-std=c++17&quot;</span><span class="punctuation">,</span> <span class="comment">// C++标准(语法支持)</span></span><br><span class="line">                <span class="string">&quot;-stdlib=libc++&quot;</span><span class="punctuation">,</span> <span class="comment">// C++标准库</span></span><br><span class="line">                <span class="string">&quot;-g&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;$&#123;file&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;-o&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="string">&quot;$&#123;fileDirname&#125;/$&#123;fileBasenameNoExtension&#125;&quot;</span></span><br><span class="line">            <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;options&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span></span><br><span class="line">            <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;group&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">                <span class="attr">&quot;kind&quot;</span><span class="punctuation">:</span> <span class="string">&quot;build&quot;</span><span class="punctuation">,</span></span><br><span class="line">                <span class="attr">&quot;isDefault&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">            <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="Json"><figure class="iseeu highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;clang debug&quot;</span><span class="punctuation">,</span> <span class="comment">//名称随便取</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;lldb&quot;</span><span class="punctuation">,</span> <span class="comment">//正在使用的调试器,使用Visual Studio Windows时必须为cppvsdbg,使用GDB或LLDB时必须为cppdbg; 此时使用codelldb因此type为lldb</span></span><br><span class="line">            <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;launch&quot;</span><span class="punctuation">,</span> <span class="comment">//表示此配置是用于启动程序还是附加到已运行的实例上</span></span><br><span class="line">            <span class="attr">&quot;program&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;/$&#123;fileBasenameNoExtension&#125;&quot;</span><span class="punctuation">,</span> <span class="comment">//要执行的可执行文件的完整路径</span></span><br><span class="line">            <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;stopAtEntry&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;fileDirname&#125;&quot;</span><span class="punctuation">,</span> <span class="comment">//可执行程序完整路径（不包含程序名称）</span></span><br><span class="line">            <span class="attr">&quot;environment&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;externalConsole&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;MIMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;lldb&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;preLaunchTask&quot;</span><span class="punctuation">:</span> <span class="string">&quot;clang++ build&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></div>
+
+<p><a class="link"   target="_blank" rel="noopener" href="https://juejin.cn/post/7218564871831748664" >libc++abi介绍 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/54779018" >c++编译工具链 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://juejin.cn/post/7177664925915938875" >LLVM的相关介绍,以及clang工具链安装教程 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>下次还是不要想当然直接apt下载了, 老老实实搜一搜了解一下, 会避免很多坑! 不过说到底还是自己对C++的编译过程太不了解…</p>
 
             </div>
 
@@ -354,11 +411,11 @@
                 <div class="post-copyright-info">
                     <div class="article-copyright-info-container">
     <ul>
-        <li>Post title：使用jupyter进行数据分析</li>
+        <li>Post title：clang工具链搭建踩坑</li>
         <li>Post author：Huan Lee</li>
         <li>Create time：2022-06-24 14:19:14</li>
         <li>
-            Post link：https://www.mirthfullee.com/2022/06/24/使用jupyter进行数据分析/
+            Post link：https://www.mirthfullee.com/2022/06/24/clang环境搭建踩坑/
         </li>
         <li>
             Copyright Notice：All articles in this blog are licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> unless stating additionally.
@@ -373,15 +430,19 @@
                 <ul class="post-tags-box">
                     
                         <li class="tag-item">
-                            <a href="/tags/ML/">#ML</a>&nbsp;
+                            <a href="/tags/C/">#C++</a>&nbsp;
                         </li>
                     
                         <li class="tag-item">
-                            <a href="/tags/AI/">#AI</a>&nbsp;
+                            <a href="/tags/clang/">#clang</a>&nbsp;
                         </li>
                     
                         <li class="tag-item">
-                            <a href="/tags/environment/">#environment</a>&nbsp;
+                            <a href="/tags/LLVM/">#LLVM</a>&nbsp;
+                        </li>
+                    
+                        <li class="tag-item">
+                            <a href="/tags/%E7%BC%96%E8%AF%91/">#编译</a>&nbsp;
                         </li>
                     
                 </ul>
@@ -395,13 +456,13 @@
                         <div class="article-prev">
                             <a class="prev"
                             rel="prev"
-                            href="/2022/06/24/clash%E4%BB%A3%E7%90%86%E4%B8%8Enotion%E7%9A%84%E5%86%B2%E7%AA%81/"
+                            href="/2022/06/24/%E4%BD%BF%E7%94%A8jupyter%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/"
                             >
                                 <span class="left arrow-icon flex-center">
                                     <i class="fa-solid fa-chevron-left"></i>
                                 </span>
                                 <span class="title flex-center">
-                                    <span class="post-nav-title-item">时间序列预测的多粒度残差学习</span>
+                                    <span class="post-nav-title-item">使用jupyter进行数据分析</span>
                                     <span class="post-nav-item">Prev posts</span>
                                 </span>
                             </a>
@@ -411,10 +472,10 @@
                         <div class="article-next">
                             <a class="next"
                             rel="next"
-                            href="/2022/06/24/clang%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E8%B8%A9%E5%9D%91/"
+                            href="/2022/06/19/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E9%A2%84%E6%B5%8B%E7%9A%84%E5%A4%9A%E7%B2%92%E5%BA%A6%E6%AE%8B%E5%B7%AE%E5%AD%A6%E4%B9%A0/"
                             >
                                 <span class="title flex-center">
-                                    <span class="post-nav-title-item">clang工具链搭建踩坑</span>
+                                    <span class="post-nav-title-item">时间序列预测的多粒度残差学习</span>
                                     <span class="post-nav-item">Next posts</span>
                                 </span>
                                 <span class="right arrow-icon flex-center">
@@ -435,8 +496,8 @@
                 <div class="post-toc-wrap">
     <div class="post-toc">
         <div class="toc-title">On this page</div>
-        <div class="page-title">使用jupyter进行数据分析</div>
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">需求描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%B8%8E%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">安装与环境配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%97%B6%E8%B8%A9%E7%9A%84%E5%9D%91"><span class="nav-number">3.</span> <span class="nav-text">使用时踩的坑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%95%E5%85%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8C%85"><span class="nav-number">3.1.</span> <span class="nav-text">引入自定义包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#markdown%E6%8D%A2%E8%A1%8C"><span class="nav-number">3.2.</span> <span class="nav-text">markdown换行</span></a></li></ol></li></ol>
+        <div class="page-title">clang工具链搭建踩坑</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">目标环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B8%A9%E5%9D%91"><span class="nav-number">2.</span> <span class="nav-text">踩坑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#clang-%E6%97%A0%E6%B3%95%E6%89%BE%E5%88%B0%E5%A4%B4%E6%96%87%E4%BB%B6iostream"><span class="nav-number">2.1.</span> <span class="nav-text">clang++无法找到头文件iostream</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#clang%E7%BC%96%E8%AF%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E5%8A%A0%E5%85%A5-stdlib-x3D-libc-%E6%8A%A5%E9%94%99"><span class="nav-number">2.2.</span> <span class="nav-text">clang编译过程中加入-stdlib&#x3D;libc++报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VSCode%E4%B8%AD%E5%AE%8C%E6%88%90%E9%85%8D%E7%BD%AE"><span class="nav-number">2.3.</span> <span class="nav-text">VSCode中完成配置</span></a></li></ol></li></ol>
 
     </div>
 </div>
