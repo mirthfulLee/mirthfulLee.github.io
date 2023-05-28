@@ -1,0 +1,112 @@
+<pre><code class="plain"># 测试c++代码
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+string longestCommonPrefix(vector&lt;string&gt; &amp;strs) {
+  int maxLen = 0, strNum = strs.size();
+  for (int l = 0; l &lt; strs[0].length(); l++) {
+    char c = strs[0][l];    // 断点设置位置;
+    for (int i = 1; i &lt; strNum; i++) {
+      if (strs[i].length() &lt; l || strs[i][l] != c)
+        return strs[0].substr(0, maxLen);
+    }
+    maxLen++;
+  }
+  return strs[0];
+}
+
+int main() {
+  vector&lt;string&gt; strs = {&quot;flower&quot;, &quot;flow&quot;, &quot;flight&quot;};
+  string output = longestCommonPrefix(strs);
+  cout &lt;&lt; output &lt;&lt; endl;
+}
+</code></pre>
+<pre><code class="plain"># launch.json
+{
+    // 欲了解更多信息，请访问: https://code.visualstudio.com/docs/cpp/launch-json-reference
+    &quot;version&quot;: &quot;0.2.0&quot;,
+    &quot;configurations&quot;: [
+        {
+            &quot;name&quot;: &quot;clang + codelldb&quot;, // 对容器的支持弱于gdb
+            &quot;type&quot;: &quot;lldb&quot;,
+            &quot;request&quot;: &quot;launch&quot;,
+            &quot;program&quot;: &quot;${workspaceRoot}/main&quot;,
+            &quot;args&quot;: [],
+            &quot;cwd&quot;: &quot;${workspaceRoot}&quot;,
+            &quot;preLaunchTask&quot;: &quot;clang++ build&quot;
+        },
+        {
+            &quot;name&quot;: &quot;clang + cppdbg&quot;, // 混搭gdb和clang效果不好; 还是应该统一使用gnu或llvm
+            &quot;type&quot;: &quot;cppdbg&quot;,
+            &quot;request&quot;: &quot;launch&quot;,
+            &quot;program&quot;: &quot;${workspaceRoot}/main&quot;,
+            &quot;args&quot;: [],
+            &quot;stopAtEntry&quot;: false,
+            &quot;cwd&quot;: &quot;${workspaceRoot}&quot;,
+            &quot;environment&quot;: [],
+            &quot;externalConsole&quot;: false,
+            &quot;linux&quot;: {
+                &quot;MIMode&quot;: &quot;gdb&quot;,
+                &quot;miDebuggerPath&quot;: &quot;/usr/bin/gdb&quot;
+            },
+            &quot;osx&quot;: {
+                &quot;MIMode&quot;: &quot;lldb&quot;
+            },
+            &quot;preLaunchTask&quot;: &quot;clang++ build&quot;
+        },
+        {
+            &quot;name&quot;: &quot;gcc + cppdbg&quot;, // gcc + gdb 效果最好
+            &quot;type&quot;: &quot;cppdbg&quot;,
+            &quot;request&quot;: &quot;launch&quot;,
+            &quot;program&quot;: &quot;${workspaceRoot}/main&quot;,
+            &quot;args&quot;: [],
+            &quot;stopAtEntry&quot;: false,
+            &quot;cwd&quot;: &quot;${workspaceRoot}&quot;,
+            &quot;environment&quot;: [],
+            &quot;externalConsole&quot;: false,
+            &quot;linux&quot;: {
+                &quot;MIMode&quot;: &quot;gdb&quot;,
+                &quot;miDebuggerPath&quot;: &quot;/usr/bin/gdb&quot;
+            },
+            &quot;osx&quot;: {
+                &quot;MIMode&quot;: &quot;lldb&quot;
+            },
+            &quot;setupCommands&quot;: [
+                {
+                    &quot;description&quot;: &quot;为 gdb 启用整齐打印&quot;,
+                    &quot;text&quot;: &quot;-enable-pretty-printing&quot;,
+                    &quot;ignoreFailures&quot;: false
+                }
+            ],
+            &quot;preLaunchTask&quot;: &quot;g++ build&quot;
+        }
+    ]
+}
+</code></pre>
+<h2 id="codelldb"><a href="#codelldb" class="headerlink" title="codelldb"></a>codelldb</h2><p>对容器的支持有待提高</p>
+<p><img src="/ed0313a6_Untitled.png" alt="Untitled"></p>
+<br/>
+
+<h2 id="gcc-gdb"><a href="#gcc-gdb" class="headerlink" title="gcc+gdb"></a>gcc+gdb</h2><p>设置的断点位置异常可能导致调试出错, 当然普通的变量监控是没问题的. 但是在监控中调用方法就可能出错.</p>
+<p><img src="/b60f99f5_Untitled.png" alt="Untitled"></p>
+<p><img src="/7bec4bf5_Untitled.png" alt="Untitled"></p>
+<p><img src="/f1810100_Untitled.png" alt="Untitled"></p>
+<h2 id="clang-gdb"><a href="#clang-gdb" class="headerlink" title="clang + gdb"></a>clang + gdb</h2><p>显然, 混用gnu和llvm的配置并不好. 其实还有一种lldb+gcc, 这种我甚至运行不起来..</p>
+<p><img src="/3e31da96_Untitled.png" alt="Untitled"></p>
+<br/>
+
+<ul>
+<li><p>如果只是简单的监控变量, llvm和gnu系列的体验都不错, 都能够看到容器内的变量;</p>
+</li>
+<li><p>但是在watch中调用方法的体验, 都有各自的问题, 硬要说的话,  可能gnu的搭配还是要好一些.</p>
+<ul>
+<li>结论, 最好不要在watch中调用方法!</li>
+</ul>
+</li>
+</ul>
+<br/>
+
+<br/>
+
