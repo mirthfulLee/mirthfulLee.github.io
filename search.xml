@@ -448,7 +448,8 @@
 <h3 id="15、垂直留白"><a href="#15、垂直留白" class="headerlink" title="15、垂直留白"></a>15、垂直留白</h3><h2 id="基本原则是：同一屏可以显示的代码越多，越容易理解程序的控制流。当然，过于密集的代码块和过于疏松的代码块同样难看，这取决于你的判断。但通常是垂直留白越少越好，且函数体首尾不要留空行，不要有连续的空行。"><a href="#基本原则是：同一屏可以显示的代码越多，越容易理解程序的控制流。当然，过于密集的代码块和过于疏松的代码块同样难看，这取决于你的判断。但通常是垂直留白越少越好，且函数体首尾不要留空行，不要有连续的空行。" class="headerlink" title="基本原则是：同一屏可以显示的代码越多，越容易理解程序的控制流。当然，过于密集的代码块和过于疏松的代码块同样难看，这取决于你的判断。但通常是垂直留白越少越好，且函数体首尾不要留空行，不要有连续的空行。"></a>基本原则是：同一屏可以显示的代码越多，越容易理解程序的控制流。当然，过于密集的代码块和过于疏松的代码块同样难看，这取决于你的判断。但通常是垂直留白越少越好，且函数体首尾不要留空行，不要有连续的空行。</h2><h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><h3 id="1、程序编译时产生的所有warning都应该被修复"><a href="#1、程序编译时产生的所有warning都应该被修复" class="headerlink" title="1、程序编译时产生的所有warning都应该被修复"></a>1、程序编译时产生的所有<code>warning</code>都应该被修复</h3><p>特殊的，LEX与YACC产生的移进-归约冲突及归约-归约冲突视情况而定，但原则上所有告警都应该被修复。</p>
 ]]></content>
       <categories>
-        <category>[编程, c++]</category>
+        <category>编程</category>
+        <category>c++</category>
       </categories>
       <tags>
         <tag>c++</tag>
@@ -481,7 +482,8 @@
 </ul>
 ]]></content>
       <categories>
-        <category>[编程, c++]</category>
+        <category>编程</category>
+        <category>c++</category>
       </categories>
       <tags>
         <tag>LLVM</tag>
@@ -502,9 +504,11 @@
 <p>其中 <code>AND</code> 表示关键词同时在一篇论文中出现，如果改成 <code>OR</code> 的话，出现其中一个就符合条件。</p>
 <p>检索结果截图如下，可以看到用 <code>AND</code> 时一共有 206 个结果，用 <code>OR</code> 时一共有 2970 个结果。</p>
 <p>至于指定时间范围和论文作者就不在此说明了，点击左上角菜单键选择<strong>高级搜索</strong>即可。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2>]]></content>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a class="link" href="https://www.bilibili.com/video/BV1yE411q775">如何限定期刊？（多篇核心期刊限定） Google Scholar 谷歌学术文献检索技巧 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> <a class="link" href="https://taifua.com/google-scholar-specify-multiple-sources.html">https://taifua.com/google-scholar-specify-multiple-sources.html <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+]]></content>
       <categories>
-        <category>[杂谈, 优质内容]</category>
+        <category>杂谈</category>
+        <category>优质内容</category>
       </categories>
       <tags>
         <tag>转载</tag>
@@ -558,6 +562,9 @@
 <p>其中 <code>AND</code> 表示关键词同时在一篇论文中出现，如果改成 <code>OR</code> 的话，出现其中一个就符合条件。</p>
 <p>检索结果截图如下，可以看到用 <code>AND</code> 时一共有 206 个结果，用 <code>OR</code> 时一共有 2970 个结果。</p>
 <p>至于指定时间范围和论文作者就不在此说明了，点击左上角菜单键选择<strong>高级搜索</strong>即可。</p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2>]]></content>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a class="link" href="https://www.bilibili.com/video/BV1yE411q775">如何限定期刊？（多篇核心期刊限定） Google Scholar 谷歌学术文献检索技巧 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> <a class="link" href="https://taifua.com/google-scholar-specify-multiple-sources.html">https://taifua.com/google-scholar-specify-multiple-sources.html <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<br>
+
+]]></content>
   </entry>
 </search>
