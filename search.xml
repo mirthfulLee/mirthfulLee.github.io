@@ -54,14 +54,14 @@
 ]]></content>
       <categories>
         <category>编程</category>
-        <category>C++</category>
+        <category>c++</category>
         <category>环境搭建</category>
       </categories>
       <tags>
-        <tag>C++</tag>
         <tag>clang</tag>
         <tag>LLVM</tag>
         <tag>编译</tag>
+        <tag>c++</tag>
         <tag>VSCode</tag>
       </tags>
   </entry>
