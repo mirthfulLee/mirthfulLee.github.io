@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Huan Lee">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://mirthfullee.github.io/2023/08/20/notion-第五章 linux网络编程基础api-8348d8ee/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="socket是什么? (个人理解) socket是操作系统对主机之间网络连接的抽象和封装, 是一套专门的系统调用.  应用程序通过socket控制网络连接的细节和资源,  更形象的比喻: 主机-不同部门, 应用程序-人, socket-电话座机;  不同主机上的应用程序通过socket进行通信 ⇒ 不同部门的人通过电话进行交流    socket 有不同类型, 这些类型对应不同的连接类型或连接状态">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第五章 Linux网络编程基础API">
+<meta property="og:url" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/index.html">
+<meta property="og:site_name" content="沐梓驿站">
+<meta property="og:description" content="socket是什么? (个人理解) socket是操作系统对主机之间网络连接的抽象和封装, 是一套专门的系统调用.  应用程序通过socket控制网络连接的细节和资源,  更形象的比喻: 主机-不同部门, 应用程序-人, socket-电话座机;  不同主机上的应用程序通过socket进行通信 ⇒ 不同部门的人通过电话进行交流    socket 有不同类型, 这些类型对应不同的连接类型或连接状态">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/d3a79725_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/4de14f3e_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/b61e4696_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/bd5035a7_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/b6a03bc6_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/cad98043_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/5fe358d4_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/90b6fec5_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/25e67f09_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/587ffc21_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/99e8c606_Untitled.png">
+<meta property="article:published_time" content="2023-08-20T07:07:55.000Z">
+<meta property="article:modified_time" content="2024-02-26T04:53:15.357Z">
+<meta property="article:author" content="Huan Lee">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="socket">
+<meta property="article:tag" content="《Linux高性能服务器编程》">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/d3a79725_Untitled.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/logo.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            第五章 Linux网络编程基础API -
+        
+        MirthfulLee
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    let Global = window.Global || {};
+    Global.hexo_config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
+    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.3.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
+    Global.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    Global.data_config = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+    
+
+    
+
+    <div class="main-content-container">
+        
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                MirthfulLee
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        HOME
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-bars"></i>
+                                        
+                                        CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories/Learning">LEARNING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Project">PROJECT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Application">APPLICATION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Sharing">SHARING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Disscussion">DISCUSSION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Others">OTHERS
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-grip"></i>
+                                        
+                                        MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories">ARCHIVES
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/tags">TAGS
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/about">ABOUT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer">
+        <ul class="drawer-navbar-list">
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                HOME
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-bars"></i>
+                                
+                                CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Learning">LEARNING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Project">PROJECT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Application">APPLICATION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Sharing">SHARING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Disscussion">DISCUSSION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Others">OTHERS</a>
+                            </li>
+                        
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-grip"></i>
+                                
+                                MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories">ARCHIVES</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/tags">TAGS</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/about">ABOUT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">第五章 Linux网络编程基础API</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/logo.png">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Huan Lee</span>
+                        
+                            <span class="author-label">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-08-20 07:07:55</span>
+        <span class="mobile">2023-08-20 07:07:55</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-02-26 04:53:15</span>
+            <span class="mobile">2024-02-26 04:53:15</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Learning/">Learning</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/c/">c++</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/socket/">socket</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h2 id="socket是什么-个人理解"><a href="#socket是什么-个人理解" class="headerlink" title="socket是什么? (个人理解)"></a>socket是什么? (个人理解)</h2><blockquote>
+<p>socket是操作系统对主机之间网络连接的抽象和封装, 是一套专门的系统调用.</p>
+</blockquote>
+<p>应用程序通过socket控制网络连接的细节和资源,</p>
+<ul>
+<li><p>更形象的比喻: 主机-不同部门, 应用程序-人, socket-电话座机;</p>
+<ul>
+<li>不同主机上的应用程序通过socket进行通信 ⇒ 不同部门的人通过电话进行交流</li>
+</ul>
+</li>
+</ul>
+<p>socket 有不同类型, 这些类型对应不同的连接类型或连接状态:</p>
+<ul>
+<li>监听socket: 监听某个端口的socket, 如处于LISTEN状态的TCP连接</li>
+<li>连接socket: 包括主动发起和由监听socket产生, 如处于ESTABLISHED状态的TCP连接</li>
+</ul>
+<h2 id="5-1-socket地址API"><a href="#5-1-socket地址API" class="headerlink" title="5.1 socket地址API"></a>5.1 socket地址API</h2><h3 id="主机字节序和网络字节序"><a href="#主机字节序和网络字节序" class="headerlink" title="主机字节序和网络字节序"></a>主机字节序和网络字节序</h3><ul>
+<li><p>字节序包括 <code>大端字节序</code> 和 <code>小端字节序</code> , 大端字节序是指一个整数的高位字节存储在内存的低地址(流的前端), 小端字节序与之相反.</p>
+<ul>
+<li><p>大多数现代PC采用小端字节序, 因此小端字节序又被称为 <code>主机字节序</code></p>
+</li>
+<li><p>为了统一, 数据传输时采用大端字节序, 因此大端字节序又叫 <code>网络字节序</code></p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/d3a79725_Untitled.png" alt="Untitled"></p>
+<blockquote>
+<p>htonl: host to network long</p>
+</blockquote>
+<h3 id="socket地址"><a href="#socket地址" class="headerlink" title="socket地址"></a>socket地址</h3><p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/4de14f3e_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/b61e4696_Untitled.png" alt="Untitled"></p>
+<h3 id="IP地址转换"><a href="#IP地址转换" class="headerlink" title="IP地址转换"></a>IP地址转换</h3><p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/bd5035a7_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>inet_addr的输入字符串为点分十进制的IPv4地址</li>
+<li>inet_aton将转化结果存储到inp指针指向的结构体内</li>
+<li>inet_ntoa则是将网络字节序的IPv4地址转换为点分十进制表示的IP地址</li>
+</ul>
+<h2 id="5-2-创建socket"><a href="#5-2-创建socket" class="headerlink" title="5.2 创建socket"></a>5.2 创建socket</h2><p>UNIX&#x2F;Linux的一个哲学是: 所有东西都是文件, socket也不例外, 它是可读写, 可控制和关闭的文件描述符.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">socket</span><span class="params">(<span class="type">int</span> domain, <span class="type">int</span> type, <span class="type">int</span> protocol)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>domain 指定底层协议族. PF_INET &#x3D; IPv4, PF_INET6 &#x3D; IPv6, PF_UNIX</li>
+<li>type 指定服务类型. SOCK_STREAM &#x3D; TCP, SOCK_UGRAM &#x3D; UDP</li>
+<li>protocol 用于选择具体协议, 但是在前两个参数确定时, 该值通常时唯一且等于0</li>
+<li>函数调用成功后返回一个socket文件描述符, 失败则为-1</li>
+</ul>
+<h2 id="5-3-命名socket"><a href="#5-3-命名socket" class="headerlink" title="5.3 命名socket"></a>5.3 命名socket</h2><p>创建socket时并未给其指定地址族, 因此还需要即将一个socket和socket地址绑定, 即socket命名.</p>
+<ul>
+<li>服务端通常需要命名socket, 这样客户端才知道如何连接它(知道他的端口); 而客户端通常不需要命名socket, 而是采用匿名方式, 即使用OS分配的socket地址.</li>
+</ul>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">bind</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">const</span> <span class="keyword">struct</span> sockaddr* my_addr, <span class="type">socklen_t</span> addrlen)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><p>bind 将 my_addr 绑定到 sockfd 文件描述符上, addrlen参数指出该socket地址的长度.</p>
+<ul>
+<li>成功返回0, 失败则返回-1</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-4-监听socket"><a href="#5-4-监听socket" class="headerlink" title="5.4 监听socket"></a>5.4 监听socket</h2><p>针对服务端, socket被命名后, 还不能马上接收客户连接, 需要创建一个监听队列来存放待处理的客户连接</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">listen</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">int</span> backlog)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>sockfd 指定被监听的socket, backlog 表示内核监听队列的最大长度, 队列超过该长度后, 服务器将不再受理新的客户连接, 客户端收到 ECONNREFUSED 错误信息. listen 成功返回0, 失败则是-1.</p>
+<blockquote>
+<p>自Linux内核版本2.2之后, backlog代表处于完全连接状态(ESTABLISHED)的socket上限</p>
+</blockquote>
+<h2 id="5-5-接收连接"><a href="#5-5-接收连接" class="headerlink" title="5.5 接收连接"></a>5.5 接收连接</h2><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">accept</span><span class="params">(<span class="type">int</span> sockfd, <span class="keyword">struct</span> sockaddr *addr, socklen <span class="type">_t</span> *addrlen)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>sockfd 时执行过listen系统调用的监听socket</li>
+<li>addr用来获取被接受连接的远端socket地址, 该地址的长度由addrlen指出</li>
+<li>accept成功时返回一个新的连接socket, 该socket唯一地标识了被接受的连接, 服务器可以通过读写该socket来实现通信; accept失败时返回-1.</li>
+</ul>
+<blockquote>
+<p>accept只是从监听队列中取出连接, 而不论连接处于何种状态, 更不关心任何网络状态的变化</p>
+</blockquote>
+<h2 id="5-6-发起连接"><a href="#5-6-发起连接" class="headerlink" title="5.6 发起连接"></a>5.6 发起连接</h2><p>服务器通过listen调用被动接收连接, 而客户端则通过connect主动发起连接</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">connect</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">const</span> <span class="keyword">struct</span> sockaddr *serv_addr, <span class="type">socklen_t</span> addrlen)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="5-7-关闭连接"><a href="#5-7-关闭连接" class="headerlink" title="5.7 关闭连接"></a>5.7 关闭连接</h2><p>关闭连接实际上就是关闭该连接对应的socket</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">close</span><span class="params">(<span class="type">int</span> fd)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><p>fd是待关闭的socket, 不过close并不是直接关闭该连接, 而是将fd的引用计数减1, 只有当计数为0时, 才真正关闭连接.</p>
+<ul>
+<li>多进程程序中, 一次fork系统调用默认将使父进程中打开的socket引用数+1, 因此必须在父进程和子进程中都对该socket执行close调用才能关闭连接</li>
+</ul>
+</li>
+</ul>
+<p>如果想要立即终止连接, 可以使用shutdown调用</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">shutdown</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">int</span> howto)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/b6a03bc6_Untitled.png" alt="Untitled"></p>
+<h2 id="5-8-数据读写"><a href="#5-8-数据读写" class="headerlink" title="5.8 数据读写"></a>5.8 数据读写</h2><h3 id="TCP数据读写"><a href="#TCP数据读写" class="headerlink" title="TCP数据读写"></a>TCP数据读写</h3><p>对文件的读写操作同样适用于socket. 此外还有专门控制socket读写的系统调用</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">recv</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">void</span> *buf, <span class="type">size_t</span> len, <span class="type">int</span> flags)</span></span>;</span><br><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">send</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">const</span> <span class="type">void</span> *buf, <span class="type">size_t</span> len, <span class="type">int</span> flags)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>buf和len参数分别指定都缓冲区的位置和大小, recv调用成功后返回实际读取到的长度, 通常小于预期, 因此需要多次调用recv</li>
+<li>同理, send成功时返回实际写入的数据长度</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/cad98043_Untitled.png" alt="Untitled"></p>
+<h3 id="UDP数据读写"><a href="#UDP数据读写" class="headerlink" title="UDP数据读写"></a>UDP数据读写</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">recvfrom</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">void</span>* buf, <span class="type">size_t</span> len, <span class="type">int</span> flags, <span class="keyword">struct</span> sockaddr* src_addr,</span></span></span><br><span class="line"><span class="params"><span class="function">         <span class="type">socklen_t</span>* addrlen)</span></span>;</span><br><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">sendto</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">const</span> <span class="type">void</span>* buf, <span class="type">size_t</span> len, <span class="type">int</span> flags, </span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="type">const</span> <span class="keyword">struct</span> sockaddr* dest_addr, <span class="type">socklen_t</span> addrlen)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>UDP没有命名socket, 因此在接收和发送时需要指定socket地址</li>
+<li>recvfrom &#x2F; sendto 也可以用于面向连接的socket的数据读写, 只需要将最后两个参数都设置为NULL</li>
+</ul>
+<h3 id="通用数据读写函数"><a href="#通用数据读写函数" class="headerlink" title="通用数据读写函数"></a>通用数据读写函数</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">recvmsg</span><span class="params">(<span class="type">int</span> sockfd, <span class="keyword">struct</span> msghdr* msg, <span class="type">int</span> flags)</span></span>;</span><br><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">sendmsg</span><span class="params">(<span class="type">int</span> sockfd, <span class="keyword">struct</span> msghdr* msg, <span class="type">int</span> flags)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/5fe358d4_Untitled.png" alt="Untitled"></p>
+<h2 id="5-9-带外标记"><a href="#5-9-带外标记" class="headerlink" title="5.9 带外标记"></a>5.9 带外标记</h2><p>Linux内核检测到TCP紧急标志后, 可以通知应用程序有带外数据需要接收, 通知方式包括IO复用产生的异常事件以及SIGURG信号. 但要想知道带外数据在数据流中的具体位置, 还需要一下系统调用</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">sockatmark</span><span class="params">(<span class="type">int</span> sockfd)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>sockatmark判断sockfd是否处于带外标记, 即下一个被读取到的数据是否是带外数据。如果是, sockatmark返回1, 此时我们就可以利用带MSG_OOB标志的recv调用来接收带外数据。如果不是，则sockatmark返回0。</p>
+<h2 id="5-10-地址信息函数"><a href="#5-10-地址信息函数" class="headerlink" title="5.10 地址信息函数"></a>5.10 地址信息函数</h2><p>有时, 我们想获取一个连接socket的本端socket地址, 以及远端socket地址.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">getsockname</span><span class="params">(<span class="type">int</span> sockfd, <span class="keyword">struct</span> sockaddr* address, <span class="type">socklen_t</span>* address_len)</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">getpeername</span><span class="params">(<span class="type">int</span> sockfd, <span class="keyword">struct</span> sockaddr* address, <span class="type">socklen_t</span>* address_len)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<blockquote>
+<p>getsockname获取sockfd对应的本端socket地址，并将其存储于address参数指定的内存中，该socket地址的长度则存储于address_len参数指向的变量中。如果实际socket地址的长度大于address所指内存区的大小，那么该socket地址将被截断。getpeername函数则对应获取远端socket地址.</p>
+</blockquote>
+<h2 id="5-11-socket选项"><a href="#5-11-socket选项" class="headerlink" title="5.11 socket选项"></a>5.11 socket选项</h2><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">getsockopt</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">int</span> level, <span class="type">int</span> option_name, <span class="type">void</span> option_value, <span class="type">socklen_t</span>* restrict option_len)</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">setsockopt</span><span class="params">(<span class="type">int</span> sockfd, <span class="type">int</span> level, <span class="type">int</span> option_name, <span class="type">const</span> <span class="type">void</span>* option_value, <span class="type">socklen_t</span> option_len)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/90b6fec5_Untitled.png" alt="Untitled"></p>
+<blockquote>
+<p>部分socket选项只能在调用listen前针对监听socket设置才有用.</p>
+</blockquote>
+<h2 id="5-12-网络信息API"><a href="#5-12-网络信息API" class="headerlink" title="5.12 网络信息API"></a>5.12 网络信息API</h2><h3 id="主机信息"><a href="#主机信息" class="headerlink" title="主机信息"></a>主机信息</h3><p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/25e67f09_Untitled.png" alt="Untitled"></p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">hostent</span>* <span class="built_in">gethostbyname</span>(<span class="type">const</span> <span class="type">char</span>* name);</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">hostent</span>* <span class="built_in">gethostbyaddr</span>(<span class="type">const</span> <span class="type">void</span>* addr, <span class="type">size_t</span> len, <span class="type">int</span> type);</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="服务信息"><a href="#服务信息" class="headerlink" title="服务信息"></a>服务信息</h3><p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/587ffc21_Untitled.png" alt="Untitled"></p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">servent</span>* <span class="built_in">getservbyname</span>(<span class="type">const</span> <span class="type">char</span>* name, <span class="type">const</span> <span class="type">char</span>* proto);</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">servent</span>* <span class="built_in">getservbyport</span>(<span class="type">int</span> port, <span class="type">const</span> <span class="type">char</span>* proto);</span><br></pre></td></tr></table></figure></div>
+
+<p>getaddrinfo函数既能通过主机名获取IP地址, 也能通过服务名获得端口号</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/99e8c606_Untitled.png" alt="Untitled"></p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">getaddrinfo</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* hostname, cosnt <span class="type">char</span>* service, </span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="type">const</span> <span class="keyword">struct</span> addrinfo* hints, <span class="keyword">struct</span> addrinfo** result)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>getnameinfo 函数能通过socket地址同时获得以字符串表示的主机名和服务名.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">getnameinfo</span><span class="params">(cosnt <span class="keyword">struct</span> sockaddr* sockaddr, <span class="type">socklen_t</span> addrlen, <span class="type">char</span>* host, </span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="type">socklen_t</span> hostlen, <span class="type">char</span>* serv, <span class="type">socklen_t</span> servlen, <span class="type">int</span> flags)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 第五章 Linux网络编程基础API</li>
+        <li><strong>Author:</strong> Huan Lee</li>
+        <li><strong>Created at:</strong> 2023-08-20 07:07:55</li>
+        
+            <li>
+                <strong>Updated at:</strong> 2024-02-26 04:53:15
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://www.mirthfullee.com/2023/08/20/notion-第五章 Linux网络编程基础API-8348d8ee/
+        </li>
+        <li>
+            <strong>License:</strong> This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>.
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/c/">#c++</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/socket/">#socket</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">#《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第六章 高级IO函数</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第三章 TCP协议详解</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">第五章 Linux网络编程基础API</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#socket%E6%98%AF%E4%BB%80%E4%B9%88-%E4%B8%AA%E4%BA%BA%E7%90%86%E8%A7%A3"><span class="nav-text">socket是什么? (个人理解)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-socket%E5%9C%B0%E5%9D%80API"><span class="nav-text">5.1 socket地址API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%AD%97%E8%8A%82%E5%BA%8F%E5%92%8C%E7%BD%91%E7%BB%9C%E5%AD%97%E8%8A%82%E5%BA%8F"><span class="nav-text">主机字节序和网络字节序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#socket%E5%9C%B0%E5%9D%80"><span class="nav-text">socket地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IP%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2"><span class="nav-text">IP地址转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-%E5%88%9B%E5%BB%BAsocket"><span class="nav-text">5.2 创建socket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-%E5%91%BD%E5%90%8Dsocket"><span class="nav-text">5.3 命名socket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-4-%E7%9B%91%E5%90%ACsocket"><span class="nav-text">5.4 监听socket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-5-%E6%8E%A5%E6%94%B6%E8%BF%9E%E6%8E%A5"><span class="nav-text">5.5 接收连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-6-%E5%8F%91%E8%B5%B7%E8%BF%9E%E6%8E%A5"><span class="nav-text">5.6 发起连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-7-%E5%85%B3%E9%97%AD%E8%BF%9E%E6%8E%A5"><span class="nav-text">5.7 关闭连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-8-%E6%95%B0%E6%8D%AE%E8%AF%BB%E5%86%99"><span class="nav-text">5.8 数据读写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E6%95%B0%E6%8D%AE%E8%AF%BB%E5%86%99"><span class="nav-text">TCP数据读写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UDP%E6%95%B0%E6%8D%AE%E8%AF%BB%E5%86%99"><span class="nav-text">UDP数据读写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E6%95%B0%E6%8D%AE%E8%AF%BB%E5%86%99%E5%87%BD%E6%95%B0"><span class="nav-text">通用数据读写函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-9-%E5%B8%A6%E5%A4%96%E6%A0%87%E8%AE%B0"><span class="nav-text">5.9 带外标记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-10-%E5%9C%B0%E5%9D%80%E4%BF%A1%E6%81%AF%E5%87%BD%E6%95%B0"><span class="nav-text">5.10 地址信息函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-11-socket%E9%80%89%E9%A1%B9"><span class="nav-text">5.11 socket选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-12-%E7%BD%91%E7%BB%9C%E4%BF%A1%E6%81%AFAPI"><span class="nav-text">5.12 网络信息API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-text">主机信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E4%BF%A1%E6%81%AF"><span class="nav-text">服务信息</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+            
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2021</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Huan Lee</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv" class="busuanzi_container_site_uv">
+                        VISITOR COUNT&nbsp;<span id="busuanzi_value_site_uv" class="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="busuanzi_container_site_pv">
+                        TOTAL PAGE VIEWS&nbsp;<span id="busuanzi_value_site_pv" class="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            <span class="powered-by-container">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a></span>
+                <br>
+            <span class="theme-version-container">THEME&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.3.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+        ],
+        containers: ["#swup"],
+    });
+
+    swup.on("pageView", () => {
+        Global.refresh();
+    });
+
+    // if (document.readyState === "complete") {
+    //
+    // } else {
+    //     document.addEventListener("DOMContentLoaded", () => init());
+    // }
+</script>
+
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/navbarShrink.js"></script>
+
+<script src="/js/tools/scrollTopBottom.js"></script>
+
+<script src="/js/tools/lightDarkSwitch.js"></script>
+
+<script src="/js/layouts/categoryList.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+</div>
+
+
+</body>
+</html>

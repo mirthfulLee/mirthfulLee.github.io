@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Huan Lee">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://mirthfullee.github.io/2023/08/20/notion-第六章 高级io函数-9b6df7a3/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="Linux提供了很多高级的IO函数, 与网络编程相关的主要分为三类:  用于创建文件描述符的函数, 包括pipe, dup&#x2F;dup2函数 用于读写数据的函数, 包括readv&#x2F;writev, sendfile, mmap&#x2F;munmap, splice 和 tee函数 用于控制IO行为和属性的函数, 包括fcntl函数  6.1 pipe函数12#include &amp;lt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第六章 高级IO函数">
+<meta property="og:url" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/index.html">
+<meta property="og:site_name" content="沐梓驿站">
+<meta property="og:description" content="Linux提供了很多高级的IO函数, 与网络编程相关的主要分为三类:  用于创建文件描述符的函数, 包括pipe, dup&#x2F;dup2函数 用于读写数据的函数, 包括readv&#x2F;writev, sendfile, mmap&#x2F;munmap, splice 和 tee函数 用于控制IO行为和属性的函数, 包括fcntl函数  6.1 pipe函数12#include &amp;lt">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/14f00d28_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/b2f51783_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/41a2c7ce_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/96349fe1_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/4190dbd6_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/a169f2a1_Untitled.png">
+<meta property="article:published_time" content="2023-08-20T07:07:56.000Z">
+<meta property="article:modified_time" content="2024-02-26T04:53:15.493Z">
+<meta property="article:author" content="Huan Lee">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="《Linux高性能服务器编程》">
+<meta property="article:tag" content="IO">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/14f00d28_Untitled.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/logo.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            第六章 高级IO函数 -
+        
+        MirthfulLee
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    let Global = window.Global || {};
+    Global.hexo_config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
+    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.3.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
+    Global.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    Global.data_config = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+    
+
+    
+
+    <div class="main-content-container">
+        
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                MirthfulLee
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        HOME
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-bars"></i>
+                                        
+                                        CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories/Learning">LEARNING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Project">PROJECT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Application">APPLICATION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Sharing">SHARING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Disscussion">DISCUSSION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Others">OTHERS
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-grip"></i>
+                                        
+                                        MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories">ARCHIVES
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/tags">TAGS
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/about">ABOUT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer">
+        <ul class="drawer-navbar-list">
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                HOME
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-bars"></i>
+                                
+                                CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Learning">LEARNING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Project">PROJECT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Application">APPLICATION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Sharing">SHARING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Disscussion">DISCUSSION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Others">OTHERS</a>
+                            </li>
+                        
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-grip"></i>
+                                
+                                MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories">ARCHIVES</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/tags">TAGS</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/about">ABOUT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">第六章 高级IO函数</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/logo.png">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Huan Lee</span>
+                        
+                            <span class="author-label">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-08-20 07:07:56</span>
+        <span class="mobile">2023-08-20 07:07:56</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-02-26 04:53:15</span>
+            <span class="mobile">2024-02-26 04:53:15</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Learning/">Learning</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/c/">c++</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/IO/">IO</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>Linux提供了很多高级的IO函数, 与网络编程相关的主要分为三类:</p>
+<ul>
+<li>用于创建文件描述符的函数, 包括pipe, dup&#x2F;dup2函数</li>
+<li>用于读写数据的函数, 包括readv&#x2F;writev, sendfile, mmap&#x2F;munmap, splice 和 tee函数</li>
+<li>用于控制IO行为和属性的函数, 包括fcntl函数</li>
+</ul>
+<h2 id="6-1-pipe函数"><a href="#6-1-pipe函数" class="headerlink" title="6.1 pipe函数"></a>6.1 pipe函数</h2><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">pipe</span><span class="params">(<span class="type">int</span> fd[<span class="number">2</span>])</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>pipe函数可以创建一个管道, 以实现进程间通信.</li>
+<li>函数成功时返回0, 并将一对打开的文件描述符值填入数组, fd[0]和fd[1]分别构成管道的两端, 往fd[1]写入的数据可以从fd[0]中读取, 不能反过来. 默认情况下, 这一对文件描述符都是阻塞的.</li>
+<li>如果我们用read系统调用来读取一个空的管道，则read将被阻塞，直到管道内有数据可读：如果我们用write系统调用来往一个满的管道中写入数据，则wite亦将被阻塞，直到管道有足够多的空闲空间可用。</li>
+<li>如果管道的写端文件描述符fd[1]的引用计数减少至0，即没有任何进程需要往管道中写人数据，则针对该管道的读端文件描述符fd[0]的read操作将返回O,即读取到了文件结束标记(End Of File,EOF)；反之，如果管道的读端文件描述符f[0]的引用计数减少至0，即没有任何进程需要从管道读取数据，则针对该管道的写端文件描述符fd[1]的wite操作将失败，并引发SIGPIPE信号。</li>
+</ul>
+<h2 id="6-2-dup函数和dup2函数"><a href="#6-2-dup函数和dup2函数" class="headerlink" title="6.2 dup函数和dup2函数"></a>6.2 dup函数和dup2函数</h2><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">dup</span><span class="params">(<span class="type">int</span> file_descriptor)</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">dup2</span><span class="params">(<span class="type">int</span> file_descriptor_one, <span class="type">int</span> file_descriptor_two)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>dup和dup2用于复制文件描述符, 实现将标准输入重定向到一个文件or把标准输出重定向到一个网络连接等等.</li>
+<li>dup函数创建一个新的文件描述符，该新文件描述符和原有文件描述符file_descriptor指向相同的文件、管道或者网络连接。并且dup返回的文件描述符总是取系统当前可用的最小整数值。</li>
+<li>dup2和dup类似，不过它将返回第一个不小于file_descriptor_two的整数值。</li>
+</ul>
+<h2 id="6-3-readv-函数和writev函数"><a href="#6-3-readv-函数和writev函数" class="headerlink" title="6.3 readv 函数和writev函数"></a>6.3 readv 函数和writev函数</h2><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/uio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">read_v</span><span class="params">(<span class="type">int</span> fd, <span class="type">const</span> <span class="keyword">struct</span> iovec* vector, <span class="type">int</span> count)</span></span>;</span><br><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">writev</span><span class="params">(<span class="type">int</span> fd, <span class="type">const</span> <span class="keyword">struct</span> iovec* vector, <span class="type">int</span> count)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>readv函数将数据从文件描述符读到分散的内存块中，即分散读;</li>
+<li>writev函数则将多块分散的内存数据一并写入文件描述符中，即集中写。</li>
+<li>iovec描述一块内存块, count 是vector数组的长度.</li>
+<li>readv和writev在成功时返回读出和写入fd的字节数.</li>
+</ul>
+<blockquote>
+<p>以返回文档内容的http应答为例, 应答包含状态行, 许多头部字段, 一个空行以及文档的内容, 这些内容往往存储在内存的不同位置, 我们不需要将这些内容先拼接起来再一起发送, 而是可以通过writev将他们同时写出</p>
+</blockquote>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/14f00d28_Untitled.png" alt="Untitled"></p>
+<h2 id="6-4-sendfile函数"><a href="#6-4-sendfile函数" class="headerlink" title="6.4 sendfile函数"></a>6.4 sendfile函数</h2><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/sendfile.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">sendfile</span><span class="params">(<span class="type">int</span> out_fd, <span class="type">int</span> in_fd, <span class="type">off_t</span>* offset, <span class="type">size_t</span> count)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>sendfile函数在两个文件描述符之间直接传递数据(完全在内核中操作), 从而避免了内核<br>缓冲区和用户缓冲区之间的数据拷贝，效率很高，这被称为零拷贝。</li>
+<li>offset 指定从读入文件流的哪个位置开始, 如果为空, 则默认从起始位置开始,</li>
+<li>count指定传输的字节数</li>
+<li>函数成功时返回传输的字节数</li>
+</ul>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> filefd = <span class="built_in">open</span>(file_name, O_RDONLD);</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">stat</span> stat_buf;</span><br><span class="line"><span class="built_in">fstat</span>(filefd, &amp;stat_buf);</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> connfd = <span class="built_in">accept</span>(....);</span><br><span class="line"><span class="built_in">sendfile</span>(connfd, filefd, <span class="literal">NULL</span>, stat_buf.st_size);</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="6-5-mmap-函数和-munmap函数"><a href="#6-5-mmap-函数和-munmap函数" class="headerlink" title="6.5 mmap 函数和 munmap函数"></a>6.5 mmap 函数和 munmap函数</h2><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">void</span>* <span class="title">mmap</span><span class="params">(<span class="type">void</span> *start, <span class="type">size_t</span> length, <span class="type">int</span> prot, <span class="type">int</span> flags, <span class="type">int</span> fd, <span class="type">off_t</span> offset)</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">munmap</span><span class="params">(<span class="type">void</span> *start, <span class="type">size_t</span> length)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>mmap 函数用于申请一段内存空间, 作为进程间通信的共享内存, 也可以将文件直接映射到其中. mu则释放由mmap创建的这段内存空间.</p>
+<p>prot 包含：</p>
+<ul>
+<li>PROT_READ: 内存段可读</li>
+<li>PROT_WRITE: 内存段可写</li>
+<li>PROT_EXEC: 内存段可执行</li>
+<li>PROT_NONE: 内存段不能被访问</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/b2f51783_Untitled.png" alt="Untitled"></p>
+<h2 id="6-6-splice函数"><a href="#6-6-splice函数" class="headerlink" title="6.6 splice函数"></a>6.6 splice函数</h2><p>splice函数用于在两个文件描述符之间移动数据, 是零拷贝操作.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">splice</span><span class="params">(<span class="type">int</span> fd_in, <span class="type">loff_t</span>* off_in, <span class="type">int</span> fd_out, <span class="type">loff_t</span>* off_out, </span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="type">size_t</span> len, <span class="type">unsigned</span> <span class="type">int</span> flags)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>fd_in 和 fd_out必须至少有一个是管道文件描述符.</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/41a2c7ce_Untitled.png" alt="Untitled"></p>
+<p>将客户端发送的数据重新发回客户端</p>
+<h2 id="6-7-tee函数"><a href="#6-7-tee函数" class="headerlink" title="6.7 tee函数"></a>6.7 tee函数</h2><p>tee函数在两个管道文件描述符之间复制数据, 是零拷贝操作. 它不消耗数据</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">tee</span><span class="params">(<span class="type">int</span> fd_in, <span class="type">int</span> fd_out, <span class="type">size_t</span> len, <span class="type">unsigned</span> <span class="type">int</span> flags)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>fd_in 和 fd_out必须都是管道文件描述符</li>
+<li>返回在两个文件描述符之间复制的文件数据字节数</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/96349fe1_Untitled.png" alt="Untitled"></p>
+<p>同时输出数据到终端和文件</p>
+<h2 id="6-8-fcntl函数"><a href="#6-8-fcntl函数" class="headerlink" title="6.8 fcntl函数"></a>6.8 fcntl函数</h2><p>fcntl提供对文件描述符的各种控制操作.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">fcntl</span><span class="params">(<span class="type">int</span> fd, <span class="type">int</span> cmd, ...)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/4190dbd6_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/a169f2a1_Untitled.png" alt="Untitled"></p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 第六章 高级IO函数</li>
+        <li><strong>Author:</strong> Huan Lee</li>
+        <li><strong>Created at:</strong> 2023-08-20 07:07:56</li>
+        
+            <li>
+                <strong>Updated at:</strong> 2024-02-26 04:53:15
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://www.mirthfullee.com/2023/08/20/notion-第六章 高级IO函数-9b6df7a3/
+        </li>
+        <li>
+            <strong>License:</strong> This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>.
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/c/">#c++</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">#《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/IO/">#IO</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/08/20/notion-%E7%AC%AC%E4%B8%83%E7%AB%A0%20Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E8%A7%84%E8%8C%83-4e5cab6a/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第七章 Linux服务器程序规范</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第五章 Linux网络编程基础API</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">第六章 高级IO函数</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1-pipe%E5%87%BD%E6%95%B0"><span class="nav-text">6.1 pipe函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-2-dup%E5%87%BD%E6%95%B0%E5%92%8Cdup2%E5%87%BD%E6%95%B0"><span class="nav-text">6.2 dup函数和dup2函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-readv-%E5%87%BD%E6%95%B0%E5%92%8Cwritev%E5%87%BD%E6%95%B0"><span class="nav-text">6.3 readv 函数和writev函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-sendfile%E5%87%BD%E6%95%B0"><span class="nav-text">6.4 sendfile函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-5-mmap-%E5%87%BD%E6%95%B0%E5%92%8C-munmap%E5%87%BD%E6%95%B0"><span class="nav-text">6.5 mmap 函数和 munmap函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-6-splice%E5%87%BD%E6%95%B0"><span class="nav-text">6.6 splice函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-7-tee%E5%87%BD%E6%95%B0"><span class="nav-text">6.7 tee函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-8-fcntl%E5%87%BD%E6%95%B0"><span class="nav-text">6.8 fcntl函数</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+            
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2021</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Huan Lee</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv" class="busuanzi_container_site_uv">
+                        VISITOR COUNT&nbsp;<span id="busuanzi_value_site_uv" class="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="busuanzi_container_site_pv">
+                        TOTAL PAGE VIEWS&nbsp;<span id="busuanzi_value_site_pv" class="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            <span class="powered-by-container">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a></span>
+                <br>
+            <span class="theme-version-container">THEME&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.3.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+        ],
+        containers: ["#swup"],
+    });
+
+    swup.on("pageView", () => {
+        Global.refresh();
+    });
+
+    // if (document.readyState === "complete") {
+    //
+    // } else {
+    //     document.addEventListener("DOMContentLoaded", () => init());
+    // }
+</script>
+
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/navbarShrink.js"></script>
+
+<script src="/js/tools/scrollTopBottom.js"></script>
+
+<script src="/js/tools/lightDarkSwitch.js"></script>
+
+<script src="/js/layouts/categoryList.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+</div>
+
+
+</body>
+</html>

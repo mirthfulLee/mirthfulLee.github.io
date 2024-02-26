@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Huan Lee">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://mirthfullee.github.io/2023/08/20/notion-第六章 函数-d4dc9909/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="函数基础 形参和实参：实参是形参的初始值  实参是函数调用时的传入值  形参声明在函数名字后的括号中  每个形参都是一个含有声明符的声明（即使类型一样也必须写出类型）  形参名是可选的，但是我们无法使用未命名的形参    实参应当与形参一一对应（数量和类型）     参数传值 引用传递：引用形参是对应实参的别名  使用引用传参可以避免拷贝  函数只能返回一个值，但是可以利用引用形参间接返回值  但">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第六章 函数">
+<meta property="og:url" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/index.html">
+<meta property="og:site_name" content="沐梓驿站">
+<meta property="og:description" content="函数基础 形参和实参：实参是形参的初始值  实参是函数调用时的传入值  形参声明在函数名字后的括号中  每个形参都是一个含有声明符的声明（即使类型一样也必须写出类型）  形参名是可选的，但是我们无法使用未命名的形参    实参应当与形参一一对应（数量和类型）     参数传值 引用传递：引用形参是对应实参的别名  使用引用传参可以避免拷贝  函数只能返回一个值，但是可以利用引用形参间接返回值  但">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/93e28564_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/ce785fee_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/6a0d4021_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/cef51aaf_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/2907a660_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/2f381e8f_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/372eae1e_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/77c302f1_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/da7c43ee_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/2e500854_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/8e9c4d62_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/9b4124b1_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/dea98e99_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/e2d0e385_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/6e8b6c9f_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/1d103d04_Untitled.png">
+<meta property="article:published_time" content="2023-08-20T13:06:02.000Z">
+<meta property="article:modified_time" content="2024-02-26T04:53:15.469Z">
+<meta property="article:author" content="Huan Lee">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="《C++ Primer》">
+<meta property="article:tag" content="function">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/93e28564_Untitled.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/logo.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            第六章 函数 -
+        
+        MirthfulLee
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    let Global = window.Global || {};
+    Global.hexo_config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
+    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.3.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
+    Global.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    Global.data_config = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+    
+
+    
+
+    <div class="main-content-container">
+        
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                MirthfulLee
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        HOME
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-bars"></i>
+                                        
+                                        CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories/Learning">LEARNING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Project">PROJECT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Application">APPLICATION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Sharing">SHARING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Disscussion">DISCUSSION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Others">OTHERS
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-grip"></i>
+                                        
+                                        MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories">ARCHIVES
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/tags">TAGS
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/about">ABOUT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer">
+        <ul class="drawer-navbar-list">
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                HOME
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-bars"></i>
+                                
+                                CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Learning">LEARNING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Project">PROJECT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Application">APPLICATION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Sharing">SHARING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Disscussion">DISCUSSION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Others">OTHERS</a>
+                            </li>
+                        
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-grip"></i>
+                                
+                                MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories">ARCHIVES</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/tags">TAGS</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/about">ABOUT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">第六章 函数</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/logo.png">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Huan Lee</span>
+                        
+                            <span class="author-label">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-08-20 13:06:02</span>
+        <span class="mobile">2023-08-20 13:06:02</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-02-26 04:53:15</span>
+            <span class="mobile">2024-02-26 04:53:15</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Learning/">Learning</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/c/">c++</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E3%80%8AC-Primer%E3%80%8B/">《C++ Primer》</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/function/">function</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h2 id="函数基础"><a href="#函数基础" class="headerlink" title="函数基础"></a>函数基础</h2><ul>
+<li><p>形参和实参：实参是形参的初始值</p>
+<ul>
+<li><p>实参是函数调用时的传入值</p>
+</li>
+<li><p>形参声明在函数名字后的括号中</p>
+<ul>
+<li><p>每个形参都是一个含有声明符的声明（即使类型一样也必须写出类型）</p>
+</li>
+<li><p>形参名是可选的，但是我们无法使用未命名的形参</p>
+</li>
+</ul>
+</li>
+<li><p>实参应当与形参一一对应（数量和类型）</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="参数传值"><a href="#参数传值" class="headerlink" title="参数传值"></a>参数传值</h2><ul>
+<li><p>引用传递：引用形参是对应实参的别名</p>
+<ul>
+<li><p>使用引用传参可以避免拷贝</p>
+</li>
+<li><p>函数只能返回一个值，但是可以利用引用形参间接返回值</p>
+</li>
+<li><p>但是对于不希望被修改的引用形参，尽量定义为常量</p>
+</li>
+</ul>
+</li>
+<li><p>传值形参：修改形参不会影响实参（对象）的值</p>
+<ul>
+<li>注意指针形参，修改形参本身不会影响实参（指针对象），但是通过解地址符修改指针指向的对象是有效的</li>
+</ul>
+</li>
+<li><p>const形参</p>
+</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/93e28564_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/ce785fee_Untitled.png" alt="Untitled"></p>
+<ul>
+<li><p>main处理命令行选项</p>
+<ul>
+<li>argc表示参数个数</li>
+</ul>
+</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/6a0d4021_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/cef51aaf_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/2907a660_Untitled.png" alt="Untitled"></p>
+<ul>
+<li><p>含有可变形参的函数（形参数量不固定）</p>
+<ul>
+<li><p>如果形参数量未知，但类型统一，可以使用initializer_list</p>
+<ul>
+<li>传入的实参需要用花括号包起来</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/2f381e8f_Untitled.png" alt="Untitled"></p>
+<ul>
+<li><p>省略符形参：该策略继承于C语言，因此那些可变形参的类型应该为C语言中也有的基本类型</p>
+<p><a class="link" target="_blank" rel="noopener" href="https://www.runoob.com/cprogramming/c-variable-arguments.html">https://www.runoob.com/cprogramming/c-variable-arguments.html <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+</li>
+</ul>
+<h2 id="返回类型于return语句"><a href="#返回类型于return语句" class="headerlink" title="返回类型于return语句"></a>返回类型于return语句</h2><ul>
+<li><p>返回类型可以是指针和引用，但是不能是函数内局部变量的指针（函数结束后会被释放）</p>
+<ul>
+<li>返回类型为引用，则返回结果为左值</li>
+</ul>
+</li>
+<li><p>如何返回值</p>
+</li>
+</ul>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/372eae1e_Untitled.png" alt="Untitled"></p>
+<ul>
+<li><p>返回值为数组时，因为数组不能被拷贝，所以应当返回数组的指针或引用</p>
+<ul>
+<li><p>返回数组名，作为数组的地址进行返回，如对一维数组则返回int*</p>
+</li>
+<li><p>利用using或typedef对数组进行重命名后作为函数返回类型</p>
+</li>
+<li><p>使用decltype，起到类似重命名的效果，如decltype(arr) *func(int sz)或decltype(arr) &amp;func(int sz)</p>
+</li>
+<li><p>显式返回数组指针或引用，如int (*func(int sz))[]或int (&amp;func(int sz))[10]</p>
+</li>
+<li><p>使用尾置返回类型（C++11），如auto func(int sz) → int <a href="10">*</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="函数重载（overload）"><a href="#函数重载（overload）" class="headerlink" title="函数重载（overload）"></a>函数重载（overload）</h2><ul>
+<li><p>虽然函数名相同，但是形参列表有明显的区别（形参名和顶层const不纳入区别的考量）</p>
+<ul>
+<li>但是底层const可以作为区分</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/77c302f1_Untitled.png" alt="Untitled"></p>
+</li>
+<li><p>函数匹配，即重载确定时，编译器会找到一个与实参最佳匹配的函数</p>
+<ul>
+<li>都不匹配或者多个匹配但没有最佳匹配时，都会报错</li>
+</ul>
+</li>
+<li><p>重载与作用域：局部函数（甚至变量）不会重载外部函数，而是会导致外部（全局）函数被隐藏</p>
+</li>
+</ul>
+<h2 id="特殊用途语言特性"><a href="#特殊用途语言特性" class="headerlink" title="特殊用途语言特性"></a>特殊用途语言特性</h2><ul>
+<li><p>默认实参：有默认值的形参必须定义在没有默认值的形参之后</p>
+<ul>
+<li>但是默认实参可以分开声明</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/da7c43ee_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>形参默认值不一定是字面值</li>
+</ul>
+</li>
+</ul>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/2e500854_Untitled.png" alt="Untitled"></p>
+<ul>
+<li><p>inline（内联）函数，可以更高效，一般用于目的明确的小函数</p>
+<ul>
+<li>但编译器不一定支持内联，即忽略inline关键词</li>
+</ul>
+</li>
+<li><p>constexpr函数，返回值不一定是常量，也可能和形参有关，但是实参必须是constexpr</p>
+</li>
+</ul>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/8e9c4d62_Untitled.png" alt="Untitled"></p>
+<ul>
+<li><p>inline函数和constexpr函数最好定义在头文件中，若不在头文件中定义，则需要（在用到该函数的地方）进行多次相同的定义</p>
+</li>
+<li><p>调试帮助：assert预处理宏，用于检查不能发生的情况</p>
+<ul>
+<li><p>assert宏依赖于一个名为NDEBUG的预处理变量，可以#define NDEBUG来关闭assert检查</p>
+</li>
+<li><p>编译器还定义了一些很有用的预处理变量名</p>
+<ul>
+<li><p><code>__func__</code>：当前调试的函数</p>
+</li>
+<li><p><code>__FILE__</code>：文件名</p>
+</li>
+<li><p><code>__LINE__</code>：当前行号</p>
+</li>
+<li><p><code>__TIME__</code>：编译时间</p>
+</li>
+<li><p><code>__DATE__</code>：编译日期</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="函数匹配"><a href="#函数匹配" class="headerlink" title="函数匹配"></a>函数匹配</h2><ul>
+<li>候选函数：同名，可见</li>
+<li>可行函数：实参数量符合要求，实参类型匹配或可以转换</li>
+<li>最佳匹配：有且仅有一条可行函数满足如下要求，否则就会发生二义性错误</li>
+</ul>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/9b4124b1_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>其中实参到形参的转换分为多个等级</li>
+</ul>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/dea98e99_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>应该尽量避免使用这种形参类型相似的函数重载，浮点数尽量用double，整型尽量用int（与字面值的默认类型对应）</li>
+</ul>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/e2d0e385_Untitled.png" alt="Untitled"></p>
+<h2 id="函数指针"><a href="#函数指针" class="headerlink" title="函数指针"></a>函数指针</h2><ul>
+<li><p>函数指针指向某种特定类型的函数，类型由函数的返回类型和形参类型相关，与函数名无关</p>
+<ul>
+<li>函数名与函数指针等价，使用时无需使用取址符和解地址符</li>
+</ul>
+</li>
+<li><p>对于重载函数的指针，必须是指针类型和函数类型的精确匹配（比最佳匹配更严格，即完美匹配）</p>
+</li>
+<li><p>函数指针形参</p>
+</li>
+</ul>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/6e8b6c9f_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>使用typedef，using和decltype可以简化函数的声明</li>
+<li>同理函数返回值也可以是函数指针，但此时需要显式地指明返回类型为指针</li>
+</ul>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E5%87%BD%E6%95%B0-d4dc9909/1d103d04_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>但是这种写法的可读性很差，建议重命名函数类型（using，typedef）或decltype或使用auto的后缀声明形式</li>
+</ul>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 第六章 函数</li>
+        <li><strong>Author:</strong> Huan Lee</li>
+        <li><strong>Created at:</strong> 2023-08-20 13:06:02</li>
+        
+            <li>
+                <strong>Updated at:</strong> 2024-02-26 04:53:15
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://www.mirthfullee.com/2023/08/20/notion-第六章 函数-d4dc9909/
+        </li>
+        <li>
+            <strong>License:</strong> This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>.
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/c/">#c++</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E3%80%8AC-Primer%E3%80%8B/">#《C++ Primer》</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/function/">#function</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/08/20/notion-%E7%AC%AC%E4%B8%83%E7%AB%A0%20%E7%B1%BB-1facc976/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第七章 类</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20%E8%AF%AD%E5%8F%A5-87d45329/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第五章 语句</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">第六章 函数</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%9F%BA%E7%A1%80"><span class="nav-text">函数基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E4%BC%A0%E5%80%BC"><span class="nav-text">参数传值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E7%B1%BB%E5%9E%8B%E4%BA%8Ereturn%E8%AF%AD%E5%8F%A5"><span class="nav-text">返回类型于return语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD%EF%BC%88overload%EF%BC%89"><span class="nav-text">函数重载（overload）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E7%94%A8%E9%80%94%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7"><span class="nav-text">特殊用途语言特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%8C%B9%E9%85%8D"><span class="nav-text">函数匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88"><span class="nav-text">函数指针</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+            
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2021</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Huan Lee</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv" class="busuanzi_container_site_uv">
+                        VISITOR COUNT&nbsp;<span id="busuanzi_value_site_uv" class="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="busuanzi_container_site_pv">
+                        TOTAL PAGE VIEWS&nbsp;<span id="busuanzi_value_site_pv" class="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            <span class="powered-by-container">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a></span>
+                <br>
+            <span class="theme-version-container">THEME&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.3.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+        ],
+        containers: ["#swup"],
+    });
+
+    swup.on("pageView", () => {
+        Global.refresh();
+    });
+
+    // if (document.readyState === "complete") {
+    //
+    // } else {
+    //     document.addEventListener("DOMContentLoaded", () => init());
+    // }
+</script>
+
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/navbarShrink.js"></script>
+
+<script src="/js/tools/scrollTopBottom.js"></script>
+
+<script src="/js/tools/lightDarkSwitch.js"></script>
+
+<script src="/js/layouts/categoryList.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+</div>
+
+
+</body>
+</html>

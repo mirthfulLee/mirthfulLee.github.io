@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Huan Lee">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://mirthfullee.github.io/2023/08/20/notion-第十章 信号-b2fb3ea2/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="10.1 Linux信号概述Linux下, 一个进程给其他进程发送信号的API是kill函数 123#include &lt;sys&#x2F;types.h&gt;#include &lt;signal.h&gt;int kill(pid_t pid, int sig);   信号处理方式目标进程在收到信号时, 需要定义一个接收函数来处理. 1typedef void(*__sighandler_t)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十章 信号">
+<meta property="og:url" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/index.html">
+<meta property="og:site_name" content="沐梓驿站">
+<meta property="og:description" content="10.1 Linux信号概述Linux下, 一个进程给其他进程发送信号的API是kill函数 123#include &lt;sys&#x2F;types.h&gt;#include &lt;signal.h&gt;int kill(pid_t pid, int sig);   信号处理方式目标进程在收到信号时, 需要定义一个接收函数来处理. 1typedef void(*__sighandler_t)">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/c0b1af6f_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/cbd3237b_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/83286d72_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/25a6555f_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/b0538fa9_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/8b40b583_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/92fe62ec_Untitled.png">
+<meta property="article:published_time" content="2023-08-20T08:08:10.000Z">
+<meta property="article:modified_time" content="2024-02-26T04:53:15.661Z">
+<meta property="article:author" content="Huan Lee">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="《Linux高性能服务器编程》">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="信号">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/c0b1af6f_Untitled.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/logo.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            第十章 信号 -
+        
+        MirthfulLee
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    let Global = window.Global || {};
+    Global.hexo_config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
+    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.3.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
+    Global.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    Global.data_config = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+    
+
+    
+
+    <div class="main-content-container">
+        
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                MirthfulLee
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        HOME
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-bars"></i>
+                                        
+                                        CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories/Learning">LEARNING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Project">PROJECT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Application">APPLICATION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Sharing">SHARING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Disscussion">DISCUSSION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Others">OTHERS
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-grip"></i>
+                                        
+                                        MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories">ARCHIVES
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/tags">TAGS
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/about">ABOUT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer">
+        <ul class="drawer-navbar-list">
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                HOME
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-bars"></i>
+                                
+                                CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Learning">LEARNING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Project">PROJECT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Application">APPLICATION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Sharing">SHARING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Disscussion">DISCUSSION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Others">OTHERS</a>
+                            </li>
+                        
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-grip"></i>
+                                
+                                MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories">ARCHIVES</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/tags">TAGS</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/about">ABOUT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">第十章 信号</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/logo.png">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Huan Lee</span>
+                        
+                            <span class="author-label">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-08-20 08:08:10</span>
+        <span class="mobile">2023-08-20 08:08:10</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-02-26 04:53:15</span>
+            <span class="mobile">2024-02-26 04:53:15</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Learning/">Learning</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/c/">c++</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Linux/">Linux</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E4%BF%A1%E5%8F%B7/">信号</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/c0b1af6f_Untitled.png" alt="Untitled"></p>
+<h2 id="10-1-Linux信号概述"><a href="#10-1-Linux信号概述" class="headerlink" title="10.1 Linux信号概述"></a>10.1 Linux信号概述</h2><p>Linux下, 一个进程给其他进程发送信号的API是kill函数</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">kill</span><span class="params">(<span class="type">pid_t</span> pid, <span class="type">int</span> sig)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/cbd3237b_Untitled.png" alt="Untitled"></p>
+<h3 id="信号处理方式"><a href="#信号处理方式" class="headerlink" title="信号处理方式"></a>信号处理方式</h3><p>目标进程在收到信号时, 需要定义一个接收函数来处理.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span><span class="params">(*<span class="type">__sighandler_t</span>)</span> <span class="params">(<span class="type">int</span>)</span></span>; <span class="comment">// 定义一个函数名</span></span><br></pre></td></tr></table></figure></div>
+
+<p>该函数只有一个整型参数, 表示信号类型.</p>
+<p>bits&#x2F;signum.h头文件中还定义了i新年好的两种其他处理方式. SIG_IGN表示忽略目标信号, SIG_DFL表示使用信号的默认处理方式.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/signum.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SIG_DFL ((__sighandler_t) 0)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SIG_IGN ((__sighandler_t) 1)</span></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Linux信号"><a href="#Linux信号" class="headerlink" title="Linux信号"></a>Linux信号</h3><p>默认处理方式:</p>
+<ul>
+<li>结束进程-Term</li>
+<li>忽略信号-Ign</li>
+<li>结束进程并生成核心转储文件-Core</li>
+<li>暂停进程-Stop</li>
+<li>继续进程-Cont</li>
+</ul>
+<p>Linux的可用信号都定义在bits&#x2F;signum.h中.</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/83286d72_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/25a6555f_Untitled.png" alt="Untitled"></p>
+<p>与网络编程紧密相关的又SIGHUP, SIGPIPE, SIGURG.</p>
+<h3 id="中断系统调用"><a href="#中断系统调用" class="headerlink" title="中断系统调用"></a>中断系统调用</h3><p>程序在执行处于阻塞状态的系统调用时收到信号, 并且设置了信号处理函数, 则默认情况下系统调用会被中断, 且errno为EINTR. 可以使用sigaction函数为信号设置SA_RESTART标志以自动重启被中断的系统调用.</p>
+<h2 id="10-2-信号函数"><a href="#10-2-信号函数" class="headerlink" title="10.2 信号函数"></a>10.2 信号函数</h2><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">_sighandler_t</span> <span class="title">signal</span><span class="params">(<span class="type">int</span> sig, <span class="type">_sighandler_t</span> _handler)</span></span></span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>sig指定捕获的信号类型；_handler参数是_sighandler_t类型的函数指针, 指定信号sig的处理函数</li>
+</ul>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">sigaction</span><span class="params">(<span class="type">int</span> sig, <span class="type">const</span> <span class="keyword">struct</span> sigaction* act, <span class="keyword">struct</span> sigaction* oact)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>sigaction系统调用是更健壮(?)的接口.</p>
+<ul>
+<li>act指定新的信号处理方式; oact输出信号先前的处理方式.</li>
+<li>sigaction结构体中, sa_handler成员指定信号处理函数; sa_mask设置进程的信号掩码; sa_flags设置程序收到信号时的行为</li>
+</ul>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/b0538fa9_Untitled.png" alt="Untitled"></p>
+<h2 id="10-3-信号集"><a href="#10-3-信号集" class="headerlink" title="10.3 信号集"></a>10.3 信号集</h2><p>Linux用数据结构sigset_t来表示一组信号, 其实际上时一个长整型数组, 数组的每个元素的每个位表示一个信号.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/sigset.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _SIGSET_NWORDS(1024/(8*sizeof(unsigned long int)))</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line"> <span class="type">unsigned</span> <span class="type">long</span> <span class="type">int</span> __val[_SIGSET_NWORDS];</span><br><span class="line">&#125; <span class="type">__sigset_t</span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>Linux提供了一组简化位运算的函数:</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/8b40b583_Untitled.png" alt="Untitled"></p>
+<h3 id="进程信号掩码"><a href="#进程信号掩码" class="headerlink" title="进程信号掩码"></a>进程信号掩码</h3><p>信号掩码可以指定哪些信号不能发送给本进程.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">sigprocmask</span><span class="params">(<span class="type">int</span> _how, _const <span class="type">sigset_t</span>* _set, <span class="type">sigset_t</span>* _oset)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/92fe62ec_Untitled.png" alt="Untitled"></p>
+<h3 id="被挂起的信号"><a href="#被挂起的信号" class="headerlink" title="被挂起的信号"></a>被挂起的信号</h3><p>信号掩码会导致被屏蔽的信号不能被进程接收, OS会将这些信号设置为进程的一个被挂起的信号. 如果我们取消对被挂起信号的屏蔽, 则它能立即被进程收到, 如下函数能够获得进程当前被挂起的信号集</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">sigpending</span><span class="params">(<span class="type">sigset_t</span>* set)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="10-4-统一事件源"><a href="#10-4-统一事件源" class="headerlink" title="10.4 统一事件源"></a>10.4 统一事件源</h2><p>信号是一种异步事件：信号处理函数和程序的主循环是两条不同的执行路线。很显然，信号处理函数需要尽可能快地执行完毕，以确保该信号不被屏蔽（前面提到过，为了避免<br>一些竞态条件，信号在处理期间，系统不会再次触发它)太久。一种典型的解决方案是：<br>把信号的主要处理逻辑放到程序的主循环中，当信号处理函数被触发时，它只是简单地通<br>知主循环程序接收到信号，并把信号值传递给主循环，主循环再根据接收到的信号值执行<br>目标信号对应的逻辑代码。信号处理函数通常使用管道来将信号“传递”给主循环：信号<br>处理函数往管道的写端写入信号值，主循环则从管道的读端读出该信号值。那么主循环怎<br>么知道管道上何时有数据可读呢？这很简单，我们只需要使用&#x2F;O复用系统调用来监听管<br>道的读端文件描述符上的可读事件。如此一来，信号事件就能和其他I&#x2F;O事件一样被处理，<br>即统一事件源。</p>
+<h2 id="10-5-网络编程相关信号"><a href="#10-5-网络编程相关信号" class="headerlink" title="10.5 网络编程相关信号"></a>10.5 网络编程相关信号</h2><h3 id="SIGHUP"><a href="#SIGHUP" class="headerlink" title="SIGHUP"></a>SIGHUP</h3><p>当挂起进程的控制终端时，SIGHUP信号将被触发。对于没有控制终端的网络后台程序而言，它们通常利用SIGHUP信号来强制服务器重读配置文件。</p>
+<h3 id="SIGPIPE"><a href="#SIGPIPE" class="headerlink" title="SIGPIPE"></a>SIGPIPE</h3><p>默认情况下，往一个读端关闭的管道或socket连接中写数据将引发SIGPIPE信号。我们需要在代码中捕获并处理该信号，或者至少忽略它，因为程序接收到SIGPIPE信号的默认行为是结束进程，而我们绝对不希望因为错误的写操作而导致程序退出。引起SIGPIPE信号的写操作将设置errno为EPIPE。</p>
+<h3 id="SIGURG"><a href="#SIGURG" class="headerlink" title="SIGURG"></a>SIGURG</h3><p>SIGURG信号是内核通知应用程序带外数据到达的两种方式之一(另一种是处理socket系统调用的异常事件)</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 第十章 信号</li>
+        <li><strong>Author:</strong> Huan Lee</li>
+        <li><strong>Created at:</strong> 2023-08-20 08:08:10</li>
+        
+            <li>
+                <strong>Updated at:</strong> 2024-02-26 04:53:15
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://www.mirthfullee.com/2023/08/20/notion-第十章 信号-b2fb3ea2/
+        </li>
+        <li>
+            <strong>License:</strong> This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>.
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/c/">#c++</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">#《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/Linux/">#Linux</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E4%BF%A1%E5%8F%B7/">#信号</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0%20%E5%AE%9A%E6%97%B6%E5%99%A8-3947b336/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第十一章 定时器</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第九章 IO复用</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">第十章 信号</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#10-1-Linux%E4%BF%A1%E5%8F%B7%E6%A6%82%E8%BF%B0"><span class="nav-text">10.1 Linux信号概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F"><span class="nav-text">信号处理方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux%E4%BF%A1%E5%8F%B7"><span class="nav-text">Linux信号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E6%96%AD%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">中断系统调用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-2-%E4%BF%A1%E5%8F%B7%E5%87%BD%E6%95%B0"><span class="nav-text">10.2 信号函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-3-%E4%BF%A1%E5%8F%B7%E9%9B%86"><span class="nav-text">10.3 信号集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E4%BF%A1%E5%8F%B7%E6%8E%A9%E7%A0%81"><span class="nav-text">进程信号掩码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A2%AB%E6%8C%82%E8%B5%B7%E7%9A%84%E4%BF%A1%E5%8F%B7"><span class="nav-text">被挂起的信号</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-4-%E7%BB%9F%E4%B8%80%E4%BA%8B%E4%BB%B6%E6%BA%90"><span class="nav-text">10.4 统一事件源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-5-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9B%B8%E5%85%B3%E4%BF%A1%E5%8F%B7"><span class="nav-text">10.5 网络编程相关信号</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SIGHUP"><span class="nav-text">SIGHUP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SIGPIPE"><span class="nav-text">SIGPIPE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SIGURG"><span class="nav-text">SIGURG</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+            
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2021</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Huan Lee</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv" class="busuanzi_container_site_uv">
+                        VISITOR COUNT&nbsp;<span id="busuanzi_value_site_uv" class="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="busuanzi_container_site_pv">
+                        TOTAL PAGE VIEWS&nbsp;<span id="busuanzi_value_site_pv" class="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            <span class="powered-by-container">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a></span>
+                <br>
+            <span class="theme-version-container">THEME&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.3.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+        ],
+        containers: ["#swup"],
+    });
+
+    swup.on("pageView", () => {
+        Global.refresh();
+    });
+
+    // if (document.readyState === "complete") {
+    //
+    // } else {
+    //     document.addEventListener("DOMContentLoaded", () => init());
+    // }
+</script>
+
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/navbarShrink.js"></script>
+
+<script src="/js/tools/scrollTopBottom.js"></script>
+
+<script src="/js/tools/lightDarkSwitch.js"></script>
+
+<script src="/js/layouts/categoryList.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+</div>
+
+
+</body>
+</html>

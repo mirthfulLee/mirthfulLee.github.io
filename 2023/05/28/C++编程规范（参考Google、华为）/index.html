@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Huan Lee">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://mirthfullee.github.io/2023/05/28/c++编程规范（参考google、华为）/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="文件名及版权信息1、文件名C++文件名全部都是小写，且单词之间用_分割，如：verilog_parse.cpp 2、版权信息所有文件均需要统一格式的版权信息头文件 1、在.h中使用#define来防止头文件被多重包含，并在最后注释出宏的名字命名格式：&lt;PROJECT&gt;_&lt;FILE&gt;_H_ 1#ifndef TIMER_FLOW_H_#define TIMER_FLOW_H_">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++编程规范（参考Google、华为）">
+<meta property="og:url" content="https://mirthfullee.github.io/2023/05/28/C++%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83%EF%BC%88%E5%8F%82%E8%80%83Google%E3%80%81%E5%8D%8E%E4%B8%BA%EF%BC%89/index.html">
+<meta property="og:site_name" content="沐梓驿站">
+<meta property="og:description" content="文件名及版权信息1、文件名C++文件名全部都是小写，且单词之间用_分割，如：verilog_parse.cpp 2、版权信息所有文件均需要统一格式的版权信息头文件 1、在.h中使用#define来防止头文件被多重包含，并在最后注释出宏的名字命名格式：&lt;PROJECT&gt;_&lt;FILE&gt;_H_ 1#ifndef TIMER_FLOW_H_#define TIMER_FLOW_H_">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-05-28T16:16:44.000Z">
+<meta property="article:modified_time" content="2024-02-26T04:53:15.073Z">
+<meta property="article:author" content="Huan Lee">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="规范">
+<meta name="twitter:card" content="summary">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/logo.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            C++编程规范（参考Google、华为） -
+        
+        MirthfulLee
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    let Global = window.Global || {};
+    Global.hexo_config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
+    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.3.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
+    Global.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    Global.data_config = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+    
+
+    
+
+    <div class="main-content-container">
+        
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                MirthfulLee
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        HOME
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-bars"></i>
+                                        
+                                        CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories/Learning">LEARNING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Project">PROJECT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Application">APPLICATION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Sharing">SHARING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Disscussion">DISCUSSION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Others">OTHERS
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-grip"></i>
+                                        
+                                        MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories">ARCHIVES
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/tags">TAGS
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/about">ABOUT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer">
+        <ul class="drawer-navbar-list">
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                HOME
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-bars"></i>
+                                
+                                CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Learning">LEARNING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Project">PROJECT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Application">APPLICATION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Sharing">SHARING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Disscussion">DISCUSSION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Others">OTHERS</a>
+                            </li>
+                        
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-grip"></i>
+                                
+                                MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories">ARCHIVES</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/tags">TAGS</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/about">ABOUT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">C++编程规范（参考Google、华为）</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/logo.png">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Huan Lee</span>
+                        
+                            <span class="author-label">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-05-28 16:16:44</span>
+        <span class="mobile">2023-05-28 16:16:44</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-02-26 04:53:15</span>
+            <span class="mobile">2024-02-26 04:53:15</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Learning/">Learning</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/c/">c++</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E8%A7%84%E8%8C%83/">规范</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h2 id="文件名及版权信息"><a href="#文件名及版权信息" class="headerlink" title="文件名及版权信息"></a>文件名及版权信息</h2><h3 id="1、文件名"><a href="#1、文件名" class="headerlink" title="1、文件名"></a>1、文件名</h3><p>C++文件名全部都是小写，且单词之间用<code>_</code>分割，如：<code>verilog_parse.cpp</code></p>
+<h3 id="2、版权信息"><a href="#2、版权信息" class="headerlink" title="2、版权信息"></a>2、版权信息</h3><h2 id="所有文件均需要统一格式的版权信息"><a href="#所有文件均需要统一格式的版权信息" class="headerlink" title="所有文件均需要统一格式的版权信息"></a>所有文件均需要统一格式的版权信息</h2><h2 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a><a class="link" target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%A4%B4%E6%96%87%E4%BB%B6&spm=1001.2101.3001.7020">头文件 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></h2><h3 id="1、在-h中使用-define来防止头文件被多重包含，并在最后注释出宏的名字"><a href="#1、在-h中使用-define来防止头文件被多重包含，并在最后注释出宏的名字" class="headerlink" title="1、在.h中使用#define来防止头文件被多重包含，并在最后注释出宏的名字"></a>1、在<code>.h</code>中使用<code>#define</code>来防止头文件被多重包含，并在最后注释出宏的名字</h3><p>命名格式：<code>&lt;PROJECT&gt;_&lt;FILE&gt;_H_</code></p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> TIMER_FLOW_H_#<span class="keyword">define</span> TIMER_FLOW_H_...#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="2、尽量避免使用前置声明，优先使用-include来包含相关头文件"><a href="#2、尽量避免使用前置声明，优先使用-include来包含相关头文件" class="headerlink" title="2、尽量避免使用前置声明，优先使用#include来包含相关头文件"></a>2、尽量避免使用前置声明，优先使用<code>#include</code>来包含相关头文件</h3><p>包含头文件：</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;timer.h&quot;</span></span></span><br></pre></td></tr></table></figure></div>
+
+<p>前置声明：</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Timer</span>;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="3、-include的包含顺序"><a href="#3、-include的包含顺序" class="headerlink" title="3、#include的包含顺序"></a>3、<code>#include</code>的包含顺序</h3><p>头文件的包含顺序为：当前<code>.cpp</code>文件直接关联的头文件、C库文件、C++库文件、其他项目的头文件、本项目中的其他头文件。</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;timer.h&quot;</span>#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span>#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span>#<span class="keyword">include</span> <span class="string">&quot;verilog.h&quot;</span>#<span class="keyword">include</span> <span class="string">&quot;node.h&quot;</span></span></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="4、头文件应向稳定的方向包含"><a href="#4、头文件应向稳定的方向包含" class="headerlink" title="4、头文件应向稳定的方向包含"></a>4、头文件应向稳定的方向包含</h3><p>头文件的包含关系是一种依赖，一般来说，有以下几种包含原则。</p>
+<h2 id="应当让不稳定的模块依赖稳定的模块，从而当不稳定的模块发生变化时，不会影响（编译）稳定的模块禁止头文件循环依赖，指a-h包含b-h，b-h包含c-h，c-h包含a-h。禁止包含用不到的头文件。头文件应当自包含，指任意一个头文件均可独立编译。"><a href="#应当让不稳定的模块依赖稳定的模块，从而当不稳定的模块发生变化时，不会影响（编译）稳定的模块禁止头文件循环依赖，指a-h包含b-h，b-h包含c-h，c-h包含a-h。禁止包含用不到的头文件。头文件应当自包含，指任意一个头文件均可独立编译。" class="headerlink" title="应当让不稳定的模块依赖稳定的模块，从而当不稳定的模块发生变化时，不会影响（编译）稳定的模块禁止头文件循环依赖，指a.h包含b.h，b.h包含c.h，c.h包含a.h。禁止包含用不到的头文件。头文件应当自包含，指任意一个头文件均可独立编译。"></a>应当让不稳定的模块依赖稳定的模块，从而当不稳定的模块发生变化时，不会影响（编译）稳定的模块<br>禁止头文件循环依赖，指a.h包含b.h，b.h包含c.h，c.h包含a.h。<br>禁止包含用不到的头文件。<br>头文件应当自包含，指任意一个头文件均可独立编译。</h2><h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h2><h3 id="1、在命名空间的最后注释出命名空间的名字"><a href="#1、在命名空间的最后注释出命名空间的名字" class="headerlink" title="1、在命名空间的最后注释出命名空间的名字"></a>1、在命名空间的最后注释出命名空间的名字</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> mynamespace&#123;...&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="2、避免使用using引入整个命名空间的标识符号"><a href="#2、避免使用using引入整个命名空间的标识符号" class="headerlink" title="2、避免使用using引入整个命名空间的标识符号"></a>2、避免使用<code>using</code>引入整个命名空间的标识符号</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> mynamespace;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="3、避免进行大量构造及析构操作"><a href="#3、避免进行大量构造及析构操作" class="headerlink" title="3、避免进行大量构造及析构操作"></a>3、避免进行大量构造及析构操作</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++) &#123;  Timer t;  t.<span class="built_in">DoSomething</span>(i);&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>建议使用以下代码：</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Timer t;<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++) &#123;  t.<span class="built_in">DoSomething</span>(i);&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="4、尽量在变量声明时进行初始化，且避免进行无效的初始化"><a href="#4、尽量在变量声明时进行初始化，且避免进行无效的初始化" class="headerlink" title="4、尽量在变量声明时进行初始化，且避免进行无效的初始化"></a>4、尽量在变量声明时进行初始化，且避免进行无效的初始化</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> i;i = <span class="built_in">f</span>();<span class="type">int</span> j = <span class="built_in">g</span>();<span class="type">int</span> k = <span class="number">0</span>;k = <span class="number">0xff</span>;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="5、尽量避免全局函数和全局变量，使用命名空间或static关键字等进行作用域限制"><a href="#5、尽量避免全局函数和全局变量，使用命名空间或static关键字等进行作用域限制" class="headerlink" title="5、尽量避免全局函数和全局变量，使用命名空间或static关键字等进行作用域限制"></a>5、尽量避免全局函数和全局变量，使用命名空间或<code>static</code>关键字等进行作用域限制</h3><h3 id="6、禁止定义静态储存周期非POD变量"><a href="#6、禁止定义静态储存周期非POD变量" class="headerlink" title="6、禁止定义静态储存周期非POD变量"></a>6、禁止定义静态储存周期非POD变量</h3><p>静态存储周期变量，即包括了全局变量、静态变量、静态类成员变量和函数静态变量，都必须是原生数据类型（POD：Plain Old Data）：即<code>int</code>、<code>char</code>和<code>float</code>，以及POD类型的指针、数组和结构体。</p>
+<h2 id="禁止使用类的静态存储周期变量，即禁用vector和string等：由于构造和析构函数调用顺序的不确定性，它们会导致难以发现的bug。不过constexpr变量除外，因为它不涉及动态初始化和析构"><a href="#禁止使用类的静态存储周期变量，即禁用vector和string等：由于构造和析构函数调用顺序的不确定性，它们会导致难以发现的bug。不过constexpr变量除外，因为它不涉及动态初始化和析构" class="headerlink" title="禁止使用类的静态存储周期变量，即禁用vector和string等：由于构造和析构函数调用顺序的不确定性，它们会导致难以发现的bug。不过constexpr变量除外，因为它不涉及动态初始化和析构"></a>禁止使用类的静态存储周期变量，即禁用<code>vector</code>和<code>string</code>等：由于构造和析构函数调用顺序的不确定性，它们会导致难以发现的bug。不过<code>constexpr</code>变量除外，因为它不涉及动态初始化和析构</h2><h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><h3 id="1、不要在构造函数和析构函数中调用虚函数"><a href="#1、不要在构造函数和析构函数中调用虚函数" class="headerlink" title="1、不要在构造函数和析构函数中调用虚函数"></a>1、不要在构造函数和析构函数中调用虚函数</h3><p>如果在派生类的构造函数和析构函数中调用了虚函数，这类调用不会重定向到派生类的虚函数实现。</p>
+<h3 id="2、不要在无法报出错误时进行可能失败的初始化"><a href="#2、不要在无法报出错误时进行可能失败的初始化" class="headerlink" title="2、不要在无法报出错误时进行可能失败的初始化"></a>2、不要在无法报出错误时进行可能失败的初始化</h3><p>如果代码允许，直接终止程序是一个合适的处理错误方式。否则，可以考虑用<code>Init()</code>方法或工厂函数。</p>
+<h3 id="3、建议使用初始化列表构造对象，且和构造函数、析构函数一样放在类外实现"><a href="#3、建议使用初始化列表构造对象，且和构造函数、析构函数一样放在类外实现" class="headerlink" title="3、建议使用初始化列表构造对象，且和构造函数、析构函数一样放在类外实现"></a>3、建议使用初始化列表构造对象，且和构造函数、析构函数一样放在类外实现</h3><p>使用初始化列表构造对象，比起构造函数的代码块初始化效率更高、性能更好。</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;<span class="keyword">public</span>:  <span class="built_in">A</span>() : &#123;&#125;;<span class="keyword">private</span>:  <span class="type">int</span> m_a;  B* m_b;&#125;;A::<span class="built_in">A</span>() ： <span class="built_in">m_a</span>(<span class="number">0</span>), <span class="built_in">m_b</span>(<span class="literal">nullptr</span>) &#123;&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="4、不要定义隐式转换类型"><a href="#4、不要定义隐式转换类型" class="headerlink" title="4、不要定义隐式转换类型"></a>4、不要定义隐式转换类型</h3><p>对于转换运算符和单参数构造函数，建议使用<code>explicit</code>关键字。<br>举例如下：</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Things</span>&#123;<span class="keyword">public</span>:  <span class="function"><span class="keyword">explicit</span> <span class="title">Things</span><span class="params">(<span class="type">const</span> std::string &amp;name = <span class="string">&quot;&quot;</span>)</span> :    m_name(name), m_height(<span class="number">0</span>), m_weight(<span class="number">0</span>) &#123;</span> &#125;  <span class="function"><span class="type">int</span> <span class="title">CompareTo</span><span class="params">(<span class="type">const</span> Things &amp;other)</span></span>;<span class="keyword">private</span>:  std::string m_name;  <span class="type">int</span> m_height;  <span class="type">int</span> m_weight;&#125;;</span><br></pre></td></tr></table></figure></div>
+
+<p>这里的构造函数用<code>explicit</code>关键字来防止隐式类型转换。</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Things a;std::string s = <span class="string">&quot;book&quot;</span>;<span class="type">int</span> ret = a.<span class="built_in">CompareTo</span>(s);<span class="type">int</span> ret = a.<span class="built_in">CompareTo</span>(<span class="built_in">Things</span>(s));</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="5、拷贝构造函数和拷贝赋值运算符，移动构造函数和移动赋值运算符成套使用，如果不需要，则将它们显式地禁用"><a href="#5、拷贝构造函数和拷贝赋值运算符，移动构造函数和移动赋值运算符成套使用，如果不需要，则将它们显式地禁用" class="headerlink" title="5、拷贝构造函数和拷贝赋值运算符，移动构造函数和移动赋值运算符成套使用，如果不需要，则将它们显式地禁用"></a>5、拷贝构造函数和拷贝赋值运算符，移动构造函数和移动赋值运算符成套使用，如果不需要，则将它们显式地禁用</h3><p>如果类型可拷贝，则需要同时给出拷贝构造函数和拷贝赋值运算符的定义。</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">MyClass</span>(<span class="type">const</span> MyClass &amp;t)&#123;  <span class="keyword">if</span> (<span class="keyword">this</span> == &amp;t) <span class="keyword">return</span>;  <span class="keyword">if</span> (t.text == <span class="literal">nullptr</span>) <span class="keyword">return</span>;  <span class="type">int</span> len = <span class="built_in">strlen</span>(t.text);  text = <span class="keyword">new</span> <span class="type">char</span>[len + <span class="number">1</span>];  <span class="built_in">strcpy</span>(text, t.text);&#125;MyClass &amp;<span class="keyword">operator</span> = (<span class="type">const</span> MyClass &amp;t)&#123;  <span class="keyword">if</span> (<span class="keyword">this</span> == &amp;t) <span class="keyword">return</span> *<span class="keyword">this</span>;  <span class="keyword">if</span> (text != <span class="literal">nullptr</span>) &#123;    <span class="built_in">free</span>(text);    text = <span class="literal">nullptr</span>;  &#125;  <span class="keyword">if</span> (t.text == <span class="literal">nullptr</span>) <span class="keyword">return</span> *<span class="keyword">this</span>;  <span class="type">int</span> len = <span class="built_in">strlen</span>(t.text);  <span class="built_in">free</span>(text);  text = <span class="keyword">new</span> <span class="type">char</span>[len + <span class="number">1</span>];  <span class="built_in">strcpy</span>(text, t.text);  <span class="keyword">return</span> *<span class="keyword">this</span>;&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>同理，如果类型可移动，则需要同时给出移动构造函数和移动赋值运算符的定义。</p>
+<p>由于存在对象切割的风险，不要为任何有可能有派生类的对象提供赋值操作或者拷贝 &#x2F; 移动构造函数（当然也不要继承有这样的成员函数的类）。如果你的基类需要可复制属性，请提供一个<code>public virtual Clone()</code>和一个<code>protected</code>的拷贝构造函数以供派生类实现。</p>
+<p>如果你的类不需要拷贝 &#x2F; 移动操作，请显式地通过在<code>public</code>域中使用<code>= delete</code>或<code>DISALLOW_COPY_AND_ASSIGN</code>禁用之。<br>方法一：</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyClass</span>&#123;<span class="keyword">public</span>:  <span class="built_in">MyClass</span>(<span class="type">char</span> *text);  ~<span class="built_in">MyClass</span>();  <span class="built_in">MyClass</span>(<span class="type">const</span> MyClass &amp;) = <span class="keyword">delete</span>;  MyClass &amp;<span class="keyword">operator</span> = (<span class="type">const</span> MyClass &amp;) = <span class="keyword">delete</span>;<span class="keyword">private</span>:  <span class="type">char</span> *m_text;&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>方法二：</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> DISALLOW_COPY_AND_ASSIGN(MyClass) \  MyClass(const MyClass &amp;); \  MyClass &amp;operator = (const MyClass &amp;)class MyClass&#123;public:  MyClass(char *text);  ~MyClass();private:  DISALLOW_COPY_AND_ASSIGN(MyClass);  char *m_text;&#125;</span></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="6、仅当只有数据成员时使用struct，其它一概使用class"><a href="#6、仅当只有数据成员时使用struct，其它一概使用class" class="headerlink" title="6、仅当只有数据成员时使用struct，其它一概使用class"></a>6、仅当只有数据成员时使用<code>struct</code>，其它一概使用<code>class</code></h3><h3 id="7、优先考虑使用组合，其次是继承"><a href="#7、优先考虑使用组合，其次是继承" class="headerlink" title="7、优先考虑使用组合，其次是继承"></a>7、优先考虑使用组合，其次是继承</h3><p>不要过度使用继承，组合常常更合适一些。尽量做到只在“是一个”，而非“有一个”的情况下使用继承。</p>
+<h3 id="8、仅使用public继承"><a href="#8、仅使用public继承" class="headerlink" title="8、仅使用public继承"></a>8、仅使用<code>public</code>继承</h3><p>所有继承必须是<code>public</code>的，如果想使用私有继承，则应该替换成把基类的实例作为成员对象的方式。</p>
+<h3 id="9、如果类有虚函数，则析构函数也应该为虚函数"><a href="#9、如果类有虚函数，则析构函数也应该为虚函数" class="headerlink" title="9、如果类有虚函数，则析构函数也应该为虚函数"></a>9、如果类有虚函数，则析构函数也应该为虚函数</h3><p>在声明重载时，请使用<code>override</code>、<code>final</code>或<code>virtual</code>的其中之一进行标记。</p>
+<h3 id="10、尽量不要重载运算符，也不要创建用户定义字面量"><a href="#10、尽量不要重载运算符，也不要创建用户定义字面量" class="headerlink" title="10、尽量不要重载运算符，也不要创建用户定义字面量"></a>10、尽量不要重载运算符，也不要创建用户定义字面量</h3><p>但不要为了避免重载操作符而走极端。比如，应当定义<code>==</code>、<code>=</code>和<code>&lt;&lt;</code>，而不是<code>Equals()</code>、<code>CopyFrom()</code>和<code>PrintTo()</code>。</p>
+<h3 id="11、将所有数据成员声明为private，除非是static-const类型成员"><a href="#11、将所有数据成员声明为private，除非是static-const类型成员" class="headerlink" title="11、将所有数据成员声明为private，除非是static const类型成员"></a>11、将所有数据成员声明为<code>private</code>，除非是<code>static const</code>类型成员</h3><p>这么做的原因是要求对数据成员进行存取控制。</p>
+<h3 id="12、将相似的声明放在一起，将public部分放在最前"><a href="#12、将相似的声明放在一起，将public部分放在最前" class="headerlink" title="12、将相似的声明放在一起，将public部分放在最前"></a>12、将相似的声明放在一起，将<code>public</code>部分放在最前</h3><h2 id="类定义一般应以public-开始，后跟protected-，最后是private-在各个部分中，建议将类似的声明放在一起，并且建议以如下的顺序：类型（包括typedef、using和嵌套的结构体与类）、变量、工厂函数、构造函数、赋值运算符、析构函数、其他函数、数据成员。"><a href="#类定义一般应以public-开始，后跟protected-，最后是private-在各个部分中，建议将类似的声明放在一起，并且建议以如下的顺序：类型（包括typedef、using和嵌套的结构体与类）、变量、工厂函数、构造函数、赋值运算符、析构函数、其他函数、数据成员。" class="headerlink" title="类定义一般应以public:开始，后跟protected:，最后是private:在各个部分中，建议将类似的声明放在一起，并且建议以如下的顺序：类型（包括typedef、using和嵌套的结构体与类）、变量、工厂函数、构造函数、赋值运算符、析构函数、其他函数、数据成员。"></a>类定义一般应以<code>public:</code>开始，后跟<code>protected:</code>，最后是<code>private:</code><br>在各个部分中，建议将类似的声明放在一起，并且建议以如下的顺序：类型（包括<code>typedef</code>、<code>using</code>和嵌套的结构体与类）、变量、工厂函数、构造函数、赋值运算符、析构函数、其他函数、数据成员。</h2><h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><h3 id="1、编写简短、凝练、功能单一的函数，尽量不要写超过-100-行的函数"><a href="#1、编写简短、凝练、功能单一的函数，尽量不要写超过-100-行的函数" class="headerlink" title="1、编写简短、凝练、功能单一的函数，尽量不要写超过 100 行的函数"></a>1、编写简短、凝练、功能单一的函数，尽量不要写超过 100 行的函数</h3><p>如果函数超过 100 行，可以考虑在不影响程序结构的前提下对其进行分割。</p>
+<h3 id="2、不同函数中的重复代码应该尽可能提炼成单一的函数"><a href="#2、不同函数中的重复代码应该尽可能提炼成单一的函数" class="headerlink" title="2、不同函数中的重复代码应该尽可能提炼成单一的函数"></a>2、不同函数中的重复代码应该尽可能提炼成单一的函数</h3><h3 id="3、避免函数的代码嵌套过深，尽量低于-5-层"><a href="#3、避免函数的代码嵌套过深，尽量低于-5-层" class="headerlink" title="3、避免函数的代码嵌套过深，尽量低于 5 层"></a>3、避免函数的代码嵌套过深，尽量低于 5 层</h3><p>嵌套深度，指函数中的代码控制块（如<code>if</code>、<code>for</code>、<code>while</code>、<code>switch</code>等）之间互相包含的深度。嵌套过深将导致代码的阅读成本增加。</p>
+<h3 id="4、函数的参数应该尽量不超过-5-个"><a href="#4、函数的参数应该尽量不超过-5-个" class="headerlink" title="4、函数的参数应该尽量不超过 5 个"></a>4、函数的参数应该尽量不超过 5 个</h3><h3 id="5、废弃代码应及时清理"><a href="#5、废弃代码应及时清理" class="headerlink" title="5、废弃代码应及时清理"></a>5、废弃代码应及时清理</h3><p>可以使用注释括起现在暂未使用而将来可能使用的代码，但废弃代码更应当被清除。</p>
+<h3 id="6、将所有输入参数放在所有输出参数之前"><a href="#6、将所有输入参数放在所有输出参数之前" class="headerlink" title="6、将所有输入参数放在所有输出参数之前"></a>6、将所有输入参数放在所有输出参数之前</h3><p>需要注意的是，在加入新参数时不要因为它们是新参数就置于参数列表最后，而是仍然要按照该规则，即将新的输入参数也置于输出参数之前。</p>
+<h3 id="7、所有按引用传递的参数必须加上const"><a href="#7、所有按引用传递的参数必须加上const" class="headerlink" title="7、所有按引用传递的参数必须加上const"></a>7、所有按引用传递的参数必须加上const</h3><p>函数参数列表中，所有引用参数都必须是<code>const</code>。如果一个参数有被改变的可能，则建议使用指针。</p>
+<h3 id="8、尽量使用const对声明的变量或参数进行限制"><a href="#8、尽量使用const对声明的变量或参数进行限制" class="headerlink" title="8、尽量使用const对声明的变量或参数进行限制"></a>8、尽量使用<code>const</code>对声明的变量或参数进行限制</h3><p>尽量使用<code>const</code>，将会提升代码的健壮性。</p>
+<p>在类的<code>set</code>方法中，当输入参数为简单类型，则不需要添加const；当输入参数为容器时，使用<code>const &amp;</code>可提高性能。</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">set_float</span><span class="params">(<span class="type">float</span> var)</span></span>;<span class="function"><span class="type">void</span> <span class="title">set_string</span><span class="params">(<span class="type">const</span> std::string &amp;str)</span></span>;<span class="function"><span class="type">void</span> <span class="title">set_things</span><span class="params">(<span class="type">const</span> std::vector&lt;std::string&gt; &amp;vec)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>在类的<code>get</code>方法中，其后加<code>const</code>表明该函数为只读函数；当输出参数为容器时，使用<code>const &amp;</code>可提高性能，且此时返回值不可被修改。</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">float</span> <span class="title">get_float</span><span class="params">()</span> <span class="type">const</span></span>;<span class="function"><span class="type">const</span> std::vector&lt;std::string&gt; &amp;<span class="title">get_things</span><span class="params">()</span> <span class="type">const</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="9、只允许在非虚函数中使用缺省参数，且必须保证缺省参数的值始终一致"><a href="#9、只允许在非虚函数中使用缺省参数，且必须保证缺省参数的值始终一致" class="headerlink" title="9、只允许在非虚函数中使用缺省参数，且必须保证缺省参数的值始终一致"></a>9、只允许在非虚函数中使用缺省参数，且必须保证缺省参数的值始终一致</h3><p>对于虚函数，不允许使用缺省参数，因为在虚函数中缺省参数不一定能正常工作。如果在每个调用点缺省参数的值都有可能不同，在这种情况下缺省参数也不允许使用。</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Func</span><span class="params">(<span class="type">int</span> n = counter++)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="10、避免野指针的产生"><a href="#10、避免野指针的产生" class="headerlink" title="10、避免野指针的产生"></a>10、避免野指针的产生</h3><p>指针变量在声明时，就应该进行初始化赋值（<code>nullptr</code>或准确的地址，不建议使用<code>NULL</code>）。<br>指针在释放后，且生命周期暂未终结时，需要置空（<code>nullptr</code>，不建议使用<code>NULL</code>）。</p>
+<h3 id="11、建议使用auto绕过繁琐的类型名，且仅在局部变量使用"><a href="#11、建议使用auto绕过繁琐的类型名，且仅在局部变量使用" class="headerlink" title="11、建议使用auto绕过繁琐的类型名，且仅在局部变量使用"></a>11、建议使用<code>auto</code>绕过繁琐的类型名，且仅在局部变量使用</h3><h3 id="12、内联函数应该尽量短"><a href="#12、内联函数应该尽量短" class="headerlink" title="12、内联函数应该尽量短"></a>12、内联函数应该尽量短</h3><h2 id="关键字inline必须与函数定义放在一起才能使函数成为内联函数，仅仅将inline放在函数声明前面不起任何作用内联函数应该尽可能短，原则上不允许超过-10-行的内联函数。"><a href="#关键字inline必须与函数定义放在一起才能使函数成为内联函数，仅仅将inline放在函数声明前面不起任何作用内联函数应该尽可能短，原则上不允许超过-10-行的内联函数。" class="headerlink" title="关键字inline必须与函数定义放在一起才能使函数成为内联函数，仅仅将inline放在函数声明前面不起任何作用内联函数应该尽可能短，原则上不允许超过 10 行的内联函数。"></a>关键字<code>inline</code>必须与函数定义放在一起才能使函数成为内联函数，仅仅将<code>inline</code>放在函数声明前面不起任何作用<br>内联函数应该尽可能短，原则上不允许超过 10 行的内联函数。</h2><h2 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h2><p>在了解命名规则前，首先需要了解几种命名法。</p>
+<p><strong>小驼峰命名法</strong><br>命名的第一个单词以小写字母开始，第二个单词开始以后的每个单词的首字母都采用大写字母。且单词之间无下划线连接，如<code>firstName</code>、<code>lastName</code>。这样的命名看上去就像骆驼峰一样此起彼伏，故得名。</p>
+<p><strong>大驼峰命名法</strong><br>又名“帕斯卡命名法”，与小驼峰命名法类似，但每个单词的首字母均大写。如<code>FirstName</code>、<code>LastName</code>。</p>
+<p><strong>匈牙利命名法</strong><br>基本结构是：属性 + 类型 + 具体描述。如<code>uiNum</code>、<code>pTimer</code>、<code>strName</code>、<code>g_pSource</code>。<br>属性部分：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><figcaption><span>text</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">g_ 全局变量</span><br><span class="line">c_ 常量</span><br><span class="line">m_ 类成员变量</span><br><span class="line">s_ 静态变量</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+<p>类型部分：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><figcaption><span>text</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">c char</span><br><span class="line">b bool</span><br><span class="line">i/n int</span><br><span class="line">u unsigned</span><br><span class="line">f float/file</span><br><span class="line">d double</span><br><span class="line">l long</span><br><span class="line">h handle</span><br><span class="line">fn 函数</span><br><span class="line">p 指针</span><br><span class="line">str string</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+<p><strong>下划线命名法</strong><br>命名的每个单词用下划线隔开，且每个单词均小写。如<code>first_name</code>、<code>last_name</code>。</p>
+<h3 id="1、尽可能使用描述性的命名，不要使用含糊不清的缩写"><a href="#1、尽可能使用描述性的命名，不要使用含糊不清的缩写" class="headerlink" title="1、尽可能使用描述性的命名，不要使用含糊不清的缩写"></a>1、尽可能使用描述性的命名，不要使用含糊不清的缩写</h3><h3 id="2、所有类型名称使用大驼峰命名法"><a href="#2、所有类型名称使用大驼峰命名法" class="headerlink" title="2、所有类型名称使用大驼峰命名法"></a>2、所有类型名称使用大驼峰命名法</h3><p>所有类型包括：类、结构体、类型定义（typedef）、枚举、类型模板参数。</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">UrlTable</span>&#123; ...<span class="keyword">struct</span> <span class="title class_">UrlTableProperties</span>&#123; ...<span class="keyword">typedef</span> hash_map&lt;UrlTableProperties *, string&gt; PropertiesMap;<span class="keyword">using</span> PropertiesMap = hash_map&lt;UrlTableProperties *, string&gt;;<span class="keyword">enum</span> <span class="title class_">UrlTableErrors</span>&#123; ...</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="3、变量使用下划线命名法，且类的成员变量以m-开头"><a href="#3、变量使用下划线命名法，且类的成员变量以m-开头" class="headerlink" title="3、变量使用下划线命名法，且类的成员变量以m_开头"></a>3、变量使用下划线命名法，且类的成员变量以<code>m_</code>开头</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">string table_name;<span class="keyword">class</span> <span class="title class_">TableInfo</span>&#123;  ...<span class="keyword">private</span>:  string m_table_name;&#125;;<span class="keyword">struct</span> <span class="title class_">UrlTableProperties</span>&#123;  string table_name;&#125;;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="4、常量使用小驼峰命名法，且以k开头"><a href="#4、常量使用小驼峰命名法，且以k开头" class="headerlink" title="4、常量使用小驼峰命名法，且以k开头"></a>4、常量使用小驼峰命名法，且以<code>k</code>开头</h3><p>常量，即声明为<code>constexpr</code>或<code>const</code>的变量。</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> kDaysInAWeek = <span class="number">7</span>;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="5、函数使用大驼峰命名法或下划线命名法"><a href="#5、函数使用大驼峰命名法或下划线命名法" class="headerlink" title="5、函数使用大驼峰命名法或下划线命名法"></a>5、函数使用大驼峰命名法或下划线命名法</h3><p>一般来说，相对于一个功能模块而言，模块外有可能会调用到的函数（即对外API），命名应该使用大驼峰命名法。而模块内部调用的函数，命名应该使用下划线命名法。</p>
+<h3 id="6、命名空间使用下划线命名法"><a href="#6、命名空间使用下划线命名法" class="headerlink" title="6、命名空间使用下划线命名法"></a>6、命名空间使用下划线命名法</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> gbtimer_verilog&#123; ...</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="7、宏的命名使用全大写，并且可以使用下划线"><a href="#7、宏的命名使用全大写，并且可以使用下划线" class="headerlink" title="7、宏的命名使用全大写，并且可以使用下划线"></a>7、宏的命名使用全大写，并且可以使用下划线</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> PI_ROUNDED 3.0</span></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="8、枚举的命名应当和常量或宏一致，且枚举的第一个值应当为默认值或无效值"><a href="#8、枚举的命名应当和常量或宏一致，且枚举的第一个值应当为默认值或无效值" class="headerlink" title="8、枚举的命名应当和常量或宏一致，且枚举的第一个值应当为默认值或无效值"></a>8、枚举的命名应当和常量或宏一致，且枚举的第一个值应当为默认值或无效值</h3><p>具体使用哪种，视项目内已有代码而定。</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">UrlTableErrors</span>&#123;    kOK = <span class="number">0</span>,    kErrorOutOfMemory,    kErrorMalformedInput,&#125;;<span class="keyword">enum</span> <span class="title class_">AlternateUrlTableErrors</span>&#123;    OK = <span class="number">0</span>,    OUT_OF_MEMORY = <span class="number">1</span>,    MALFORMED_INPUT = <span class="number">2</span>,&#125;;</span><br></pre></td></tr></table></figure></div>
+
+<hr>
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><h3 id="1、函数声明处的注释描述函数功能，定义处的注释描述函数实现"><a href="#1、函数声明处的注释描述函数功能，定义处的注释描述函数实现" class="headerlink" title="1、函数声明处的注释描述函数功能，定义处的注释描述函数实现"></a>1、函数声明处的注释描述函数功能，定义处的注释描述函数实现</h3><p>但同时也要避免对显而易见的内容进行注释</p>
+<h3 id="2、对那些临时的、短期的解决方案，或需要补充的代码使用TODO注释"><a href="#2、对那些临时的、短期的解决方案，或需要补充的代码使用TODO注释" class="headerlink" title="2、对那些临时的、短期的解决方案，或需要补充的代码使用TODO注释"></a>2、对那些临时的、短期的解决方案，或需要补充的代码使用<code>TODO</code>注释</h3><hr>
+<h2 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h2><p>每个人都可能有自己的代码风格和格式，但如果一个项目中的所有人都遵循同一风格的话，这个项目就能更顺利地进行。每个人未必能同意下述的每一处格式规则，而且其中的不少规则需要一定时间的适应，但整个项目服从统一的编程风格是很重要的，只有这样才能让所有人轻松地阅读和理解代码。</p>
+<h3 id="1、每一行代码字符数尽量不要超过-80"><a href="#1、每一行代码字符数尽量不要超过-80" class="headerlink" title="1、每一行代码字符数尽量不要超过 80"></a>1、每一行代码字符数尽量不要超过 80</h3><h3 id="2、避免产生超过-3000-行的超大文件"><a href="#2、避免产生超过-3000-行的超大文件" class="headerlink" title="2、避免产生超过 3000 行的超大文件"></a>2、避免产生超过 3000 行的超大文件</h3><h3 id="3、使用空格缩进，不要使用制表符，且每级缩进为-2-个空格"><a href="#3、使用空格缩进，不要使用制表符，且每级缩进为-2-个空格" class="headerlink" title="3、使用空格缩进，不要使用制表符，且每级缩进为 2 个空格"></a>3、使用空格缩进，不要使用制表符，且每级缩进为 2 个空格</h3><h3 id="4、相对独立的程序块之间建议添加空行"><a href="#4、相对独立的程序块之间建议添加空行" class="headerlink" title="4、相对独立的程序块之间建议添加空行"></a>4、相对独立的程序块之间建议添加空行</h3><h3 id="5、返回类型和函数名在同一行，参数也尽量放在同一行，如果放不下就对形参分行"><a href="#5、返回类型和函数名在同一行，参数也尽量放在同一行，如果放不下就对形参分行" class="headerlink" title="5、返回类型和函数名在同一行，参数也尽量放在同一行，如果放不下就对形参分行"></a>5、返回类型和函数名在同一行，参数也尽量放在同一行，如果放不下就对形参分行</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ReturnType <span class="title">ClassName::ReallyLongFunctionName</span><span class="params">(Type par_name1,  Type par_name2, Type par_name3)</span></span>&#123;  <span class="built_in">DoSomething</span>();  ...&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>或者：</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ReturnType <span class="title">ClassName::ReallyLongFunctionName</span><span class="params">(Type par_name1,                                             Type par_name2,                                             Type par_name3)</span></span>&#123;  <span class="built_in">DoSomething</span>();  ...&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="6、if、for、do、while、switch、case、default等语句与-在同一行，而-独占一行"><a href="#6、if、for、do、while、switch、case、default等语句与-在同一行，而-独占一行" class="headerlink" title="6、if、for、do、while、switch、case、default等语句与{在同一行，而}独占一行"></a>6、<code>if</code>、<code>for</code>、<code>do</code>、<code>while</code>、<code>switch</code>、<code>case</code>、<code>default</code>等语句与<code>&#123;</code>在同一行，而<code>&#125;</code>独占一行</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (condition) &#123;  ...&#125; <span class="keyword">else</span> <span class="keyword">if</span> (...) &#123;  ...&#125; <span class="keyword">else</span> &#123;  ...&#125;<span class="keyword">if</span> (x == kFoo) <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Foo</span>();</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> (var) &#123;  <span class="keyword">case</span> <span class="number">0</span>: &#123;    ...    <span class="keyword">break</span>;  &#125;  <span class="keyword">case</span> <span class="number">1</span>: &#123;    ...    <span class="keyword">break</span>;  &#125;  <span class="keyword">default</span>: &#123;    ...  &#125;&#125;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (condition) &#123;&#125;<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; kSomeNumber; ++i) &#123;  ...&#125;<span class="type">int</span> i = <span class="number">0</span>;<span class="keyword">for</span> ( ; i &lt; kSomeNumber; ) &#123;  ...  ++i;&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="7、-gt-、-、指针-x2F-地址操作符-96-96-与-amp-前后不加空格"><a href="#7、-gt-、-、指针-x2F-地址操作符-96-96-与-amp-前后不加空格" class="headerlink" title="7、&gt;、.、指针&#x2F;地址操作符&#96;&#96;与&amp;前后不加空格"></a>7、<code>&gt;</code>、<code>.</code>、指针&#x2F;地址操作符&#96;&#96;与<code>&amp;</code>前后不加空格</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x = *p;p = &amp;x;x = r.y;x = r-&gt;y;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="8、在声明指针变量或参数时，建议-96-96-与-amp-紧挨变量名"><a href="#8、在声明指针变量或参数时，建议-96-96-与-amp-紧挨变量名" class="headerlink" title="8、在声明指针变量或参数时，建议&#96;&#96;与&amp;紧挨变量名"></a>8、在声明指针变量或参数时，建议&#96;&#96;与<code>&amp;</code>紧挨变量名</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> *c;<span class="type">const</span> string &amp;str;<span class="type">char</span>* c;<span class="type">const</span> string&amp; str;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="9、一个表达式换行时，操作符总位于行尾"><a href="#9、一个表达式换行时，操作符总位于行尾" class="headerlink" title="9、一个表达式换行时，操作符总位于行尾"></a>9、一个表达式换行时，操作符总位于行尾</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (this_one_thing &gt; this_other_thing &amp;&amp;    a_third_thing == a_fourth_thing &amp;&amp;    yet_another &amp;&amp; last_one) &#123;  ...&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="10、不要在return表达式里加上非必须的括号"><a href="#10、不要在return表达式里加上非必须的括号" class="headerlink" title="10、不要在return表达式里加上非必须的括号"></a>10、不要在<code>return</code>表达式里加上非必须的括号</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> result;<span class="keyword">return</span> (result);<span class="keyword">return</span> (some_long_condition &amp;&amp; another_condition);</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="11、预处理指令不要缩进，从行首开始"><a href="#11、预处理指令不要缩进，从行首开始" class="headerlink" title="11、预处理指令不要缩进，从行首开始"></a>11、预处理指令不要缩进，从行首开始</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (lopsided_score) &#123;<span class="meta">#<span class="keyword">if</span> DISASTER_PENDING    DropEverything();#<span class="keyword">endif</span>    BackToNormal();  &#125;</span></span><br></pre></td></tr></table></figure></div>
+
+<h3 id="12、访问控制快的声明依次序是public-、protected-、private，且不进行缩进"><a href="#12、访问控制快的声明依次序是public-、protected-、private，且不进行缩进" class="headerlink" title="12、访问控制快的声明依次序是public:、protected:、private，且不进行缩进"></a>12、访问控制快的声明依次序是<code>public:</code>、<code>protected:</code>、<code>private</code>，且不进行缩进</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyClass</span> : <span class="keyword">public</span> OtherClass&#123;<span class="keyword">public</span>:  <span class="built_in">MyClass</span>();  <span class="function"><span class="keyword">explicit</span> <span class="title">MyClass</span><span class="params">(<span class="type">int</span> var)</span></span>;  ~<span class="built_in">MyClass</span>() &#123;&#125;  <span class="function"><span class="type">void</span> <span class="title">SomeFunction</span><span class="params">()</span></span>;  <span class="function"><span class="type">int</span> <span class="title">get_var</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> m_var; &#125;<span class="keyword">private</span>:  <span class="type">int</span> m_var;&#125;;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="13、命名空间、函数、类、结构体、联合体的-与-均另起一行，枚举视长短而定"><a href="#13、命名空间、函数、类、结构体、联合体的-与-均另起一行，枚举视长短而定" class="headerlink" title="13、命名空间、函数、类、结构体、联合体的{与}均另起一行，枚举视长短而定"></a>13、命名空间、函数、类、结构体、联合体的<code>&#123;</code>与<code>&#125;</code>均另起一行，枚举视长短而定</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">config_rule</span>&#123;  <span class="type">char</span> *name;  <span class="keyword">union</span>  &#123;    <span class="type">int</span> i;    <span class="type">double</span> d;  &#125;;&#125;;<span class="keyword">enum</span> <span class="title class_">config_type</span>&#123;  CONFIG_TYPE1,  CONFIG_TYPE2，  ...&#125;;<span class="keyword">enum</span> <span class="title class_">num_type</span> &#123; NUM_TYPE1, NUM_TYPE2 &#125;;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="14、水平留白"><a href="#14、水平留白" class="headerlink" title="14、水平留白"></a>14、水平留白</h3><p>水平留白使用根据在代码中的位置决定，但永远不要在行尾添加没意义的留白。</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> x[] = &#123; <span class="number">0</span> &#125;;<span class="type">int</span> x[] = &#123;<span class="number">0</span>&#125;;x++;v = w * (x + z);x = a &gt; b ? a : b;vector&lt;string&gt; x;y = <span class="built_in">static_cast</span>&lt;<span class="type">char</span> *&gt;(x);<span class="function"><span class="type">void</span> <span class="title">func</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="15、垂直留白"><a href="#15、垂直留白" class="headerlink" title="15、垂直留白"></a>15、垂直留白</h3><h2 id="基本原则是：同一屏可以显示的代码越多，越容易理解程序的控制流。当然，过于密集的代码块和过于疏松的代码块同样难看，这取决于你的判断。但通常是垂直留白越少越好，且函数体首尾不要留空行，不要有连续的空行"><a href="#基本原则是：同一屏可以显示的代码越多，越容易理解程序的控制流。当然，过于密集的代码块和过于疏松的代码块同样难看，这取决于你的判断。但通常是垂直留白越少越好，且函数体首尾不要留空行，不要有连续的空行" class="headerlink" title="基本原则是：同一屏可以显示的代码越多，越容易理解程序的控制流。当然，过于密集的代码块和过于疏松的代码块同样难看，这取决于你的判断。但通常是垂直留白越少越好，且函数体首尾不要留空行，不要有连续的空行"></a>基本原则是：同一屏可以显示的代码越多，越容易理解程序的控制流。当然，过于密集的代码块和过于疏松的代码块同样难看，这取决于你的判断。但通常是垂直留白越少越好，且函数体首尾不要留空行，不要有连续的空行</h2><h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><h3 id="1、程序编译时产生的所有warning都应该被修复"><a href="#1、程序编译时产生的所有warning都应该被修复" class="headerlink" title="1、程序编译时产生的所有warning都应该被修复"></a>1、程序编译时产生的所有<code>warning</code>都应该被修复</h3><p>特殊的，LEX与YACC产生的移进-归约冲突及归约-归约冲突视情况而定，但原则上所有告警都应该被修复。</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> C++编程规范（参考Google、华为）</li>
+        <li><strong>Author:</strong> Huan Lee</li>
+        <li><strong>Created at:</strong> 2023-05-28 16:16:44</li>
+        
+            <li>
+                <strong>Updated at:</strong> 2024-02-26 04:53:15
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://www.mirthfullee.com/2023/05/28/C++编程规范（参考Google、华为）/
+        </li>
+        <li>
+            <strong>License:</strong> This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>.
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/c/">#c++</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E8%A7%84%E8%8C%83/">#规范</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/05/28/%E8%B0%B7%E6%AD%8C%E5%AD%A6%E6%9C%AF%E6%A3%80%E7%B4%A2%E8%AE%BA%E6%96%87/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">谷歌学术检索论文</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/05/28/VSCode%20debug%E9%85%8D%E7%BD%AE%E5%AF%B9%E6%AF%94/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">VSCode debug配置对比</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">C++编程规范（参考Google、华为）</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%90%8D%E5%8F%8A%E7%89%88%E6%9D%83%E4%BF%A1%E6%81%AF"><span class="nav-text">文件名及版权信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E6%96%87%E4%BB%B6%E5%90%8D"><span class="nav-text">1、文件名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E7%89%88%E6%9D%83%E4%BF%A1%E6%81%AF"><span class="nav-text">2、版权信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6%E5%9D%87%E9%9C%80%E8%A6%81%E7%BB%9F%E4%B8%80%E6%A0%BC%E5%BC%8F%E7%9A%84%E7%89%88%E6%9D%83%E4%BF%A1%E6%81%AF"><span class="nav-text">所有文件均需要统一格式的版权信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="nav-text">头文件 </span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E5%9C%A8-h%E4%B8%AD%E4%BD%BF%E7%94%A8-define%E6%9D%A5%E9%98%B2%E6%AD%A2%E5%A4%B4%E6%96%87%E4%BB%B6%E8%A2%AB%E5%A4%9A%E9%87%8D%E5%8C%85%E5%90%AB%EF%BC%8C%E5%B9%B6%E5%9C%A8%E6%9C%80%E5%90%8E%E6%B3%A8%E9%87%8A%E5%87%BA%E5%AE%8F%E7%9A%84%E5%90%8D%E5%AD%97"><span class="nav-text">1、在.h中使用#define来防止头文件被多重包含，并在最后注释出宏的名字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E5%B0%BD%E9%87%8F%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8%E5%89%8D%E7%BD%AE%E5%A3%B0%E6%98%8E%EF%BC%8C%E4%BC%98%E5%85%88%E4%BD%BF%E7%94%A8-include%E6%9D%A5%E5%8C%85%E5%90%AB%E7%9B%B8%E5%85%B3%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="nav-text">2、尽量避免使用前置声明，优先使用#include来包含相关头文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81-include%E7%9A%84%E5%8C%85%E5%90%AB%E9%A1%BA%E5%BA%8F"><span class="nav-text">3、#include的包含顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81%E5%A4%B4%E6%96%87%E4%BB%B6%E5%BA%94%E5%90%91%E7%A8%B3%E5%AE%9A%E7%9A%84%E6%96%B9%E5%90%91%E5%8C%85%E5%90%AB"><span class="nav-text">4、头文件应向稳定的方向包含</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E5%BD%93%E8%AE%A9%E4%B8%8D%E7%A8%B3%E5%AE%9A%E7%9A%84%E6%A8%A1%E5%9D%97%E4%BE%9D%E8%B5%96%E7%A8%B3%E5%AE%9A%E7%9A%84%E6%A8%A1%E5%9D%97%EF%BC%8C%E4%BB%8E%E8%80%8C%E5%BD%93%E4%B8%8D%E7%A8%B3%E5%AE%9A%E7%9A%84%E6%A8%A1%E5%9D%97%E5%8F%91%E7%94%9F%E5%8F%98%E5%8C%96%E6%97%B6%EF%BC%8C%E4%B8%8D%E4%BC%9A%E5%BD%B1%E5%93%8D%EF%BC%88%E7%BC%96%E8%AF%91%EF%BC%89%E7%A8%B3%E5%AE%9A%E7%9A%84%E6%A8%A1%E5%9D%97%E7%A6%81%E6%AD%A2%E5%A4%B4%E6%96%87%E4%BB%B6%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%EF%BC%8C%E6%8C%87a-h%E5%8C%85%E5%90%ABb-h%EF%BC%8Cb-h%E5%8C%85%E5%90%ABc-h%EF%BC%8Cc-h%E5%8C%85%E5%90%ABa-h%E3%80%82%E7%A6%81%E6%AD%A2%E5%8C%85%E5%90%AB%E7%94%A8%E4%B8%8D%E5%88%B0%E7%9A%84%E5%A4%B4%E6%96%87%E4%BB%B6%E3%80%82%E5%A4%B4%E6%96%87%E4%BB%B6%E5%BA%94%E5%BD%93%E8%87%AA%E5%8C%85%E5%90%AB%EF%BC%8C%E6%8C%87%E4%BB%BB%E6%84%8F%E4%B8%80%E4%B8%AA%E5%A4%B4%E6%96%87%E4%BB%B6%E5%9D%87%E5%8F%AF%E7%8B%AC%E7%AB%8B%E7%BC%96%E8%AF%91%E3%80%82"><span class="nav-text">应当让不稳定的模块依赖稳定的模块，从而当不稳定的模块发生变化时，不会影响（编译）稳定的模块禁止头文件循环依赖，指a.h包含b.h，b.h包含c.h，c.h包含a.h。禁止包含用不到的头文件。头文件应当自包含，指任意一个头文件均可独立编译。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-text">作用域</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E5%9C%A8%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E6%9C%80%E5%90%8E%E6%B3%A8%E9%87%8A%E5%87%BA%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E5%90%8D%E5%AD%97"><span class="nav-text">1、在命名空间的最后注释出命名空间的名字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E9%81%BF%E5%85%8D%E4%BD%BF%E7%94%A8using%E5%BC%95%E5%85%A5%E6%95%B4%E4%B8%AA%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E7%9A%84%E6%A0%87%E8%AF%86%E7%AC%A6%E5%8F%B7"><span class="nav-text">2、避免使用using引入整个命名空间的标识符号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E9%81%BF%E5%85%8D%E8%BF%9B%E8%A1%8C%E5%A4%A7%E9%87%8F%E6%9E%84%E9%80%A0%E5%8F%8A%E6%9E%90%E6%9E%84%E6%93%8D%E4%BD%9C"><span class="nav-text">3、避免进行大量构造及析构操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81%E5%B0%BD%E9%87%8F%E5%9C%A8%E5%8F%98%E9%87%8F%E5%A3%B0%E6%98%8E%E6%97%B6%E8%BF%9B%E8%A1%8C%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%8C%E4%B8%94%E9%81%BF%E5%85%8D%E8%BF%9B%E8%A1%8C%E6%97%A0%E6%95%88%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-text">4、尽量在变量声明时进行初始化，且避免进行无效的初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%E3%80%81%E5%B0%BD%E9%87%8F%E9%81%BF%E5%85%8D%E5%85%A8%E5%B1%80%E5%87%BD%E6%95%B0%E5%92%8C%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E6%88%96static%E5%85%B3%E9%94%AE%E5%AD%97%E7%AD%89%E8%BF%9B%E8%A1%8C%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%99%90%E5%88%B6"><span class="nav-text">5、尽量避免全局函数和全局变量，使用命名空间或static关键字等进行作用域限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6%E3%80%81%E7%A6%81%E6%AD%A2%E5%AE%9A%E4%B9%89%E9%9D%99%E6%80%81%E5%82%A8%E5%AD%98%E5%91%A8%E6%9C%9F%E9%9D%9EPOD%E5%8F%98%E9%87%8F"><span class="nav-text">6、禁止定义静态储存周期非POD变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A6%81%E6%AD%A2%E4%BD%BF%E7%94%A8%E7%B1%BB%E7%9A%84%E9%9D%99%E6%80%81%E5%AD%98%E5%82%A8%E5%91%A8%E6%9C%9F%E5%8F%98%E9%87%8F%EF%BC%8C%E5%8D%B3%E7%A6%81%E7%94%A8vector%E5%92%8Cstring%E7%AD%89%EF%BC%9A%E7%94%B1%E4%BA%8E%E6%9E%84%E9%80%A0%E5%92%8C%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E9%A1%BA%E5%BA%8F%E7%9A%84%E4%B8%8D%E7%A1%AE%E5%AE%9A%E6%80%A7%EF%BC%8C%E5%AE%83%E4%BB%AC%E4%BC%9A%E5%AF%BC%E8%87%B4%E9%9A%BE%E4%BB%A5%E5%8F%91%E7%8E%B0%E7%9A%84bug%E3%80%82%E4%B8%8D%E8%BF%87constexpr%E5%8F%98%E9%87%8F%E9%99%A4%E5%A4%96%EF%BC%8C%E5%9B%A0%E4%B8%BA%E5%AE%83%E4%B8%8D%E6%B6%89%E5%8F%8A%E5%8A%A8%E6%80%81%E5%88%9D%E5%A7%8B%E5%8C%96%E5%92%8C%E6%9E%90%E6%9E%84"><span class="nav-text">禁止使用类的静态存储周期变量，即禁用vector和string等：由于构造和析构函数调用顺序的不确定性，它们会导致难以发现的bug。不过constexpr变量除外，因为它不涉及动态初始化和析构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB"><span class="nav-text">类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E4%B8%8D%E8%A6%81%E5%9C%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%92%8C%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%E4%B8%AD%E8%B0%83%E7%94%A8%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-text">1、不要在构造函数和析构函数中调用虚函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E4%B8%8D%E8%A6%81%E5%9C%A8%E6%97%A0%E6%B3%95%E6%8A%A5%E5%87%BA%E9%94%99%E8%AF%AF%E6%97%B6%E8%BF%9B%E8%A1%8C%E5%8F%AF%E8%83%BD%E5%A4%B1%E8%B4%A5%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-text">2、不要在无法报出错误时进行可能失败的初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E5%BB%BA%E8%AE%AE%E4%BD%BF%E7%94%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E5%88%97%E8%A1%A8%E6%9E%84%E9%80%A0%E5%AF%B9%E8%B1%A1%EF%BC%8C%E4%B8%94%E5%92%8C%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E3%80%81%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%E4%B8%80%E6%A0%B7%E6%94%BE%E5%9C%A8%E7%B1%BB%E5%A4%96%E5%AE%9E%E7%8E%B0"><span class="nav-text">3、建议使用初始化列表构造对象，且和构造函数、析构函数一样放在类外实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81%E4%B8%8D%E8%A6%81%E5%AE%9A%E4%B9%89%E9%9A%90%E5%BC%8F%E8%BD%AC%E6%8D%A2%E7%B1%BB%E5%9E%8B"><span class="nav-text">4、不要定义隐式转换类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%E3%80%81%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%92%8C%E6%8B%B7%E8%B4%9D%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97%E7%AC%A6%EF%BC%8C%E7%A7%BB%E5%8A%A8%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%92%8C%E7%A7%BB%E5%8A%A8%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97%E7%AC%A6%E6%88%90%E5%A5%97%E4%BD%BF%E7%94%A8%EF%BC%8C%E5%A6%82%E6%9E%9C%E4%B8%8D%E9%9C%80%E8%A6%81%EF%BC%8C%E5%88%99%E5%B0%86%E5%AE%83%E4%BB%AC%E6%98%BE%E5%BC%8F%E5%9C%B0%E7%A6%81%E7%94%A8"><span class="nav-text">5、拷贝构造函数和拷贝赋值运算符，移动构造函数和移动赋值运算符成套使用，如果不需要，则将它们显式地禁用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6%E3%80%81%E4%BB%85%E5%BD%93%E5%8F%AA%E6%9C%89%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98%E6%97%B6%E4%BD%BF%E7%94%A8struct%EF%BC%8C%E5%85%B6%E5%AE%83%E4%B8%80%E6%A6%82%E4%BD%BF%E7%94%A8class"><span class="nav-text">6、仅当只有数据成员时使用struct，其它一概使用class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7%E3%80%81%E4%BC%98%E5%85%88%E8%80%83%E8%99%91%E4%BD%BF%E7%94%A8%E7%BB%84%E5%90%88%EF%BC%8C%E5%85%B6%E6%AC%A1%E6%98%AF%E7%BB%A7%E6%89%BF"><span class="nav-text">7、优先考虑使用组合，其次是继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8%E3%80%81%E4%BB%85%E4%BD%BF%E7%94%A8public%E7%BB%A7%E6%89%BF"><span class="nav-text">8、仅使用public继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9%E3%80%81%E5%A6%82%E6%9E%9C%E7%B1%BB%E6%9C%89%E8%99%9A%E5%87%BD%E6%95%B0%EF%BC%8C%E5%88%99%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%E4%B9%9F%E5%BA%94%E8%AF%A5%E4%B8%BA%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-text">9、如果类有虚函数，则析构函数也应该为虚函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10%E3%80%81%E5%B0%BD%E9%87%8F%E4%B8%8D%E8%A6%81%E9%87%8D%E8%BD%BD%E8%BF%90%E7%AE%97%E7%AC%A6%EF%BC%8C%E4%B9%9F%E4%B8%8D%E8%A6%81%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E5%AE%9A%E4%B9%89%E5%AD%97%E9%9D%A2%E9%87%8F"><span class="nav-text">10、尽量不要重载运算符，也不要创建用户定义字面量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11%E3%80%81%E5%B0%86%E6%89%80%E6%9C%89%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98%E5%A3%B0%E6%98%8E%E4%B8%BAprivate%EF%BC%8C%E9%99%A4%E9%9D%9E%E6%98%AFstatic-const%E7%B1%BB%E5%9E%8B%E6%88%90%E5%91%98"><span class="nav-text">11、将所有数据成员声明为private，除非是static const类型成员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12%E3%80%81%E5%B0%86%E7%9B%B8%E4%BC%BC%E7%9A%84%E5%A3%B0%E6%98%8E%E6%94%BE%E5%9C%A8%E4%B8%80%E8%B5%B7%EF%BC%8C%E5%B0%86public%E9%83%A8%E5%88%86%E6%94%BE%E5%9C%A8%E6%9C%80%E5%89%8D"><span class="nav-text">12、将相似的声明放在一起，将public部分放在最前</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%AE%9A%E4%B9%89%E4%B8%80%E8%88%AC%E5%BA%94%E4%BB%A5public-%E5%BC%80%E5%A7%8B%EF%BC%8C%E5%90%8E%E8%B7%9Fprotected-%EF%BC%8C%E6%9C%80%E5%90%8E%E6%98%AFprivate-%E5%9C%A8%E5%90%84%E4%B8%AA%E9%83%A8%E5%88%86%E4%B8%AD%EF%BC%8C%E5%BB%BA%E8%AE%AE%E5%B0%86%E7%B1%BB%E4%BC%BC%E7%9A%84%E5%A3%B0%E6%98%8E%E6%94%BE%E5%9C%A8%E4%B8%80%E8%B5%B7%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%BB%BA%E8%AE%AE%E4%BB%A5%E5%A6%82%E4%B8%8B%E7%9A%84%E9%A1%BA%E5%BA%8F%EF%BC%9A%E7%B1%BB%E5%9E%8B%EF%BC%88%E5%8C%85%E6%8B%ACtypedef%E3%80%81using%E5%92%8C%E5%B5%8C%E5%A5%97%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93%E4%B8%8E%E7%B1%BB%EF%BC%89%E3%80%81%E5%8F%98%E9%87%8F%E3%80%81%E5%B7%A5%E5%8E%82%E5%87%BD%E6%95%B0%E3%80%81%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E3%80%81%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97%E7%AC%A6%E3%80%81%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%E3%80%81%E5%85%B6%E4%BB%96%E5%87%BD%E6%95%B0%E3%80%81%E6%95%B0%E6%8D%AE%E6%88%90%E5%91%98%E3%80%82"><span class="nav-text">类定义一般应以public:开始，后跟protected:，最后是private:在各个部分中，建议将类似的声明放在一起，并且建议以如下的顺序：类型（包括typedef、using和嵌套的结构体与类）、变量、工厂函数、构造函数、赋值运算符、析构函数、其他函数、数据成员。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E7%BC%96%E5%86%99%E7%AE%80%E7%9F%AD%E3%80%81%E5%87%9D%E7%BB%83%E3%80%81%E5%8A%9F%E8%83%BD%E5%8D%95%E4%B8%80%E7%9A%84%E5%87%BD%E6%95%B0%EF%BC%8C%E5%B0%BD%E9%87%8F%E4%B8%8D%E8%A6%81%E5%86%99%E8%B6%85%E8%BF%87-100-%E8%A1%8C%E7%9A%84%E5%87%BD%E6%95%B0"><span class="nav-text">1、编写简短、凝练、功能单一的函数，尽量不要写超过 100 行的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E4%B8%8D%E5%90%8C%E5%87%BD%E6%95%B0%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E4%BB%A3%E7%A0%81%E5%BA%94%E8%AF%A5%E5%B0%BD%E5%8F%AF%E8%83%BD%E6%8F%90%E7%82%BC%E6%88%90%E5%8D%95%E4%B8%80%E7%9A%84%E5%87%BD%E6%95%B0"><span class="nav-text">2、不同函数中的重复代码应该尽可能提炼成单一的函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E9%81%BF%E5%85%8D%E5%87%BD%E6%95%B0%E7%9A%84%E4%BB%A3%E7%A0%81%E5%B5%8C%E5%A5%97%E8%BF%87%E6%B7%B1%EF%BC%8C%E5%B0%BD%E9%87%8F%E4%BD%8E%E4%BA%8E-5-%E5%B1%82"><span class="nav-text">3、避免函数的代码嵌套过深，尽量低于 5 层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0%E5%BA%94%E8%AF%A5%E5%B0%BD%E9%87%8F%E4%B8%8D%E8%B6%85%E8%BF%87-5-%E4%B8%AA"><span class="nav-text">4、函数的参数应该尽量不超过 5 个</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%E3%80%81%E5%BA%9F%E5%BC%83%E4%BB%A3%E7%A0%81%E5%BA%94%E5%8F%8A%E6%97%B6%E6%B8%85%E7%90%86"><span class="nav-text">5、废弃代码应及时清理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6%E3%80%81%E5%B0%86%E6%89%80%E6%9C%89%E8%BE%93%E5%85%A5%E5%8F%82%E6%95%B0%E6%94%BE%E5%9C%A8%E6%89%80%E6%9C%89%E8%BE%93%E5%87%BA%E5%8F%82%E6%95%B0%E4%B9%8B%E5%89%8D"><span class="nav-text">6、将所有输入参数放在所有输出参数之前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7%E3%80%81%E6%89%80%E6%9C%89%E6%8C%89%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92%E7%9A%84%E5%8F%82%E6%95%B0%E5%BF%85%E9%A1%BB%E5%8A%A0%E4%B8%8Aconst"><span class="nav-text">7、所有按引用传递的参数必须加上const</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8%E3%80%81%E5%B0%BD%E9%87%8F%E4%BD%BF%E7%94%A8const%E5%AF%B9%E5%A3%B0%E6%98%8E%E7%9A%84%E5%8F%98%E9%87%8F%E6%88%96%E5%8F%82%E6%95%B0%E8%BF%9B%E8%A1%8C%E9%99%90%E5%88%B6"><span class="nav-text">8、尽量使用const对声明的变量或参数进行限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9%E3%80%81%E5%8F%AA%E5%85%81%E8%AE%B8%E5%9C%A8%E9%9D%9E%E8%99%9A%E5%87%BD%E6%95%B0%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%BC%BA%E7%9C%81%E5%8F%82%E6%95%B0%EF%BC%8C%E4%B8%94%E5%BF%85%E9%A1%BB%E4%BF%9D%E8%AF%81%E7%BC%BA%E7%9C%81%E5%8F%82%E6%95%B0%E7%9A%84%E5%80%BC%E5%A7%8B%E7%BB%88%E4%B8%80%E8%87%B4"><span class="nav-text">9、只允许在非虚函数中使用缺省参数，且必须保证缺省参数的值始终一致</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10%E3%80%81%E9%81%BF%E5%85%8D%E9%87%8E%E6%8C%87%E9%92%88%E7%9A%84%E4%BA%A7%E7%94%9F"><span class="nav-text">10、避免野指针的产生</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11%E3%80%81%E5%BB%BA%E8%AE%AE%E4%BD%BF%E7%94%A8auto%E7%BB%95%E8%BF%87%E7%B9%81%E7%90%90%E7%9A%84%E7%B1%BB%E5%9E%8B%E5%90%8D%EF%BC%8C%E4%B8%94%E4%BB%85%E5%9C%A8%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E4%BD%BF%E7%94%A8"><span class="nav-text">11、建议使用auto绕过繁琐的类型名，且仅在局部变量使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12%E3%80%81%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0%E5%BA%94%E8%AF%A5%E5%B0%BD%E9%87%8F%E7%9F%AD"><span class="nav-text">12、内联函数应该尽量短</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%AD%97inline%E5%BF%85%E9%A1%BB%E4%B8%8E%E5%87%BD%E6%95%B0%E5%AE%9A%E4%B9%89%E6%94%BE%E5%9C%A8%E4%B8%80%E8%B5%B7%E6%89%8D%E8%83%BD%E4%BD%BF%E5%87%BD%E6%95%B0%E6%88%90%E4%B8%BA%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0%EF%BC%8C%E4%BB%85%E4%BB%85%E5%B0%86inline%E6%94%BE%E5%9C%A8%E5%87%BD%E6%95%B0%E5%A3%B0%E6%98%8E%E5%89%8D%E9%9D%A2%E4%B8%8D%E8%B5%B7%E4%BB%BB%E4%BD%95%E4%BD%9C%E7%94%A8%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0%E5%BA%94%E8%AF%A5%E5%B0%BD%E5%8F%AF%E8%83%BD%E7%9F%AD%EF%BC%8C%E5%8E%9F%E5%88%99%E4%B8%8A%E4%B8%8D%E5%85%81%E8%AE%B8%E8%B6%85%E8%BF%87-10-%E8%A1%8C%E7%9A%84%E5%86%85%E8%81%94%E5%87%BD%E6%95%B0%E3%80%82"><span class="nav-text">关键字inline必须与函数定义放在一起才能使函数成为内联函数，仅仅将inline放在函数声明前面不起任何作用内联函数应该尽可能短，原则上不允许超过 10 行的内联函数。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E5%90%8D"><span class="nav-text">命名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E5%B0%BD%E5%8F%AF%E8%83%BD%E4%BD%BF%E7%94%A8%E6%8F%8F%E8%BF%B0%E6%80%A7%E7%9A%84%E5%91%BD%E5%90%8D%EF%BC%8C%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%90%AB%E7%B3%8A%E4%B8%8D%E6%B8%85%E7%9A%84%E7%BC%A9%E5%86%99"><span class="nav-text">1、尽可能使用描述性的命名，不要使用含糊不清的缩写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E6%89%80%E6%9C%89%E7%B1%BB%E5%9E%8B%E5%90%8D%E7%A7%B0%E4%BD%BF%E7%94%A8%E5%A4%A7%E9%A9%BC%E5%B3%B0%E5%91%BD%E5%90%8D%E6%B3%95"><span class="nav-text">2、所有类型名称使用大驼峰命名法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E5%8F%98%E9%87%8F%E4%BD%BF%E7%94%A8%E4%B8%8B%E5%88%92%E7%BA%BF%E5%91%BD%E5%90%8D%E6%B3%95%EF%BC%8C%E4%B8%94%E7%B1%BB%E7%9A%84%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E4%BB%A5m-%E5%BC%80%E5%A4%B4"><span class="nav-text">3、变量使用下划线命名法，且类的成员变量以m_开头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81%E5%B8%B8%E9%87%8F%E4%BD%BF%E7%94%A8%E5%B0%8F%E9%A9%BC%E5%B3%B0%E5%91%BD%E5%90%8D%E6%B3%95%EF%BC%8C%E4%B8%94%E4%BB%A5k%E5%BC%80%E5%A4%B4"><span class="nav-text">4、常量使用小驼峰命名法，且以k开头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%E3%80%81%E5%87%BD%E6%95%B0%E4%BD%BF%E7%94%A8%E5%A4%A7%E9%A9%BC%E5%B3%B0%E5%91%BD%E5%90%8D%E6%B3%95%E6%88%96%E4%B8%8B%E5%88%92%E7%BA%BF%E5%91%BD%E5%90%8D%E6%B3%95"><span class="nav-text">5、函数使用大驼峰命名法或下划线命名法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6%E3%80%81%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E4%BD%BF%E7%94%A8%E4%B8%8B%E5%88%92%E7%BA%BF%E5%91%BD%E5%90%8D%E6%B3%95"><span class="nav-text">6、命名空间使用下划线命名法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7%E3%80%81%E5%AE%8F%E7%9A%84%E5%91%BD%E5%90%8D%E4%BD%BF%E7%94%A8%E5%85%A8%E5%A4%A7%E5%86%99%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8%E4%B8%8B%E5%88%92%E7%BA%BF"><span class="nav-text">7、宏的命名使用全大写，并且可以使用下划线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8%E3%80%81%E6%9E%9A%E4%B8%BE%E7%9A%84%E5%91%BD%E5%90%8D%E5%BA%94%E5%BD%93%E5%92%8C%E5%B8%B8%E9%87%8F%E6%88%96%E5%AE%8F%E4%B8%80%E8%87%B4%EF%BC%8C%E4%B8%94%E6%9E%9A%E4%B8%BE%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%80%BC%E5%BA%94%E5%BD%93%E4%B8%BA%E9%BB%98%E8%AE%A4%E5%80%BC%E6%88%96%E6%97%A0%E6%95%88%E5%80%BC"><span class="nav-text">8、枚举的命名应当和常量或宏一致，且枚举的第一个值应当为默认值或无效值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E9%87%8A"><span class="nav-text">注释</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E5%87%BD%E6%95%B0%E5%A3%B0%E6%98%8E%E5%A4%84%E7%9A%84%E6%B3%A8%E9%87%8A%E6%8F%8F%E8%BF%B0%E5%87%BD%E6%95%B0%E5%8A%9F%E8%83%BD%EF%BC%8C%E5%AE%9A%E4%B9%89%E5%A4%84%E7%9A%84%E6%B3%A8%E9%87%8A%E6%8F%8F%E8%BF%B0%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0"><span class="nav-text">1、函数声明处的注释描述函数功能，定义处的注释描述函数实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E5%AF%B9%E9%82%A3%E4%BA%9B%E4%B8%B4%E6%97%B6%E7%9A%84%E3%80%81%E7%9F%AD%E6%9C%9F%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%EF%BC%8C%E6%88%96%E9%9C%80%E8%A6%81%E8%A1%A5%E5%85%85%E7%9A%84%E4%BB%A3%E7%A0%81%E4%BD%BF%E7%94%A8TODO%E6%B3%A8%E9%87%8A"><span class="nav-text">2、对那些临时的、短期的解决方案，或需要补充的代码使用TODO注释</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F"><span class="nav-text">格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E6%AF%8F%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%AD%97%E7%AC%A6%E6%95%B0%E5%B0%BD%E9%87%8F%E4%B8%8D%E8%A6%81%E8%B6%85%E8%BF%87-80"><span class="nav-text">1、每一行代码字符数尽量不要超过 80</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E9%81%BF%E5%85%8D%E4%BA%A7%E7%94%9F%E8%B6%85%E8%BF%87-3000-%E8%A1%8C%E7%9A%84%E8%B6%85%E5%A4%A7%E6%96%87%E4%BB%B6"><span class="nav-text">2、避免产生超过 3000 行的超大文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E4%BD%BF%E7%94%A8%E7%A9%BA%E6%A0%BC%E7%BC%A9%E8%BF%9B%EF%BC%8C%E4%B8%8D%E8%A6%81%E4%BD%BF%E7%94%A8%E5%88%B6%E8%A1%A8%E7%AC%A6%EF%BC%8C%E4%B8%94%E6%AF%8F%E7%BA%A7%E7%BC%A9%E8%BF%9B%E4%B8%BA-2-%E4%B8%AA%E7%A9%BA%E6%A0%BC"><span class="nav-text">3、使用空格缩进，不要使用制表符，且每级缩进为 2 个空格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81%E7%9B%B8%E5%AF%B9%E7%8B%AC%E7%AB%8B%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%9D%97%E4%B9%8B%E9%97%B4%E5%BB%BA%E8%AE%AE%E6%B7%BB%E5%8A%A0%E7%A9%BA%E8%A1%8C"><span class="nav-text">4、相对独立的程序块之间建议添加空行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%E3%80%81%E8%BF%94%E5%9B%9E%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%87%BD%E6%95%B0%E5%90%8D%E5%9C%A8%E5%90%8C%E4%B8%80%E8%A1%8C%EF%BC%8C%E5%8F%82%E6%95%B0%E4%B9%9F%E5%B0%BD%E9%87%8F%E6%94%BE%E5%9C%A8%E5%90%8C%E4%B8%80%E8%A1%8C%EF%BC%8C%E5%A6%82%E6%9E%9C%E6%94%BE%E4%B8%8D%E4%B8%8B%E5%B0%B1%E5%AF%B9%E5%BD%A2%E5%8F%82%E5%88%86%E8%A1%8C"><span class="nav-text">5、返回类型和函数名在同一行，参数也尽量放在同一行，如果放不下就对形参分行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6%E3%80%81if%E3%80%81for%E3%80%81do%E3%80%81while%E3%80%81switch%E3%80%81case%E3%80%81default%E7%AD%89%E8%AF%AD%E5%8F%A5%E4%B8%8E-%E5%9C%A8%E5%90%8C%E4%B8%80%E8%A1%8C%EF%BC%8C%E8%80%8C-%E7%8B%AC%E5%8D%A0%E4%B8%80%E8%A1%8C"><span class="nav-text">6、if、for、do、while、switch、case、default等语句与{在同一行，而}独占一行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7%E3%80%81-gt-%E3%80%81-%E3%80%81%E6%8C%87%E9%92%88-x2F-%E5%9C%B0%E5%9D%80%E6%93%8D%E4%BD%9C%E7%AC%A6-96-96-%E4%B8%8E-amp-%E5%89%8D%E5%90%8E%E4%B8%8D%E5%8A%A0%E7%A9%BA%E6%A0%BC"><span class="nav-text">7、&gt;、.、指针&#x2F;地址操作符&#96;&#96;与&amp;前后不加空格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8%E3%80%81%E5%9C%A8%E5%A3%B0%E6%98%8E%E6%8C%87%E9%92%88%E5%8F%98%E9%87%8F%E6%88%96%E5%8F%82%E6%95%B0%E6%97%B6%EF%BC%8C%E5%BB%BA%E8%AE%AE-96-96-%E4%B8%8E-amp-%E7%B4%A7%E6%8C%A8%E5%8F%98%E9%87%8F%E5%90%8D"><span class="nav-text">8、在声明指针变量或参数时，建议&#96;&#96;与&amp;紧挨变量名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9%E3%80%81%E4%B8%80%E4%B8%AA%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%8D%A2%E8%A1%8C%E6%97%B6%EF%BC%8C%E6%93%8D%E4%BD%9C%E7%AC%A6%E6%80%BB%E4%BD%8D%E4%BA%8E%E8%A1%8C%E5%B0%BE"><span class="nav-text">9、一个表达式换行时，操作符总位于行尾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10%E3%80%81%E4%B8%8D%E8%A6%81%E5%9C%A8return%E8%A1%A8%E8%BE%BE%E5%BC%8F%E9%87%8C%E5%8A%A0%E4%B8%8A%E9%9D%9E%E5%BF%85%E9%A1%BB%E7%9A%84%E6%8B%AC%E5%8F%B7"><span class="nav-text">10、不要在return表达式里加上非必须的括号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11%E3%80%81%E9%A2%84%E5%A4%84%E7%90%86%E6%8C%87%E4%BB%A4%E4%B8%8D%E8%A6%81%E7%BC%A9%E8%BF%9B%EF%BC%8C%E4%BB%8E%E8%A1%8C%E9%A6%96%E5%BC%80%E5%A7%8B"><span class="nav-text">11、预处理指令不要缩进，从行首开始</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12%E3%80%81%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E5%BF%AB%E7%9A%84%E5%A3%B0%E6%98%8E%E4%BE%9D%E6%AC%A1%E5%BA%8F%E6%98%AFpublic-%E3%80%81protected-%E3%80%81private%EF%BC%8C%E4%B8%94%E4%B8%8D%E8%BF%9B%E8%A1%8C%E7%BC%A9%E8%BF%9B"><span class="nav-text">12、访问控制快的声明依次序是public:、protected:、private，且不进行缩进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13%E3%80%81%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4%E3%80%81%E5%87%BD%E6%95%B0%E3%80%81%E7%B1%BB%E3%80%81%E7%BB%93%E6%9E%84%E4%BD%93%E3%80%81%E8%81%94%E5%90%88%E4%BD%93%E7%9A%84-%E4%B8%8E-%E5%9D%87%E5%8F%A6%E8%B5%B7%E4%B8%80%E8%A1%8C%EF%BC%8C%E6%9E%9A%E4%B8%BE%E8%A7%86%E9%95%BF%E7%9F%AD%E8%80%8C%E5%AE%9A"><span class="nav-text">13、命名空间、函数、类、结构体、联合体的{与}均另起一行，枚举视长短而定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14%E3%80%81%E6%B0%B4%E5%B9%B3%E7%95%99%E7%99%BD"><span class="nav-text">14、水平留白</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15%E3%80%81%E5%9E%82%E7%9B%B4%E7%95%99%E7%99%BD"><span class="nav-text">15、垂直留白</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99%E6%98%AF%EF%BC%9A%E5%90%8C%E4%B8%80%E5%B1%8F%E5%8F%AF%E4%BB%A5%E6%98%BE%E7%A4%BA%E7%9A%84%E4%BB%A3%E7%A0%81%E8%B6%8A%E5%A4%9A%EF%BC%8C%E8%B6%8A%E5%AE%B9%E6%98%93%E7%90%86%E8%A7%A3%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%8E%A7%E5%88%B6%E6%B5%81%E3%80%82%E5%BD%93%E7%84%B6%EF%BC%8C%E8%BF%87%E4%BA%8E%E5%AF%86%E9%9B%86%E7%9A%84%E4%BB%A3%E7%A0%81%E5%9D%97%E5%92%8C%E8%BF%87%E4%BA%8E%E7%96%8F%E6%9D%BE%E7%9A%84%E4%BB%A3%E7%A0%81%E5%9D%97%E5%90%8C%E6%A0%B7%E9%9A%BE%E7%9C%8B%EF%BC%8C%E8%BF%99%E5%8F%96%E5%86%B3%E4%BA%8E%E4%BD%A0%E7%9A%84%E5%88%A4%E6%96%AD%E3%80%82%E4%BD%86%E9%80%9A%E5%B8%B8%E6%98%AF%E5%9E%82%E7%9B%B4%E7%95%99%E7%99%BD%E8%B6%8A%E5%B0%91%E8%B6%8A%E5%A5%BD%EF%BC%8C%E4%B8%94%E5%87%BD%E6%95%B0%E4%BD%93%E9%A6%96%E5%B0%BE%E4%B8%8D%E8%A6%81%E7%95%99%E7%A9%BA%E8%A1%8C%EF%BC%8C%E4%B8%8D%E8%A6%81%E6%9C%89%E8%BF%9E%E7%BB%AD%E7%9A%84%E7%A9%BA%E8%A1%8C"><span class="nav-text">基本原则是：同一屏可以显示的代码越多，越容易理解程序的控制流。当然，过于密集的代码块和过于疏松的代码块同样难看，这取决于你的判断。但通常是垂直留白越少越好，且函数体首尾不要留空行，不要有连续的空行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91"><span class="nav-text">编译</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E7%A8%8B%E5%BA%8F%E7%BC%96%E8%AF%91%E6%97%B6%E4%BA%A7%E7%94%9F%E7%9A%84%E6%89%80%E6%9C%89warning%E9%83%BD%E5%BA%94%E8%AF%A5%E8%A2%AB%E4%BF%AE%E5%A4%8D"><span class="nav-text">1、程序编译时产生的所有warning都应该被修复</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+            
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2021</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Huan Lee</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv" class="busuanzi_container_site_uv">
+                        VISITOR COUNT&nbsp;<span id="busuanzi_value_site_uv" class="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="busuanzi_container_site_pv">
+                        TOTAL PAGE VIEWS&nbsp;<span id="busuanzi_value_site_pv" class="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            <span class="powered-by-container">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a></span>
+                <br>
+            <span class="theme-version-container">THEME&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.3.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+        ],
+        containers: ["#swup"],
+    });
+
+    swup.on("pageView", () => {
+        Global.refresh();
+    });
+
+    // if (document.readyState === "complete") {
+    //
+    // } else {
+    //     document.addEventListener("DOMContentLoaded", () => init());
+    // }
+</script>
+
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/navbarShrink.js"></script>
+
+<script src="/js/tools/scrollTopBottom.js"></script>
+
+<script src="/js/tools/lightDarkSwitch.js"></script>
+
+<script src="/js/layouts/categoryList.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+</div>
+
+
+</body>
+</html>

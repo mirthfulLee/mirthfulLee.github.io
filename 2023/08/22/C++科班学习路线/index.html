@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Huan Lee">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://mirthfullee.github.io/2023/08/22/c++科班学习路线/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="参考github  找资料推荐几个网站  https:&#x2F;&#x2F;xmsoushu.com&#x2F;#&#x2F;  https:&#x2F;&#x2F;zbook.eu.org&#x2F;  https:&#x2F;&#x2F;www.jiumodiary.com&#x2F;   顺序，从上到下依次学习，尽量不要跳跃计算机导论 计算机科学导论  书籍  《计算机科学概论》  导论，就是一个目录的作用。我建议学计算机之前先看看，看不懂不要紧，有个大致的印象就差不多了，本来也是起一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++科班学习路线">
+<meta property="og:url" content="https://mirthfullee.github.io/2023/08/22/C++%E7%A7%91%E7%8F%AD%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/index.html">
+<meta property="og:site_name" content="沐梓驿站">
+<meta property="og:description" content="参考github  找资料推荐几个网站  https:&#x2F;&#x2F;xmsoushu.com&#x2F;#&#x2F;  https:&#x2F;&#x2F;zbook.eu.org&#x2F;  https:&#x2F;&#x2F;www.jiumodiary.com&#x2F;   顺序，从上到下依次学习，尽量不要跳跃计算机导论 计算机科学导论  书籍  《计算机科学概论》  导论，就是一个目录的作用。我建议学计算机之前先看看，看不懂不要紧，有个大致的印象就差不多了，本来也是起一个">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-08-22T10:35:00.000Z">
+<meta property="article:modified_time" content="2024-02-26T04:53:15.073Z">
+<meta property="article:author" content="Huan Lee">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="就业">
+<meta name="twitter:card" content="summary">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/logo.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            C++科班学习路线 -
+        
+        MirthfulLee
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    let Global = window.Global || {};
+    Global.hexo_config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
+    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.3.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
+    Global.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    Global.data_config = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+    
+
+    
+
+    <div class="main-content-container">
+        
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                MirthfulLee
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        HOME
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-bars"></i>
+                                        
+                                        CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories/Learning">LEARNING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Project">PROJECT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Application">APPLICATION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Sharing">SHARING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Disscussion">DISCUSSION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Others">OTHERS
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-grip"></i>
+                                        
+                                        MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories">ARCHIVES
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/tags">TAGS
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/about">ABOUT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer">
+        <ul class="drawer-navbar-list">
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                HOME
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-bars"></i>
+                                
+                                CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Learning">LEARNING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Project">PROJECT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Application">APPLICATION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Sharing">SHARING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Disscussion">DISCUSSION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Others">OTHERS</a>
+                            </li>
+                        
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-grip"></i>
+                                
+                                MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories">ARCHIVES</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/tags">TAGS</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/about">ABOUT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">C++科班学习路线</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/logo.png">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Huan Lee</span>
+                        
+                            <span class="author-label">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-08-22 10:35</span>
+        <span class="mobile">2023-08-22 10:35</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-02-26 04:53:15</span>
+            <span class="mobile">2024-02-26 04:53:15</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Sharing/">Sharing</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/c/">c++</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%B0%B1%E4%B8%9A/">就业</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>参考<a class="link" target="_blank" rel="noopener" href="https://github.com/tomstillcoding/cs-roadmap/blob/main/c%2B%2B/2022_%E6%9C%80%E6%96%B0C%2B%2B%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF_%E7%A7%91%E7%8F%AD%E7%89%88.md">github <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="找资料"><a href="#找资料" class="headerlink" title="找资料"></a>找资料</h2><p>推荐几个网站</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://xmsoushu.com/#/">https://xmsoushu.com/#/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+<li><a class="link" target="_blank" rel="noopener" href="https://zbook.eu.org/">https://zbook.eu.org/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+<li><a class="link" target="_blank" rel="noopener" href="https://www.jiumodiary.com/">https://www.jiumodiary.com/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+<h3 id="顺序，从上到下依次学习，尽量不要跳跃"><a href="#顺序，从上到下依次学习，尽量不要跳跃" class="headerlink" title="顺序，从上到下依次学习，尽量不要跳跃"></a>顺序，从上到下依次学习，尽量不要跳跃</h3><h3 id="计算机导论"><a href="#计算机导论" class="headerlink" title="计算机导论"></a>计算机导论</h3><ul>
+<li><p>计算机科学导论</p>
+<ul>
+<li><p>书籍</p>
+<ul>
+<li><p>《计算机科学概论》</p>
+<ul>
+<li>导论，就是一个目录的作用。我建议学计算机之前先看看，看不懂不要紧，有个大致的印象就差不多了，本来也是起一个计算机系目录的作用，不用对目录的每个名词都刨根问底，以后有的是机会。一共只有三百多页，已经算很少了。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>软件工程导论</p>
+<ul>
+<li><p>书籍</p>
+<ul>
+<li><p>《软件工程：实践者的研究方法》</p>
+<ul>
+<li>不建议初学者读，不建议大部分人读，六百多页，很花时间，内容和知识太多太繁杂，确实也算是软件工程SE的目录，但更适合等你其他必修课学完之后，再确定好以后做软件工程的方向，并且开始工作之后，再读这本书，书里的知识绝大部分更偏向于工业实践，在学校里面，读了意义也不大，大概率无法理解。可以直接跳过，但是确实软件工程导论已经没有其他书可以推荐了，软件工程本来就是从计算机科学与技术里面细分出来的分支，不要对这门课要求太高。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="基础类（必看）"><a href="#基础类（必看）" class="headerlink" title="基础类（必看）"></a>基础类（必看）</h3><ul>
+<li><p>C语言</p>
+<ul>
+<li><p>书籍</p>
+<ul>
+<li><p>《C程序设计语言》</p>
+<ul>
+<li>C语言这种书，要学深入了，可以推荐很多书，但是这里我是把它当作本科第一门编程语言来学习的，所以没必要学什么特别厚的书，这本就够了，学学语法，熟悉一下学一门语言大概有哪些的东西，写一点迷你程序就够了，最重要的是：</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>1、学习指针，了解到了内存管理最基本的东西，给你以后学操作系统课程有一个印象。<br>2、学习从代码到可执行程序，了解整个代码到生成产物的过程，给你以后学编译原理埋下伏笔。</p>
+<p>所以要我说初学者学C语言的目的是什么，我觉得是学语法感受编程、学指针感受内存管理、学编译感受从代码到执行。</p>
+<ul>
+<li><p>简单面向对象语言（C++为例）</p>
+<ul>
+<li><p>网站</p>
+<ul>
+<li>W3Cschool教程：<a class="link" target="_blank" rel="noopener" href="https://www.w3cschool.cn/cpp/">https://www.w3cschool.cn/cpp/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+<li>菜鸟教程：<a class="link" target="_blank" rel="noopener" href="https://www.runoob.com/cplusplus/cpp-tutorial.html">https://www.runoob.com/cplusplus/cpp-tutorial.html <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>数据结构</p>
+<ul>
+<li><p>书籍</p>
+<ul>
+<li><p>《数据结构（C++语言版）》</p>
+<ul>
+<li>学习数据结构，语言不是什么问题，用什么语言都可以学习数据结构，用C、C++、Python、Java都可以实现各种各样的数据结构，为什么这里用的教材语言是C++的，纯粹是因为我暂时没有找到其他语言更好的国内教材。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>C++系统性学习</p>
+<ul>
+<li><p>书籍</p>
+<ul>
+<li><p>《C++ Primer》</p>
+<ul>
+<li>听我先说啊，这本书800多页，非常厚，而且是工具书、字典那样的，其实根本不适合新手入门去学习面向对象技术与方法。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>为什么这里就推荐这个书，最大的原因是数据结构教材，用到的语言是C++，当然也有用C语言的，但是我没找到特别好的书，所以没有办法，只能让大家先看看C++，大部分初级工程师在使用C++的时候，也只用到了面向对象的特性，很多高级特性都用不上，模板都用得很少，真的就是写ifelse而已。</p>
+<p>这本书非常厚，不管是第一次学C++还是第N次学C++都要看，所以我推荐你们，先去什么类似菜鸟教程那样地方，先把C++大概的内容过一遍，那个应该很快就能过完，然后你过完之后就去看我接下来介绍的以C++为语言的数据结构教材，如果你看不明白，发现有不懂的C++的地方，你再去看这个C++ Primer，不要把C++ Primer当作是那种，看完了书，就再也不翻了，不会的，你会经常、一直去翻它。</p>
+<ul>
+<li><p>计算理论与算法分析</p>
+<ul>
+<li><p>书籍</p>
+<ul>
+<li><p>《算法设计与分析基础》</p>
+<ul>
+<li>我们计算机系上的课，是计算理论和算法分析，这里只推荐了算法分析的教材。因为计算理论那里面的什么图灵机的构造，图灵完备性证明之类的，更偏于理论，你们肯定学起来也枯燥，觉得没意思，那是属于计算机系开天辟地级别的知识，如果有兴趣，可以自己去找相关的书来看，我就不推荐了。</li>
+<li>主要是本科教材要么找不到，要么就是写得比较一般，网上又推荐什么算法导论纯粹来搞笑的，这本算法书挺好的，但内容确实也挺多的，确实是我之前视频说的课程算法。我看了目录，就勾起了我大二的回忆，希望大家不要怕这本书太厚太多，还是可以看看的，实在不能理解的内容，跳过就好了，以后再来理解。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>数据库原理与设计</p>
+<ul>
+<li><p>书籍</p>
+<ul>
+<li><p>《数据库系统概论》</p>
+</li>
+<li><p>《数据库系统概念》</p>
+<ul>
+<li>数据库是真的不好推荐，国内的教材和国外的教材其实是两种思路，国内是把你当天才，很多东西默认你懂，或者是一句很简单的话直接带过，觉得你理解了；而国外的教材就是把你当傻子，讲得非常细，非常多，就像是把上课的时候学生提问都记录下来了。从页数也可以看得出来，一个400页，一个800页，当然这是概论课，不会花大心思给你讲MySQL怎么用，MySQL只是理论的一种实现框架罢了，大学教这个不是为了让你去打工当后端，而是看你是不是对数据库研发感兴趣，以后没准你就选了这个方向。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>这两本书就是国内外大学教材的一个经典对比</p>
+<p>所以到底你们更喜欢哪种教学方式呢，这个取决于你，当然了，我大二学的是国内的教材。</p>
+<h3 id="进阶类（必看）"><a href="#进阶类（必看）" class="headerlink" title="进阶类（必看）"></a>进阶类（必看）</h3><ul>
+<li><p>操作系统</p>
+<ul>
+<li><p>书籍</p>
+<ul>
+<li><p>《操作系统导论》</p>
+</li>
+<li><p>《操作系统原理、实现与实践》</p>
+<ul>
+<li>进阶类的操作系统，可以看的书特别多，你去豆瓣上搜索操作系统四个字，有特别多经典的黑皮书，我这里全都推荐的话，入初学者肯定是看不完的，所以更多还是推荐一些导论类的课程，等你们看完了，学完了，再去看那些黑皮书，其实就挺好的。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>这里的国内那本，最大的优点是章节分得很清晰，界限分明，非常像我大三学的那门课的样子，可能也是因为国内的教材设计是一脉相承的，我觉得挺适合一开始看这本的。</p>
+<p>国外的那本，章节可能分得不是很清晰，但是循序渐进，短小精悍，讲的细致的地方也更多，典型国外教材风格。</p>
+<p>不知道你们到底适合哪种，所以都给你看介绍一下看看。</p>
+<ul>
+<li><p>计算机组成原理</p>
+<ul>
+<li><p>书籍</p>
+<ul>
+<li><p>《计算机组成原理唐朔飞》</p>
+</li>
+<li><p>《计算机组成与设计硬件&#x2F;软件接口》</p>
+<ul>
+<li>计组本身就是软硬件都有的课程，一开始找这种讲整个体系的书的时候，就特别累，因为确实很难兼顾自学，同时又要书还不错，保证一定的深度，比较难搞。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>大学的时候学的书，基本都是学校老师写的教材，或者是上面那种样子的书，高等教育出版社，几乎都是一模一样的，看你感觉自己喜欢哪种书吧。这个书，其实想做软件工程，尽快找个工作，转码，确实也不是必须看的，和计算机体系结构、汇编、编译原理一样，面试根本不问。但毕竟大学是通识教育，是让你找到未来方向的，所以感兴趣，看看其实也行。</p>
+<ul>
+<li><p>计算机体系结构</p>
+<ul>
+<li>这个课很硬件，我感觉我推荐了，大家也不会看，关注我的更多的还是想在互联网、游戏行业的，就索性算了吧。</li>
+</ul>
+</li>
+<li><p>计算机网络</p>
+<ul>
+<li><p>书籍</p>
+<ul>
+<li><p>《计算机网络》（谢希仁版）</p>
+</li>
+<li><p>《计算机网络：自顶向下方法》</p>
+<ul>
+<li>这两本书，我本科的时候都看了，我特别特别特别特别喜欢这门课。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>上课用的谢希仁那本，结课后自己看的自顶向下。谢希仁的那本是自底向上的，当时大三从物理层开始往上学，最后学到应用层之后，开始介绍我们互联网的各种各样的应用，给我的感觉就是一切的辛苦终于换来了成果，好像打开了一座又一座的金矿一样。</p>
+<p>但是呢看完谢希仁那本，还是有一些疑问，所以又去看了自顶向下，看完之后之前的挺多问题就解决了，谈不上哪本书更好，因为我看自顶向下的时候已经对计网有很多理解了。</p>
+<ul>
+<li><p>汇编与接口技术</p>
+<ul>
+<li><p>书籍</p>
+<ul>
+<li><p>《汇编语言》王爽</p>
+<ul>
+<li>还是一样的，汇编面试不问，属于基础课，但工作之后有概率会遇到汇编语言，但需要你解决的问题，大概率比书里面的问题浅非常多，学有余力去看看吧。当然如果你想做相关工作的话，那就不一样了</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>编译原理与设计</p>
+<ul>
+<li><p>书籍</p>
+<ul>
+<li><p>《编译原理》（龙书）</p>
+</li>
+<li><p>《编译原理》（清华大学出版社）</p>
+<ul>
+<li>到了编译原理、汇编、计网这种课程，推荐入门书已经没有任何意义了，基本都开始推荐经典教材了，因为看这个的时候早就不是入门阶段了，深度早就该提上来了。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>龙书很经典，但编译原理这门课和计网、操作系统类似，需要你写代码，非常重要，你也可以去看网上的各种lab，都可以，你觉得适合自己的学习方式就好，觉得学到了知识就好，没任何问题，也完全不用跟我一样，喜欢看书啃书，这个完全是因人而异。</p>
+<p>这里为什么还把清华大学出版社的编译原理拿出来，就是告诉大家，我本科学的就是这个书，我的编译原理老师很厉害，很不错，但是我不太喜欢这本教材，当时上这个课我看这本书非常难受，总有一种哪里好像没讲的感觉，但我翻来翻去，就是找不到知识点，但就是感觉脑海里的知识缺了一块，不知道是为什么。强烈不推荐大家看这个紫皮书。</p>
+<h3 id="选修类（后端开发方向选看）"><a href="#选修类（后端开发方向选看）" class="headerlink" title="选修类（后端开发方向选看）"></a>选修类（后端开发方向选看）</h3><ul>
+<li><p>Java语言程序设计</p>
+</li>
+<li><p>Linux程序设计</p>
+<ul>
+<li><p>书籍</p>
+<ul>
+<li><p>《鸟哥的Linux私房菜基础学习篇》</p>
+<ul>
+<li>大部头，仅入门，不要去记忆，而是理解、应用一次书中提到的各种概念即可，一定要配套一个Linux操作系统来进行学习，边学边写</li>
+</ul>
+</li>
+<li><p>《Linux高性能服务器编程》</p>
+<ul>
+<li>仅仅是一本Linux服务器编程的入门书，在学过C语言、计算机网络、操作系统之后学习</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>分布式系统设计</p>
+<ul>
+<li>《大规模分布式存储系统：原理解析与架构实战》</li>
+<li>《Paxos到Zookeeper：分布式一致性原理与实践》</li>
+<li>《分布式系统：概念与设计》</li>
+</ul>
+</li>
+</ul>
+<h2 id="实力提升"><a href="#实力提升" class="headerlink" title="实力提升"></a>实力提升</h2><p>进入这一步，一定是要基础部分提到的内容已经掌握很熟练之后，再来进阶学习，否则学习效率会很低，因为你看不懂。并且该部分需要自己选择内容去学习，并非全部都要完全掌握</p>
+<h3 id="C-x2F-C"><a href="#C-x2F-C" class="headerlink" title="C &#x2F; C++"></a>C &#x2F; C++</h3><ul>
+<li>《C++ Primer》</li>
+<li>《Effective C++》</li>
+<li>《STL源码剖析》</li>
+</ul>
+<h3 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h3><ul>
+<li>《现代操作系统》</li>
+</ul>
+<h3 id="计算机系统"><a href="#计算机系统" class="headerlink" title="计算机系统"></a>计算机系统</h3><ul>
+<li>《深入理解计算机系统》</li>
+</ul>
+<h3 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h3><ul>
+<li>《计算机网络：自顶向下方法》</li>
+<li>《TCP&#x2F;IP 详解》</li>
+<li>《图解HTTP》</li>
+</ul>
+<h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><ul>
+<li>《MySQL必知必会》</li>
+<li>《高性能MySQL》</li>
+</ul>
+<h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><ul>
+<li>《Redis设计与实现》</li>
+</ul>
+<h2 id="离谱之路"><a href="#离谱之路" class="headerlink" title="离谱之路"></a>离谱之路</h2><h3 id="项目"><a href="#项目" class="headerlink" title="项目"></a>项目</h3><p>这部分是根据网络整理出来，适合C++后端开发写入简历的项目，有的没有文档，因此需要你直接看它的源码实现，只要你理解了它的代码，并且自己手动实现一次，就能保证面试的时候对答如流，那么写进简历是没问题的。</p>
+<ul>
+<li><p>前言</p>
+<ul>
+<li><p>项目，就是你看完、学完、自己默默实现完之后，可以写进你简历的项目。强烈建议，不要做重复相似的项目、不要做不适合校招生做的项目、尽量做能体现计算机系水平的项目、你的项目不要只局限于一门语言，并非做C++路线，就一定要做C++项目，你做Go、Java项目一样很不错嘛，前提是项目要好</p>
+</li>
+<li><p>这里给出的项目，只是例子，更多好项目，别人没做过的项目，你要自己创造、或者自己去查找，如果这里列出来，可能就有很多人一样做了，所以先学会模仿项目，再学会创造项目、做更深入的项目</p>
+</li>
+<li><p>重点多说一句：并非就一定要做C++项目，你做Go、Java项目一样很不错嘛，前提是项目要好，之前流行过一阵Go的RPC框架，也很好！</p>
+<ul>
+<li>下面列出的，只是一部分例子，更多项目，请关注我的视频～</li>
+</ul>
+</li>
+<li><p>重复相似的项目</p>
+<ul>
+<li>商城系统、博客系统、图书管理系统、各种XX应用层系统</li>
+<li>WebServer、简单的课程设计</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>实现STL</p>
+<ul>
+<li><p>基于C++实现一个迷你STL</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://github.com/Alinshans/MyTinySTL">https://github.com/Alinshans/MyTinySTL <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+<li><p>实现标准库部分容器和算法，对标准库进行扩充</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://github.com/senlinzhan/mystl">https://github.com/senlinzhan/mystl <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>实现WebServer</p>
+<ul>
+<li><p>Linux C++ WebServer</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://github.com/qinguoyi/TinyWebServer">https://github.com/qinguoyi/TinyWebServer <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+<li><p>（不适合写进项目）非常简单的http服务器</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://github.com/dxscjx123/tinyserver">https://github.com/dxscjx123/tinyserver <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>实现网络框架</p>
+<ul>
+<li><p>基于IO多路复用和线程池的C++网络库</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://github.com/GeniusDai/kingpin">https://github.com/GeniusDai/kingpin <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+<li><p>轻量级网络框架，线程池技术，C++11</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://github.com/ZLMediaKit/ZLToolKit">https://github.com/ZLMediaKit/ZLToolKit <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+<li><p>Linux C++高性能TCP服务框架，基于Reactor模式，支持单线程、多线程Reactor，也支持UDP服务</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://github.com/LeechanX/Easy-Reactor">https://github.com/LeechanX/Easy-Reactor <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>协程</p>
+<ul>
+<li><p>libco（建议直接阅读源码，不用写进项目）</p>
+<ul>
+<li><p><a class="link" target="_blank" rel="noopener" href="https://github.com/Tencent/libco">https://github.com/Tencent/libco <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+</li>
+<li><p>文章</p>
+<ul>
+<li><p>漫谈微信libco协程设计及实现（万字长文）</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://runzhiwang.github.io/2019/06/21/libco/">https://runzhiwang.github.io/2019/06/21/libco/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+<li><p>腾讯开源的 libco 号称千万级协程支持，那个共享栈模式原理是什么?</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://www.zhihu.com/question/52193579">https://www.zhihu.com/question/52193579 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>数据库</p>
+<ul>
+<li><p>利用c&#x2F;c++ 开发基于B+树的小型关系型数据库</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://github.com/enpeizhao/duck_db">https://github.com/enpeizhao/duck_db <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="C-x2F-C-丝绸之路（完全可以跳过，有时间再看，面试的时候大概率不会对校招生问到这么细的）"><a href="#C-x2F-C-丝绸之路（完全可以跳过，有时间再看，面试的时候大概率不会对校招生问到这么细的）" class="headerlink" title="C &#x2F; C++ 丝绸之路（完全可以跳过，有时间再看，面试的时候大概率不会对校招生问到这么细的）"></a>C &#x2F; C++ 丝绸之路（完全可以跳过，有时间再看，面试的时候大概率不会对校招生问到这么细的）</h3><ul>
+<li>《C和指针》</li>
+<li>《C专家编程》</li>
+<li>《C陷阱与缺陷》</li>
+<li>《C++ 沉思录》</li>
+</ul>
+<h3 id="系统设计"><a href="#系统设计" class="headerlink" title="系统设计"></a>系统设计</h3><ul>
+<li><p>《数据密集型应用系统设计》</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://github.com/Vonng/ddia">https://github.com/Vonng/ddia <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+<li><p>《大话设计模式》</p>
+</li>
+<li><p>《代码整洁之道》</p>
+</li>
+<li><p>《重构》</p>
+</li>
+<li><p>《深入理解Nginx》</p>
+</li>
+</ul>
+<h3 id="Unix高级（难度比较大）"><a href="#Unix高级（难度比较大）" class="headerlink" title="Unix高级（难度比较大）"></a>Unix高级（难度比较大）</h3><ul>
+<li>《Unix网络编程》</li>
+<li>《Unix环境高级编程》</li>
+<li>《Linux多线程服务端编程 使用muduo C++网络库》</li>
+</ul>
+<h3 id="国外优秀网课（有一定难度）"><a href="#国外优秀网课（有一定难度）" class="headerlink" title="国外优秀网课（有一定难度）"></a>国外优秀网课（有一定难度）</h3><ul>
+<li><p>《MIT 6.S081: Operating System Engineering》</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://csdiy.wiki/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/MIT6.S081/">https://csdiy.wiki/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/MIT6.S081/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+<li><p>《CS162: Operating System》</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://csdiy.wiki/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/CS162/">https://csdiy.wiki/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/CS162/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+<li><p>《CMU 15-418&#x2F;Stanford CS149: Parallel Computing》</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://csdiy.wiki/%E5%B9%B6%E8%A1%8C%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/CS149/">https://csdiy.wiki/%E5%B9%B6%E8%A1%8C%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/CS149/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+<li><p>《MIT6.824: Distributed System》</p>
+<ul>
+<li><a class="link" target="_blank" rel="noopener" href="https://csdiy.wiki/%E5%B9%B6%E8%A1%8C%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/MIT6.824/">https://csdiy.wiki/%E5%B9%B6%E8%A1%8C%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/MIT6.824/ <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> C++科班学习路线</li>
+        <li><strong>Author:</strong> Huan Lee</li>
+        <li><strong>Created at:</strong> 2023-08-22 10:35:00</li>
+        
+            <li>
+                <strong>Updated at:</strong> 2024-02-26 04:53:15
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://www.mirthfullee.com/2023/08/22/C++科班学习路线/
+        </li>
+        <li>
+            <strong>License:</strong> This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>.
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/c/">#c++</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E5%B0%B1%E4%B8%9A/">#就业</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/08/22/C++%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">C++面试准备</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/08/22/C++%E5%B2%97%E4%BD%8D%E6%96%B9%E5%90%91%E7%A9%B7%E4%B8%BE/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">C++岗位方向穷举</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">C++科班学习路线</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%BE%E8%B5%84%E6%96%99"><span class="nav-text">找资料</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%EF%BC%8C%E4%BB%8E%E4%B8%8A%E5%88%B0%E4%B8%8B%E4%BE%9D%E6%AC%A1%E5%AD%A6%E4%B9%A0%EF%BC%8C%E5%B0%BD%E9%87%8F%E4%B8%8D%E8%A6%81%E8%B7%B3%E8%B7%83"><span class="nav-text">顺序，从上到下依次学习，尽量不要跳跃</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%AF%BC%E8%AE%BA"><span class="nav-text">计算机导论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%B1%BB%EF%BC%88%E5%BF%85%E7%9C%8B%EF%BC%89"><span class="nav-text">基础类（必看）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E9%98%B6%E7%B1%BB%EF%BC%88%E5%BF%85%E7%9C%8B%EF%BC%89"><span class="nav-text">进阶类（必看）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E4%BF%AE%E7%B1%BB%EF%BC%88%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91%E6%96%B9%E5%90%91%E9%80%89%E7%9C%8B%EF%BC%89"><span class="nav-text">选修类（后端开发方向选看）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E5%8A%9B%E6%8F%90%E5%8D%87"><span class="nav-text">实力提升</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#C-x2F-C"><span class="nav-text">C &#x2F; C++</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="nav-text">操作系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F"><span class="nav-text">计算机系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C"><span class="nav-text">计算机网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-text">数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98"><span class="nav-text">缓存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A6%BB%E8%B0%B1%E4%B9%8B%E8%B7%AF"><span class="nav-text">离谱之路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE"><span class="nav-text">项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C-x2F-C-%E4%B8%9D%E7%BB%B8%E4%B9%8B%E8%B7%AF%EF%BC%88%E5%AE%8C%E5%85%A8%E5%8F%AF%E4%BB%A5%E8%B7%B3%E8%BF%87%EF%BC%8C%E6%9C%89%E6%97%B6%E9%97%B4%E5%86%8D%E7%9C%8B%EF%BC%8C%E9%9D%A2%E8%AF%95%E7%9A%84%E6%97%B6%E5%80%99%E5%A4%A7%E6%A6%82%E7%8E%87%E4%B8%8D%E4%BC%9A%E5%AF%B9%E6%A0%A1%E6%8B%9B%E7%94%9F%E9%97%AE%E5%88%B0%E8%BF%99%E4%B9%88%E7%BB%86%E7%9A%84%EF%BC%89"><span class="nav-text">C &#x2F; C++ 丝绸之路（完全可以跳过，有时间再看，面试的时候大概率不会对校招生问到这么细的）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1"><span class="nav-text">系统设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unix%E9%AB%98%E7%BA%A7%EF%BC%88%E9%9A%BE%E5%BA%A6%E6%AF%94%E8%BE%83%E5%A4%A7%EF%BC%89"><span class="nav-text">Unix高级（难度比较大）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BD%E5%A4%96%E4%BC%98%E7%A7%80%E7%BD%91%E8%AF%BE%EF%BC%88%E6%9C%89%E4%B8%80%E5%AE%9A%E9%9A%BE%E5%BA%A6%EF%BC%89"><span class="nav-text">国外优秀网课（有一定难度）</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+            
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2021</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Huan Lee</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv" class="busuanzi_container_site_uv">
+                        VISITOR COUNT&nbsp;<span id="busuanzi_value_site_uv" class="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="busuanzi_container_site_pv">
+                        TOTAL PAGE VIEWS&nbsp;<span id="busuanzi_value_site_pv" class="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            <span class="powered-by-container">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a></span>
+                <br>
+            <span class="theme-version-container">THEME&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.3.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+        ],
+        containers: ["#swup"],
+    });
+
+    swup.on("pageView", () => {
+        Global.refresh();
+    });
+
+    // if (document.readyState === "complete") {
+    //
+    // } else {
+    //     document.addEventListener("DOMContentLoaded", () => init());
+    // }
+</script>
+
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/navbarShrink.js"></script>
+
+<script src="/js/tools/scrollTopBottom.js"></script>
+
+<script src="/js/tools/lightDarkSwitch.js"></script>
+
+<script src="/js/layouts/categoryList.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+</div>
+
+
+</body>
+</html>

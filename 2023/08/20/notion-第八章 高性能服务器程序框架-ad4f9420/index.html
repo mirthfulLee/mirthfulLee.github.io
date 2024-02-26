@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Huan Lee">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://mirthfullee.github.io/2023/08/20/notion-第八章 高性能服务器程序框架-ad4f9420/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="根据服务器程序的一般原理, 将服务器解构为三个主要模块:  IO处理单元. 本章介绍四种IO模型和两种高效事件处理模式  逻辑单元. 本章介绍两种高效并发模式, 以及有限状态机  存储单元    请求队列是各单元之间通信方式的抽象.  8.1 服务器模型C&#x2F;S模型     C&#x2F;S模型适合资源相对集中的场合.   缺点: 服务器时通信的中心, 当访问量过大时, 可能所有客户端都将">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第八章 高性能服务器程序框架">
+<meta property="og:url" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/index.html">
+<meta property="og:site_name" content="沐梓驿站">
+<meta property="og:description" content="根据服务器程序的一般原理, 将服务器解构为三个主要模块:  IO处理单元. 本章介绍四种IO模型和两种高效事件处理模式  逻辑单元. 本章介绍两种高效并发模式, 以及有限状态机  存储单元    请求队列是各单元之间通信方式的抽象.  8.1 服务器模型C&#x2F;S模型     C&#x2F;S模型适合资源相对集中的场合.   缺点: 服务器时通信的中心, 当访问量过大时, 可能所有客户端都将">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/a12ebbee_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/8e3d9f28_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/1e3a4995_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/19ee06fb_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/ff351392_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/6d6159b6_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/d46f9301_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/04470247_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/50174745_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/0f3f3bc7_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/0aeca4b4_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/486cd439_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/e485678b_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/fc15f8ac_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/2e9f9b03_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/13c7af1b_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/d5d4a173_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/062c2798_Untitled.png">
+<meta property="article:published_time" content="2023-08-20T08:08:08.000Z">
+<meta property="article:modified_time" content="2024-02-26T04:53:15.425Z">
+<meta property="article:author" content="Huan Lee">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="《Linux高性能服务器编程》">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/a12ebbee_Untitled.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/logo.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            第八章 高性能服务器程序框架 -
+        
+        MirthfulLee
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    let Global = window.Global || {};
+    Global.hexo_config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
+    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.3.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
+    Global.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    Global.data_config = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+    
+
+    
+
+    <div class="main-content-container">
+        
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                MirthfulLee
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        HOME
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-bars"></i>
+                                        
+                                        CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories/Learning">LEARNING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Project">PROJECT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Application">APPLICATION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Sharing">SHARING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Disscussion">DISCUSSION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Others">OTHERS
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-grip"></i>
+                                        
+                                        MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories">ARCHIVES
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/tags">TAGS
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/about">ABOUT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer">
+        <ul class="drawer-navbar-list">
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                HOME
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-bars"></i>
+                                
+                                CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Learning">LEARNING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Project">PROJECT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Application">APPLICATION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Sharing">SHARING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Disscussion">DISCUSSION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Others">OTHERS</a>
+                            </li>
+                        
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-grip"></i>
+                                
+                                MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories">ARCHIVES</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/tags">TAGS</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/about">ABOUT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">第八章 高性能服务器程序框架</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/logo.png">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Huan Lee</span>
+                        
+                            <span class="author-label">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-08-20 08:08:08</span>
+        <span class="mobile">2023-08-20 08:08:08</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-02-26 04:53:15</span>
+            <span class="mobile">2024-02-26 04:53:15</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Learning/">Learning</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/c/">c++</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>根据服务器程序的一般原理, 将服务器解构为三个主要模块:</p>
+<ol>
+<li><p>IO处理单元. 本章介绍四种IO模型和两种高效事件处理模式</p>
+</li>
+<li><p>逻辑单元. 本章介绍两种高效并发模式, 以及有限状态机</p>
+</li>
+<li><p>存储单元</p>
+</li>
+</ol>
+<blockquote>
+<p>请求队列是各单元之间通信方式的抽象.</p>
+</blockquote>
+<h2 id="8-1-服务器模型"><a href="#8-1-服务器模型" class="headerlink" title="8.1 服务器模型"></a>8.1 服务器模型</h2><h3 id="C-x2F-S模型"><a href="#C-x2F-S模型" class="headerlink" title="C&#x2F;S模型"></a>C&#x2F;S模型</h3><p>  <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/a12ebbee_Untitled.png" alt="Untitled"></p>
+<p>  C&#x2F;S模型适合资源相对集中的场合.</p>
+<p>  缺点: 服务器时通信的中心, 当访问量过大时, 可能所有客户端都将得到很慢的响应. (对服务端不友好)</p>
+<p>  <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/8e3d9f28_Untitled.png" alt="Untitled"></p>
+<h3 id="P2P模型"><a href="#P2P模型" class="headerlink" title="P2P模型"></a>P2P模型</h3><p>P2P模型使得每台机器在消耗服务的同时也给别人提供服务.</p>
+<p>缺点: 当用户之间传输的请求过多时, 网络的负载将加重(对客户端不友好)</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/1e3a4995_Untitled.png" alt="Untitled"></p>
+<h2 id="8-3-IO模型"><a href="#8-3-IO模型" class="headerlink" title="8.3 IO模型"></a>8.3 IO模型</h2><p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/19ee06fb_Untitled.png" alt="Untitled"></p>
+<p>socket在创建时默认时阻塞的, 可能被阻塞的系统调用包括accept, send, recv和connect</p>
+<blockquote>
+<p>针对非阻塞的socket, 这些系统调用返回-1, 需要根据errno进行区分. 对accept, send, recv而言, 事件未发生时errno通常为EAGAIN(再来一次)或者EWOULDBLOCK(期望阻塞); 对connect而言, errno则被设置为EINPROGRESS(处理中)</p>
+</blockquote>
+<p>显然, 只有在事件已经发生的情况下操作非阻塞IO才能提高程序的效率, 因此非阻塞IO通常要和其他IO通知机制一起使用.</p>
+<ul>
+<li>IO复用时最常使用的IO通知机制, 应用程序通过IO复用函数向内核注册一组事件, 内核通过IO复用函数把其中就绪的事件通知给应用程序. IO复用函数本身是阻塞的, 它们能提高程序效率的原因在于它们具有同时监听多个IO事件的能力.</li>
+<li>SIGIO信号也可以用来处理IO事件. 可以为一个目标文件描述符指定宿主进程, 那么被指定的宿主进程将捕获到SIGIO信号. 这样, 当目标文件描述符上有事件发生时, SIGIO信号的信号处理函数将被触发, 我们也就可以在该信号处理函数中对目标文件描述符执行非阻塞IO操作了.</li>
+</ul>
+<p><strong>阻塞IO, IO复用和信号驱动IO都是同步IO模型</strong>, 因为这三种IO模型中, IO的读写操作都是在IO事件之后, 由应用程序完成.</p>
+<p>而POSIX规范所定义的异步IO模型则不同, <strong>对异步IO而言, 用户可以直接对IO执行读写操作</strong>, 这些操作告诉内核用户读写缓冲区的位置, 以及IO操作完成后内核通知应用程序的方式. 异步IO的读写操作总是立即返回, 而不论IO是否阻塞, 因为<strong>真正的读写操作由内核接管</strong>.</p>
+<h3 id="同步IO和异步IO"><a href="#同步IO和异步IO" class="headerlink" title="同步IO和异步IO"></a>同步IO和异步IO</h3><p><strong>在IO模型中，“同步”和“异步”区分的是内核向应用程序通知的是何种I&#x2F;O事件（是就绪事件还是完成事件），以及该由谁来完成I&#x2F;O读写（是应用程序还是内核)</strong></p>
+<p><strong>同步IO的特点:</strong></p>
+<ol>
+<li><p><strong>同步 io 是用户线程发起 io 请求并以阻塞或</strong><u><strong>轮询</strong></u><strong>的方式来等待 io 事件的完成(内核态数据准备就绪的就绪事件)</strong></p>
+</li>
+<li><p>同步 io 是 io 的发起方，同时也是处理方</p>
+</li>
+<li><p>同步 io 是需要将内核态准备就绪的数据拷贝到用户态，所以需要阻塞用户态程序并等待 io 完成</p>
+</li>
+</ol>
+<p><strong>异步IO的特点:</strong></p>
+<ol>
+<li><p>异步 io 在用户线程发起 io 请求后会立即返回继续执行后续的逻辑流</p>
+</li>
+<li><p>异步 io 是 io 的发起方，但内核态才是处理方</p>
+</li>
+<li><p><strong>异步 io 的处理方是内核态，所以不需要阻塞 (程序告诉内核读写缓存区的位置即可, 通知完成事件)</strong></p>
+</li>
+</ol>
+<blockquote>
+<p>阻塞 I&#x2F;O 好比，你去饭堂吃饭，但是饭堂的菜还没做好，然后你就一直在那里等啊等，等了好长一段时间终于等到饭堂阿姨把菜端了出来（数据准备的过程），但是你还得继续等阿姨把菜（内核空间）打到你的饭盒里（用户空间），经历完这两个过程，你才可以离开。</p>
+</blockquote>
+<p> 非阻塞 I&#x2F;O 好比，你去了饭堂，问阿姨菜做好了没有，阿姨告诉你没，你就离开了，过几十分钟，你又来饭堂问阿姨，阿姨说做好了，于是阿姨帮你把菜打到你的饭盒里，这个过程你是得等待的。</p>
+<p> 异步 I&#x2F;O 好比，你让饭堂阿姨将菜做好并把菜打到饭盒里后，把饭盒送到你面前，整个过程你都不需要任何等待。</p>
+<h2 id="8-4-两种高效的事件处理模式"><a href="#8-4-两种高效的事件处理模式" class="headerlink" title="8.4 两种高效的事件处理模式"></a>8.4 两种高效的事件处理模式</h2><p><strong>同步IO模型</strong>通常用于实现Reactor模式, <strong>异步IO模型</strong>则用于实现Proactor模式.</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/ff351392_Untitled.png" alt="Untitled"></p>
+<h3 id="Reactor模式"><a href="#Reactor模式" class="headerlink" title="Reactor模式"></a>Reactor模式</h3><p>Reactor是这样一种模式，它要求<strong>主线程(I&#x2F;O处理单元, 下同)只负责监听文件描述上是否有事件发生, 有的话就立即将该事件通知工作线程(逻辑单元, 下同).</strong> 除此之外, 主线程不做任何其他实质性的工作. 读写数据, 接受新的连接, 以及处理客户请求均在工作线程中完成.</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/6d6159b6_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/d46f9301_Untitled.png" alt="Untitled"></p>
+<blockquote>
+<p>工作线程从请求队列中取出事件后, 将根据事件的类型来决定如何处理, 因此图中的Reactor模式中, 没必要区分”读工作线程”和”写工作线程”.</p>
+</blockquote>
+<h3 id="Proactor模式"><a href="#Proactor模式" class="headerlink" title="Proactor模式"></a>Proactor模式</h3><p><a class="link" target="_blank" rel="noopener" href="https://www.xiaolincoding.com/os/8_network_system/reactor.html#proactor">https://www.xiaolincoding.com/os/8_network_system&#x2F;reactor.html#proactor <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>与Reactor模式不同, <strong>Proactor模式将所有IO操作都交给主线程和内核来处理(是异步IO模型), 工作线程仅仅负责业务逻辑.</strong> 因此Proactor模式更符合图8-4 (服务器基本框架)</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/04470247_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/50174745_Untitled.png" alt="Untitled"></p>
+<ul>
+<li><p>连接socket上的读写事件是通过aio_read&#x2F;aio_write向内核注册的, 因此内核将通过信号向应用程序报告连接socket上的读写事件. 所以, 主线程中的epoll_wait调用能用来监听socket上的连接请求事件, 而不能用来检测连接上的读写事件.</p>
+<ul>
+<li>epoll_wait能够通知事件是否准备就绪(通过请求队列); 而aio_read&#x2F;aio_write则能直接将数据读入缓存区或从缓存区读出, 并直接通知事件是否已经完成(通过信号)</li>
+</ul>
+</li>
+</ul>
+<h3 id="模拟Proactor模式"><a href="#模拟Proactor模式" class="headerlink" title="模拟Proactor模式"></a>模拟Proactor模式</h3><p>使用同步IO模拟Proactor模式: <strong>主线程执行数据读写操作</strong>，读写完成之后，主线程向工作线程通知这一“完成事件”。<u>那么从工作线程的角度来看，它们就直接获得了数据读写的结果，接下来要做的只是对读写的结果进行逻辑处理(这点与Proactor模式一致)</u>。</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/0f3f3bc7_Untitled.png" alt="Untitled"></p>
+<h2 id="8-5-两种高效的并发模式"><a href="#8-5-两种高效的并发模式" class="headerlink" title="8.5 两种高效的并发模式"></a>8.5 两种高效的并发模式</h2><p>当程序是IO密集型, 采用并发编程能够提高CPU的利用率.</p>
+<h3 id="半同步-x2F-半异步模式"><a href="#半同步-x2F-半异步模式" class="headerlink" title="半同步&#x2F;半异步模式"></a>半同步&#x2F;半异步模式</h3><blockquote>
+<p>半同步&#x2F;半异步模式中的“同步”和“异步”与前面讨论的I&#x2F;O模型中的“同步”和“异步”是<strong>完全不同</strong>的概念!</p>
+</blockquote>
+<ul>
+<li><p><strong>在IO模型中，“同步”和“异步”区分的是内核向应用程序通知的是何种I&#x2F;O事件（是就绪事件还是完成事件），以及该由谁来完成I&#x2F;O读写（是应用程序还是内核)。</strong></p>
+</li>
+<li><p><strong>在并发模式中，</strong>“同步”指的是程序完全按照代码序列的顺序执行; <strong>“异步”指的是程序的执行需要由系统事件来驱动。常见的系统事件包括中断、信号等。</strong></p>
+</li>
+</ul>
+<p>  <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/0aeca4b4_Untitled.png" alt="Untitled"></p>
+<p>异步线程的执行效率高, 实时性强, 但是代码复杂, 难以调试和扩展; 同步线程虽然效率相对较低, 但是逻辑简单. 因此对服务器这种既要求较好的实时性, 又要求能同时处理多个用户请求的应用程序, 应该同时使用同步线程和异步线程来实现, 即采用半同步&#x2F;半异步模式.</p>
+<p><strong>同步线程处理客户逻辑, 相当于逻辑单元; 异步线程处理IO事件, 相当于IO处理单元</strong>. 异步线程监听到客户请求后, 将其封装成请求对象并插入请求队列. 请求队列将通知某个工作在同步模式的工作线程来读取和处理该请求对象. 具体选择哪个工作线程取决于请求队列的设计.</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/486cd439_Untitled.png" alt="Untitled"></p>
+<p>如果结合考虑两种事件处理模式和几种IO模型, 则半同步&#x2F;半异步模式就产生多种变体, 如<strong>半同步&#x2F;半反应堆(half-sync&#x2F;half-reactive)模式</strong><em>(+Reactor模式)</em><strong>.</strong></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/e485678b_Untitled.png" alt="Untitled"></p>
+<ul>
+<li><p>该模式下, 只有主线程是异步线程, 负责监听所有socket上的事件. 所有工作线程都睡眠在请求队列上, 当有任务到来时, 他们通过竞争获得任务的接管权.</p>
+</li>
+<li><p>图中, 主线程插入请求队列的是就绪的连接socket, 要求工作线程自己从socket上读写数据, 所以它采取的事件处理模式是<strong>Reactor模式.</strong></p>
+<ul>
+<li>也可能采取Proactor事件处理模式, 将由主线程来完成数据的读写, 再将数据和任务类型封装后发给工作线程.</li>
+</ul>
+</li>
+<li><p>缺点: 主线程和工作线程共享请求队列(需要加锁保护, 耗费资源); 每个工作线程只能同时处理单个客户请求.</p>
+</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/fc15f8ac_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>更高效的半同步&#x2F;半异步模式: 主线程只管理监听socket, 连接socket由工作线程来管理.</li>
+<li>这种模式并非严格意义的半同步&#x2F;半异步模式, 每个线程(主线程和工作线程)都维持自己的事件循环, 都工作在异步模式, 各自独立地监听不同的事件.</li>
+</ul>
+<h3 id="领导者-x2F-追随者模式"><a href="#领导者-x2F-追随者模式" class="headerlink" title="领导者&#x2F;追随者模式"></a>领导者&#x2F;追随者模式</h3><p>领导者&#x2F;追随者模式是多个工作线程轮流获得事件源集合，轮流监听、分发并处理事件的一种模式。在任意时间点，程序都仅有一个领导者线程，它负责监听&#x2F;O事件。而其他线程则都是追随者，它们休眠在线程池中等待成为新的领导者。当前的领导者如果检测到O事件，首先要从线程池中推选出新的领导者线程，然后处理&#x2F;O事件。此时，新的领导者等待新的I&#x2F;O事件，而原来的领导者则处理I&#x2F;O事件，二者实现了并发。</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/2e9f9b03_Untitled.png" alt="Untitled"></p>
+<p>该模式有以下组件， 他们的关系如图8-12所示：</p>
+<ul>
+<li>句柄集（HandlerSet）:句柄(Handle)表示IO资源, 在Linux下就是文件描述符. 该集合管理众多句柄, 它使用wait_for_event方法来监听IO事件, 并将其中的就绪事件通知给领导者线程. 领导者则调用绑定在Handle上的事件处理器来处理事件.</li>
+<li>线程集（ThreadSet）: 该集合包含和管理所有工作线程, 即领导者和追随者线程. 它负责线程之间的同步以及新领导者的推选. 集合中的线程必处于三种状态之一:</li>
+</ul>
+<ol>
+<li><p>Leader: 处于领导者身份, 等待句柄上的IO事件</p>
+</li>
+<li><p>Processing: 正在处理事件. Leader检测到IO事件后, 可以选取新的Leader后转移到该状态, 也可以指定其他追随者来处理事件(Event Handoff). 当处于Processing状态的线程处理完事件之后, 如果当前没有领导者, 则它成为系的呢领导者, 否则转变为追随者.</p>
+</li>
+<li><p>Follower: 处于追随者身份, 通过调用线程集的join方法等待成为新的领导者, 也可能被领导者指定来处理事件.</p>
+</li>
+</ol>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/13c7af1b_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>事件处理器（EventHandler）: 通常包含至少一个回调函数handle_event, 用于处理事件对应的业务逻辑. 事件处理器在使用前需要被绑定到某个句柄上, 当事件发生时, 领导者就执行与之绑定的事件处理器中的回调函数.</li>
+<li>具体的事件处理器（ConcreteEventHandler）: 事件处理器的派生类, 重新实现基类的handle_event方法以处理特定的任务.</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/d5d4a173_Untitled.png" alt="Untitled"></p>
+<p>领导者线程自己监听IO事件并处理客户请求, 因而领导者&#x2F;追随者模式不需要再线程之间传递任何额外的数据, 也不需要再线程之间同步对请求队列的访问. 但该模式的明显缺点时仅支持一个事件源集合, 因此无法做到图8-11那样让每个工作线程独立地管理多个客户连接.</p>
+<h2 id="8-6-有限状态机"><a href="#8-6-有限状态机" class="headerlink" title="8.6 有限状态机"></a>8.6 有限状态机</h2><p>网络编程中, 由于存在各种各样的情况, 逻辑单元内部往往需要实现较复杂的规则, 因此本小节以HTTP头部解析为例介绍了逻辑单元内部的一种高效编程方法: 有限状态机(finite state machine)</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*主状态机的两种可能状态，分别表示：当前正在分析请求行，当前正在分析头部字段*/</span></span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">CHECK_STATE</span> &#123;CHECK_STATE_REQUESTLINE = <span class="number">0</span>, CHECK_STATE_HEADER&#125;;</span><br><span class="line"><span class="comment">/*从状态机的三种可能状态，即行的读取状态，分别表示：读取到一个完整的行、行出错和行数据尚且不</span></span><br><span class="line"><span class="comment">完整*/</span></span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">LINE_STATUS</span> &#123;LINE_OK = <span class="number">0</span>, LINE_BAD, LINE_OPEN&#125;;</span><br><span class="line"><span class="comment">/*服务器处理HTTP请求的结果: NO_REQUEST表示请求不完整, 需要继续读取; GET_REQUEST表示获得了一个完整的客户请求; 其他均为异常情况*/</span></span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">HTTP_CODE</span> &#123;NO_REQUEST, GET_REQUEST, BAD_REQUEST, FORBIDDEN_REQUEST, </span><br><span class="line">        INTERNAL_ERROR, CLOSED_CONNECTION&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 从状态机, 用于解析出一行内容 */</span></span><br><span class="line"><span class="function">LINE_STATUS <span class="title">parse_line</span><span class="params">(<span class="type">char</span>* buffer, <span class="type">int</span>&amp; checked_index, <span class="type">int</span>&amp; read_index)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 分析请求行 */</span></span><br><span class="line"><span class="function">HTTP_CODE <span class="title">parse_requestline</span><span class="params">(<span class="type">char</span>* temp, CHECK_STATE&amp; checkstate)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 分析头部字段 */</span></span><br><span class="line"><span class="function">HTTP_CODE <span class="title">parse_headers</span><span class="params">(<span class="type">char</span>* temp)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 分析HTTP请求的入口函数 */</span></span><br><span class="line"><span class="function">HTTP_CODE <span class="title">parse_content</span><span class="params">(<span class="type">char</span>* buffer, <span class="type">int</span>&amp; checked_index, CHECK_STATE&amp; checkstate, </span></span></span><br><span class="line"><span class="params"><span class="function">            <span class="type">int</span>&amp; read_index, <span class="type">int</span>&amp; start_line)</span></span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+<ol>
+<li><p>IO处理单元接收到客户的数据后, 调用parse_content函数来分析新读入的数据, 最开始的主状态机状态为CHECK_STATE_REQUESTLINE(HTTP头部的第一行为请求头, 后面行为头部字段).</p>
+</li>
+<li><p>parse_content调用parse_line函数来获取一个行.</p>
+</li>
+</ol>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/062c2798_Untitled.png" alt="Untitled"></p>
+<p> parse_line内部更新checked_index, 并返回新的从状态机状态(行的读取状态)</p>
+<ol>
+<li>当从状态机由LINE_OPEN更新到LINE_OK时, parse_content根据主状态机状态分别调用parse_requestline和parse_headers函数解析行(若成功解析请求行, 则更新状态为CHECK_STATE_HEADER), 然后再次更新从状态机至LINE_OPEN.</li>
+</ol>
+<blockquote>
+<p>若parse_headers检测到请求头结束标识符(<CR><LF>), 则return GET_REQUEST, 此时parse_content函数也return GET_REQUEST, 结束HTTP请求头解析.</LF></CR></p>
+</blockquote>
+<h2 id="8-7-提高服务器性能的其他建议"><a href="#8-7-提高服务器性能的其他建议" class="headerlink" title="8.7 提高服务器性能的其他建议"></a>8.7 提高服务器性能的其他建议</h2><h3 id="池"><a href="#池" class="headerlink" title="池"></a>池</h3><p>如果服务器的硬件资源充裕, 那么提高服务器性能的一个直接方式就是以<strong>空间换取时间</strong>, 即”浪费”服务器的硬件资源, 以换取其运行效率, 这就是池(pool)的概念.</p>
+<p>池是一组资源的集合, 再服务器启动之初就被完全创建并初始化, 这称为静态资源分配. 当程序后续需要相关资源时, 不再进行耗时地请求系统分配资源, 而是直接从池中申请; 等使用结束后也无需执行系统调用释放资源, 而是直接把资源再放回池. 池有很多种, 常见的有内存池, 进程池, 线程池和连接池.</p>
+<p>由于池的资源时预先静态分配的, 因此对资源的提前预估或后期动态分配是主要问题.</p>
+<h3 id="数据复制"><a href="#数据复制" class="headerlink" title="数据复制"></a>数据复制</h3><p>高性能服务器应该避免不必要的数据复制, 尤其是当数据复制发生在用户代码和内核之间时. 如果内核可以直接处理从socket或者文件读入的数据, 则应用程序就没有必要将这些数据从内核缓存区复制到应用程序缓存区. 另外, 用户代码内部的数据复制也是应该避免的.</p>
+<h3 id="上下文切换和锁"><a href="#上下文切换和锁" class="headerlink" title="上下文切换和锁"></a>上下文切换和锁</h3><p>并发程序必须考虑上下文切换(context switch)的问题, 即进程切换或者线程切换导致的系统开销. 即使是IO密集型的服务器, 也不应该使用过多的工作线程, 否则上写问切换将占用大量CPU资源. <strong>因此为每个客户连接都创建一个工作线程的服务器模型时不可取的.</strong></p>
+<p>并发程序需要考虑的另一个问题时共享资源的加锁保护. 锁通常被认为是导致服务器效率低下的一个因素, 因为由他引入的代码不仅不处理任何业务逻辑, 而且需要访问内核资源. 因此, 如果服务器有更好的解决方案, 应该<strong>避免使用锁</strong>. 如果必须使用锁, 可以<strong>考虑减小锁的粒度.</strong></p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 第八章 高性能服务器程序框架</li>
+        <li><strong>Author:</strong> Huan Lee</li>
+        <li><strong>Created at:</strong> 2023-08-20 08:08:08</li>
+        
+            <li>
+                <strong>Updated at:</strong> 2024-02-26 04:53:15
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://www.mirthfullee.com/2023/08/20/notion-第八章 高性能服务器程序框架-ad4f9420/
+        </li>
+        <li>
+            <strong>License:</strong> This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>.
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/c/">#c++</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">#《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第九章 IO复用</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/08/20/notion-%E7%AC%AC%E4%B8%83%E7%AB%A0%20Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E8%A7%84%E8%8C%83-4e5cab6a/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第七章 Linux服务器程序规范</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">第八章 高性能服务器程序框架</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#8-1-%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E5%9E%8B"><span class="nav-text">8.1 服务器模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#C-x2F-S%E6%A8%A1%E5%9E%8B"><span class="nav-text">C&#x2F;S模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#P2P%E6%A8%A1%E5%9E%8B"><span class="nav-text">P2P模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-3-IO%E6%A8%A1%E5%9E%8B"><span class="nav-text">8.3 IO模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5IO%E5%92%8C%E5%BC%82%E6%AD%A5IO"><span class="nav-text">同步IO和异步IO</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-4-%E4%B8%A4%E7%A7%8D%E9%AB%98%E6%95%88%E7%9A%84%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="nav-text">8.4 两种高效的事件处理模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Reactor%E6%A8%A1%E5%BC%8F"><span class="nav-text">Reactor模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Proactor%E6%A8%A1%E5%BC%8F"><span class="nav-text">Proactor模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9FProactor%E6%A8%A1%E5%BC%8F"><span class="nav-text">模拟Proactor模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-5-%E4%B8%A4%E7%A7%8D%E9%AB%98%E6%95%88%E7%9A%84%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%BC%8F"><span class="nav-text">8.5 两种高效的并发模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8A%E5%90%8C%E6%AD%A5-x2F-%E5%8D%8A%E5%BC%82%E6%AD%A5%E6%A8%A1%E5%BC%8F"><span class="nav-text">半同步&#x2F;半异步模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%86%E5%AF%BC%E8%80%85-x2F-%E8%BF%BD%E9%9A%8F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="nav-text">领导者&#x2F;追随者模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-6-%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-text">8.6 有限状态机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-7-%E6%8F%90%E9%AB%98%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%80%A7%E8%83%BD%E7%9A%84%E5%85%B6%E4%BB%96%E5%BB%BA%E8%AE%AE"><span class="nav-text">8.7 提高服务器性能的其他建议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%A0"><span class="nav-text">池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%A4%8D%E5%88%B6"><span class="nav-text">数据复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%E5%92%8C%E9%94%81"><span class="nav-text">上下文切换和锁</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+            
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2021</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Huan Lee</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv" class="busuanzi_container_site_uv">
+                        VISITOR COUNT&nbsp;<span id="busuanzi_value_site_uv" class="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="busuanzi_container_site_pv">
+                        TOTAL PAGE VIEWS&nbsp;<span id="busuanzi_value_site_pv" class="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            <span class="powered-by-container">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a></span>
+                <br>
+            <span class="theme-version-container">THEME&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.3.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+        ],
+        containers: ["#swup"],
+    });
+
+    swup.on("pageView", () => {
+        Global.refresh();
+    });
+
+    // if (document.readyState === "complete") {
+    //
+    // } else {
+    //     document.addEventListener("DOMContentLoaded", () => init());
+    // }
+</script>
+
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/navbarShrink.js"></script>
+
+<script src="/js/tools/scrollTopBottom.js"></script>
+
+<script src="/js/tools/lightDarkSwitch.js"></script>
+
+<script src="/js/layouts/categoryList.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+</div>
+
+
+</body>
+</html>

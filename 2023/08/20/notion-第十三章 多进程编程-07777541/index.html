@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Huan Lee">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://mirthfullee.github.io/2023/08/20/notion-第十三章 多进程编程-07777541/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="13.1 fork系统调用123#include &lt;sys&#x2F;types.h&gt;#include &lt;unistd.h&gt;pid_t fork(void);   该函数每次调用都返回两次, 在父进程中返回的是子进程的PID, 在子进程中则返回0. 新的进程表项有许多属性与原进程相同, 如堆指针, 栈指针, 标志寄存器的值; 不同的属性如PPID被设置为原进程的PID, 信号位图被清">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十三章 多进程编程">
+<meta property="og:url" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/index.html">
+<meta property="og:site_name" content="沐梓驿站">
+<meta property="og:description" content="13.1 fork系统调用123#include &lt;sys&#x2F;types.h&gt;#include &lt;unistd.h&gt;pid_t fork(void);   该函数每次调用都返回两次, 在父进程中返回的是子进程的PID, 在子进程中则返回0. 新的进程表项有许多属性与原进程相同, 如堆指针, 栈指针, 标志寄存器的值; 不同的属性如PPID被设置为原进程的PID, 信号位图被清">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/b58e62d5_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/e293ab70_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/047a3709_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/cdef701c_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/2690498e_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/56eb147f_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/f37a539a_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/269d3e5d_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/c12eefa2_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/3a824f32_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/7a05b02e_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/93092014_Untitled.png">
+<meta property="article:published_time" content="2023-08-20T08:08:13.000Z">
+<meta property="article:modified_time" content="2024-02-26T04:53:15.533Z">
+<meta property="article:author" content="Huan Lee">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="《Linux高性能服务器编程》">
+<meta property="article:tag" content="多进程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/b58e62d5_Untitled.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/logo.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            第十三章 多进程编程 -
+        
+        MirthfulLee
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    let Global = window.Global || {};
+    Global.hexo_config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
+    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.3.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
+    Global.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    Global.data_config = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+    
+
+    
+
+    <div class="main-content-container">
+        
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                MirthfulLee
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        HOME
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-bars"></i>
+                                        
+                                        CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories/Learning">LEARNING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Project">PROJECT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Application">APPLICATION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Sharing">SHARING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Disscussion">DISCUSSION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Others">OTHERS
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-grip"></i>
+                                        
+                                        MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories">ARCHIVES
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/tags">TAGS
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/about">ABOUT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer">
+        <ul class="drawer-navbar-list">
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                HOME
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-bars"></i>
+                                
+                                CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Learning">LEARNING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Project">PROJECT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Application">APPLICATION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Sharing">SHARING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Disscussion">DISCUSSION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Others">OTHERS</a>
+                            </li>
+                        
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-grip"></i>
+                                
+                                MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories">ARCHIVES</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/tags">TAGS</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/about">ABOUT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">第十三章 多进程编程</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/logo.png">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Huan Lee</span>
+                        
+                            <span class="author-label">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-08-20 08:08:13</span>
+        <span class="mobile">2023-08-20 08:08:13</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-02-26 04:53:15</span>
+            <span class="mobile">2024-02-26 04:53:15</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Learning/">Learning</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/c/">c++</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%A4%9A%E8%BF%9B%E7%A8%8B/">多进程</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h2 id="13-1-fork系统调用"><a href="#13-1-fork系统调用" class="headerlink" title="13.1 fork系统调用"></a>13.1 fork系统调用</h2><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">pid_t</span> <span class="title">fork</span><span class="params">(<span class="type">void</span>)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>该函数每次调用都返回两次, 在父进程中返回的是子进程的PID, 在子进程中则返回0.</li>
+<li>新的进程表项有许多属性与原进程相同, 如堆指针, 栈指针, 标志寄存器的值; 不同的属性如PPID被设置为原进程的PID, 信号位图被清除(原进程设置的信号处理函数不再对新进程起作用)</li>
+<li>数据的复制采取写时复制(copy on write), 即只有任一进程对数据执行了写操作时复制才会发生.</li>
+<li>父进程打开的文件描述符默认在子进程中也是打开的, 且文件描述符的引用计数加一.</li>
+</ul>
+<h2 id="13-2-exec系列系统调用"><a href="#13-2-exec系列系统调用" class="headerlink" title="13.2 exec系列系统调用"></a>13.2 exec系列系统调用</h2><p>在子进程中执行其他程序, 即替换当前进程映像, 需要使用exec系列函数之一:</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">char</span>** environ;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">execl</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* path, <span class="type">const</span> <span class="type">char</span>* arg, ...)</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">execlp</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* file, <span class="type">const</span> <span class="type">char</span>* arg, ...)</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">execle</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* path, <span class="type">const</span> <span class="type">char</span>* arg, ..., <span class="type">char</span>* <span class="type">const</span> envp[])</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">execv</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* path, <span class="type">char</span>* <span class="type">const</span> argv[])</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">execvp</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* file, <span class="type">char</span>* <span class="type">const</span> argv[])</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">execve</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* path, <span class="type">char</span>* <span class="type">const</span> argv[], <span class="type">char</span>* <span class="type">const</span> envp[])</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>path提供完整的文件名, file则是提供文件名后, 从环境变量PATH中去搜寻.</li>
+<li>arg接收可变参数, argv接收参数数组. 它们都会传递给新程序的main函数.</li>
+<li>envp参数用于设置新程序的环境变量(未设置则有全局变量environ指定)</li>
+</ul>
+<h2 id="13-3-处理僵尸进程"><a href="#13-3-处理僵尸进程" class="headerlink" title="13.3 处理僵尸进程"></a>13.3 处理僵尸进程</h2><p>对于许多多进程程序, 为了让父进程更好地跟踪子进程的退出状态, 在子进程结束运行时, 内核不会立即释放该进程的进程表表项. 在子进程结束运行之后, 父进程读取其退出状态之前, 称为僵尸态.</p>
+<ul>
+<li>另一种僵尸态是: 父进程结束或异常终止, 子进程PPID被设置为1, 即init进程. 子进程在退出之前, 处于僵尸态.</li>
+</ul>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">pid_t</span> <span class="title">wait</span><span class="params">(<span class="type">int</span>* stat_loc)</span></span>;</span><br><span class="line"><span class="function"><span class="type">pid_t</span> <span class="title">waitpid</span><span class="params">(<span class="type">pid_t</span> pid, <span class="type">int</span>* stat_loc, <span class="type">int</span> options)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><p>wait函数阻塞进程, 直至其某个子进程结束运行, 返回子进程PID, 并将子进程的退出状态信息存储在stat_loc中;</p>
+<ul>
+<li>可以通过定义的宏来查看状态信息</li>
+</ul>
+</li>
+</ul>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/b58e62d5_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>waitpid只等待由pid指定的子进程. options最常用的取值是WNOHANG, 此时waitpid调用时非阻塞的: 如果目标子进程还没结束, 返回0; 否则返回PID.</li>
+</ul>
+<h3 id="SIGCHLD信号"><a href="#SIGCHLD信号" class="headerlink" title="SIGCHLD信号"></a>SIGCHLD信号</h3><p>子进程结束时, 会给其父进程发送一个SIGCHLD信号. 因此, 可以在父进程中捕获SIGCHLD信号, 并在信号处理函数中调用waitpid函数以彻底结束一个子进程:</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/e293ab70_Untitled.png" alt="Untitled"></p>
+<h2 id="13-4-管道"><a href="#13-4-管道" class="headerlink" title="13.4 管道"></a>13.4 管道</h2><p>管道也是父进程和子进程间通信的常用手段. 由于fork之后两个管道文件描述符(fd[0], fd[1])都保持打开, 一对这样的文件描述符能够实现数据传输. 然而<strong>一对这样的文件描述符只能保证父子进程间一个方向上的数据传输, 父进程和子进程必须有一个关闭fd[0], 另一个关闭fd[1].</strong></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/047a3709_Untitled.png" alt="Untitled"></p>
+<p>要实现父子进程间的双向数据传输, 就必须使用两个管道, 或者使用socketpair系统调用.</p>
+<p>除了特殊的FIFO管道, <strong>管道只能用于由关联的两个进程(如父子进程)间的通信</strong></p>
+<h2 id="13-5-信号量"><a href="#13-5-信号量" class="headerlink" title="13.5 信号量"></a>13.5 信号量</h2><p>要实现多进程在共享资源上的同步, 要求程序实现对共享资源的独占式访问. 这种要求独占的写入或修改代码片段可能引发进程之间的竞态条件, 被称为关键代码段, 或临界区. 因此, 进程同步就是要求任一时刻只有一个进程能进入关键代码段.</p>
+<p>信号量(Semaphore)是一种特殊的变量, 它只能取自然数值, 并且只支持两种操作: **等待(wait)和信号(signal), 分别对应更加常用的称呼—P,V操作.**对于信号量S:</p>
+<ul>
+<li>P(S), 如果S的值大于0，就将它减1：如果S的值为0，则挂起进程的执行。</li>
+<li>V(S), 如果有其他进程因为等待S而挂起，则唤醒之；如果没有，则将S加1。</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/cdef701c_Untitled.png" alt="Untitled"></p>
+<p>最常用, 最简单的二进制信号量</p>
+<h3 id="semget系统调用"><a href="#semget系统调用" class="headerlink" title="semget系统调用"></a>semget系统调用</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/sem.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">semget</span><span class="params">(<span class="type">key_t</span> key, <span class="type">int</span> num_sems, <span class="type">int</span> sem_flags)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>key是一个键值, 用来标识一个全局唯一的信号量集. 要通过信号量通信的进程需要使用相同的键值来创建&#x2F;获取该信号量.</li>
+<li>num_sems参数指定要创建&#x2F;获取的信号量集中信号量的数目. 创建时该值必须指定, 获取时可以设置为0</li>
+<li>sem_flags参数指定一组标志. 它低端的9bit时该信号量的权限. 此外它还可以与IPC_CREAT标志按位或以创建新的信号量集; 联合IPC_CREAT和IPC_EXCL来确保创建一组新的唯一的信号量集.</li>
+<li>函数成功时返回一个正整数, 作为信号量集的标识符.</li>
+</ul>
+<h3 id="semop系统调用"><a href="#semop系统调用" class="headerlink" title="semop系统调用"></a>semop系统调用</h3><p>semop系统调用改变信号量的值, 即执行PV操作. 其本质是对一些信号量相关的内核变量的操作</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/2690498e_Untitled.png" alt="Untitled"></p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">semop</span><span class="params">(<span class="type">int</span> sem_id, <span class="keyword">struct</span> sembuf* sem_ops, <span class="type">size_t</span> num_sem_ops)</span></span>;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">sembuf</span> &#123;</span><br><span class="line"> <span class="type">unsigned</span> <span class="type">short</span> <span class="type">int</span> sem_num;</span><br><span class="line"> <span class="type">short</span> <span class="type">int</span> sem_op;</span><br><span class="line"> <span class="type">short</span> <span class="type">int</span> sem_flg;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><p>sem_id 为信号量集的标识符(由semget返回);</p>
+</li>
+<li><p>sem_ops指向sembuf结构体类型的一个数组. sem_num表示要操作的信号量编号(从0开始). sem_op和sem_flg组合来影响semop的行为:</p>
+<ul>
+<li><p>sem_flg可选值为IPC_NOWAIT(非阻塞, 立即返回)和SEM_UNDO(当进程退出时取消正在进行的semop操作)</p>
+</li>
+<li><p>sem_op&gt;0, 被操作的信号量增加sem_op</p>
+</li>
+<li><p>sem_op&#x3D;&#x3D;0, 等待0操作.</p>
+</li>
+<li><p>sem_op&lt;0, 对信号量进行减操作, 即期望获得信号量.</p>
+</li>
+</ul>
+</li>
+<li><p>semop对sem_ops中的每个成员按照数组顺序依次执行操作, 并且在该过程中是原子操作.</p>
+</li>
+</ul>
+<h3 id="semctl系统调用"><a href="#semctl系统调用" class="headerlink" title="semctl系统调用"></a>semctl系统调用</h3><p>semctl系统调用允许调用者对信号量进行直接控制.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">semctl</span><span class="params">(<span class="type">int</span> sem_id, <span class="type">int</span> sem_num, <span class="type">int</span> command,...)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/56eb147f_Untitled.png" alt="Untitled"></p>
+<h3 id="特殊键值IPC-PRIVATE"><a href="#特殊键值IPC-PRIVATE" class="headerlink" title="特殊键值IPC_PRIVATE"></a>特殊键值IPC_PRIVATE</h3><p>semget的调用者可以给其key参数传递一个特殊的键值IPC_PRIVATE(其值为0)，这样无论该信号量是否已经存在，semget都将创建一个新的信号量。使用该键值创建的信号量并非像它的名字声称的那样是进程私有的。其他进程，尤其是子进程，也有方法来访问这个信号量。所以semget的man手册的BUGS部分上说，使用名字IPC_PRIVATE有些误导（历史原因)，应该称为IPC_NEW。</p>
+<h2 id="13-6-共享内存"><a href="#13-6-共享内存" class="headerlink" title="13.6 共享内存"></a>13.6 共享内存</h2><p>共享内存是最高效的IPC机制, 但是必须通过其他辅助手段来同步进程对共享内存的访问.</p>
+<h3 id="shmget系统调用"><a href="#shmget系统调用" class="headerlink" title="shmget系统调用"></a>shmget系统调用</h3><div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/shm.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">shmget</span><span class="params">(<span class="type">key_t</span> key, <span class="type">size_t</span> size, <span class="type">int</span> shmflg)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><p>shmflg参数与semget系统调用的sem_flags相同, 但额外支持两个标志:</p>
+<ul>
+<li><p>SHM_HUGETLB, 系统将使用大页面来为共享内存分配空间.</p>
+</li>
+<li><p>SHM_NORESERVE, 部位共享内存保留交换分区(swap空间).</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="shmat和shmdt系统调用"><a href="#shmat和shmdt系统调用" class="headerlink" title="shmat和shmdt系统调用"></a>shmat和shmdt系统调用</h3><p>共享内存被创建&#x2F;获取之后，我们不能立即访问它，而是需要先将它关联到进程的地址空间中。使用完共享内存之后，我们也需要将它从进程地址空间中分离。这两项任务分别由如下两个系统调用实现：</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> *<span class="title">shmat</span><span class="params">(<span class="type">int</span> shm_id, <span class="type">const</span> <span class="type">void</span>* *shm_addr,<span class="type">int</span> shmflg)</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">shmdt</span><span class="params">(<span class="type">const</span> <span class="type">void</span>* shm_addr)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/f37a539a_Untitled.png" alt="Untitled"></p>
+<h3 id="shmctl系统调用"><a href="#shmctl系统调用" class="headerlink" title="shmctl系统调用"></a>shmctl系统调用</h3><p>shmctl系统调用控制共享内存的某些属性</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">shmctl</span><span class="params">(<span class="type">int</span> shm_id, <span class="type">int</span> command, <span class="keyword">struct</span> shmid_ds* buf)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/269d3e5d_Untitled.png" alt="Untitled"></p>
+<h3 id="共享内存的POSIX方法"><a href="#共享内存的POSIX方法" class="headerlink" title="共享内存的POSIX方法"></a>共享内存的POSIX方法</h3><p>6.5节中我们介绍过mmap函数。利用它的MAP ANONYMOUS标志我们可以实现父、子进程之间的匿名内存共享。通过打开同一个文件，mmap也可以实现无关进程之间的内存共享。Linux提供了另外一种利用mmap在无关进程之间共享内存的方式。这种方式无须任何文件的支持，但它需要先使用如下函数来创建或打开一个POSIX共享内存对象：</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">shm_open</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* name,<span class="type">int</span> oflag, <span class="type">mode_t</span> mode)</span></span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">shm_unlink</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* name)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>shm_open的使用方法与open系统调用完全相同。</p>
+<ul>
+<li><p>name参数指定要创建or打开的共享内存对象. 从可移植性的角度考虑, 应该使用”&#x2F;something”的格式.</p>
+</li>
+<li><p>oflag指定创建方式:</p>
+<ul>
+<li><p>O_RDONLY。以只读方式打开共享内存对象。</p>
+</li>
+<li><p>O_RDWR。以可读、可写方式打开共享内存对象。</p>
+</li>
+<li><p>O_CREAT。如果共享内存对象不存在，则创建之。此时mode参数的最低9位将指定该共享内存对象的访问权限。共享内存对象被创建的时候，其初始长度为0。</p>
+</li>
+<li><p>O_EXCL。和O CREAT一起使用，如果由namc指定的共享内存对象已经存在，则shm_open调用返回错误，否则就创建一个新的共享内存对象。</p>
+</li>
+<li><p>O_TRUNC。如果共享内存对象已经存在，则把它截断，使其长度为O。</p>
+</li>
+</ul>
+</li>
+<li><p>shm_open返回一个文件描述符, 可用于后续的mmap调用, 从而将共享内存关联到调用进程.</p>
+</li>
+<li><p>如果代码使用了上述POSIX共享内存函数, 则编译时需要指定链接选项 -lrt</p>
+</li>
+</ul>
+<h3 id="使用共享内存的聊天室服务器程序"><a href="#使用共享内存的聊天室服务器程序" class="headerlink" title="使用共享内存的聊天室服务器程序"></a>使用共享内存的聊天室服务器程序</h3><h2 id="13-7-消息队列"><a href="#13-7-消息队列" class="headerlink" title="13.7 消息队列"></a>13.7 消息队列</h2><p>消息队列是在两个进程之间传递二进制块数据的简单有效方式. 每个数据块都有一个特定的类型, 接收方可以根据类型来有选择地接收数据, 而不一定像管道那样必须FIFO.</p>
+<h3 id="msgget系统调用"><a href="#msgget系统调用" class="headerlink" title="msgget系统调用"></a>msgget系统调用</h3><p>创建或获取一个消息队列, 返回值为标识符.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/msg.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">msgget</span><span class="params">(<span class="type">key_t</span> key, <span class="type">int</span> msgflg)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>msgflag的使用和semget的sem_flags相同.</p>
+<h3 id="msgsnd系统调用"><a href="#msgsnd系统调用" class="headerlink" title="msgsnd系统调用"></a>msgsnd系统调用</h3><p>msgsnd系统调用把一条消息添加到消息队列中.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">msgsnd</span><span class="params">(<span class="type">int</span> msqid, <span class="type">const</span> <span class="type">void</span>* msg_ptr, <span class="type">size_t</span> msg_sz, <span class="type">int</span> msgflg)</span></span>;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">msgbuf</span>&#123;</span><br><span class="line"> <span class="type">long</span> mtype; <span class="comment">// 消息类型</span></span><br><span class="line"> <span class="type">char</span> mtext[<span class="number">512</span>]; <span class="comment">// 消息数据</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>msgflag仅支持IPC_NOWAIT标志.</li>
+<li>系统调用成功时返回0, 失败则为-1并设置errno.</li>
+</ul>
+<h3 id="msgrcv系统调用"><a href="#msgrcv系统调用" class="headerlink" title="msgrcv系统调用"></a>msgrcv系统调用</h3><p>msgrcv系统调用从消息队列中获取消息</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">msgrcv</span><span class="params">(<span class="type">int</span> msqid, <span class="type">void</span>* msg_ptr, <span class="type">size_t</span> msg_sz, <span class="type">long</span> <span class="type">int</span> msgtype, <span class="type">int</span> msgflg)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><p>msgtype指定读取何种类型的消息.</p>
+<ul>
+<li><p>0: 第一个消息;</p>
+</li>
+<li><blockquote>
+<p>0: 第一个类型为msgtype的消息(除非制定了标志MSG_EXCEPT)</p>
+</blockquote>
+</li>
+<li><p>&lt;0: 读取消息队列中第一个类型值比msgtype的绝对值小的消息.</p>
+</li>
+</ul>
+</li>
+<li><p>msgflag控制msgrcv的行为, 是以下标志的按位或:</p>
+<ul>
+<li>IPC_NOWAIT。如果消息队列中没有消息，则msgrev调用立即返回并设置errno为</li>
+</ul>
+</li>
+</ul>
+<p>ENOMSG</p>
+<ul>
+<li><p>MSG_EXCEPT。如果msgtype大于O,则接收消息队列中第一个非msgtype类型的<br>消息。</p>
+</li>
+<li><p>MSG NOERROR。如果消息数据部分的长度超过了msg sz,就将它截断</p>
+</li>
+</ul>
+<h3 id="msgctl系统调用"><a href="#msgctl系统调用" class="headerlink" title="msgctl系统调用"></a>msgctl系统调用</h3><p>msgctl系统调用控制消息队列的某些属性</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">msgctl</span><span class="params">(<span class="type">int</span> msqid, <span class="type">int</span> command, <span class="keyword">struct</span> msqid_ds* buf)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/c12eefa2_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/3a824f32_Untitled.png" alt="Untitled"></p>
+<h2 id="13-8-IPC命令"><a href="#13-8-IPC命令" class="headerlink" title="13.8 IPC命令"></a>13.8 IPC命令</h2><p>上述三种System V IPC进程间通信方式(信号量, 共享内存, 消息队列)都使用了一个全局唯一的键值来描述一个共享资源. 当程序调用semget, shmget, msgget时, 就创建了这些共享资源的一个实例. linux提供了ipcs命令, 以查看当前系统上拥有哪些共享资源实例.</p>
+<h2 id="13-9-在进程间传递文件描述符"><a href="#13-9-在进程间传递文件描述符" class="headerlink" title="13.9 在进程间传递文件描述符"></a>13.9 在进程间传递文件描述符</h2><p>由于fork调用之后，父进程中打开的文件描述符在子进程中仍然保持打开，所以文件描述符可以很方便地从父进程传递到子进程。需要注意的是，<strong>传递一个文件描述符并不是传递一个文件描述符的值，而是要在接收进程中创建一个新的文件描述符，并且该文件描述符和发送进程中被传递的文件描述符指向内核中相同的文件表项。</strong></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/7a05b02e_Untitled.png" alt="Untitled"></p>
+<p>子进程通过管道将文件描述符发送到父进程, (同理可以发给不相关进程)</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%89%E7%AB%A0%20%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B-07777541/93092014_Untitled.png" alt="Untitled"></p>
+<p>父进程从管道接收目标文件描述符</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 第十三章 多进程编程</li>
+        <li><strong>Author:</strong> Huan Lee</li>
+        <li><strong>Created at:</strong> 2023-08-20 08:08:13</li>
+        
+            <li>
+                <strong>Updated at:</strong> 2024-02-26 04:53:15
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://www.mirthfullee.com/2023/08/20/notion-第十三章 多进程编程-07777541/
+        </li>
+        <li>
+            <strong>License:</strong> This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>.
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/c/">#c++</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">#《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E5%A4%9A%E8%BF%9B%E7%A8%8B/">#多进程</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E5%9B%9B%E7%AB%A0%20%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B-f2c2889d/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第十四章 多线程编程</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0%20%E5%AE%9A%E6%97%B6%E5%99%A8-3947b336/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第十一章 定时器</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">第十三章 多进程编程</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#13-1-fork%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">13.1 fork系统调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-2-exec%E7%B3%BB%E5%88%97%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">13.2 exec系列系统调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-3-%E5%A4%84%E7%90%86%E5%83%B5%E5%B0%B8%E8%BF%9B%E7%A8%8B"><span class="nav-text">13.3 处理僵尸进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SIGCHLD%E4%BF%A1%E5%8F%B7"><span class="nav-text">SIGCHLD信号</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-4-%E7%AE%A1%E9%81%93"><span class="nav-text">13.4 管道</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-5-%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-text">13.5 信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#semget%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">semget系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#semop%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">semop系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#semctl%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">semctl系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E9%94%AE%E5%80%BCIPC-PRIVATE"><span class="nav-text">特殊键值IPC_PRIVATE</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-6-%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98"><span class="nav-text">13.6 共享内存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#shmget%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">shmget系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shmat%E5%92%8Cshmdt%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">shmat和shmdt系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shmctl%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">shmctl系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E7%9A%84POSIX%E6%96%B9%E6%B3%95"><span class="nav-text">共享内存的POSIX方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E7%9A%84%E8%81%8A%E5%A4%A9%E5%AE%A4%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F"><span class="nav-text">使用共享内存的聊天室服务器程序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-7-%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-text">13.7 消息队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#msgget%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">msgget系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#msgsnd%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">msgsnd系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#msgrcv%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">msgrcv系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#msgctl%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">msgctl系统调用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-8-IPC%E5%91%BD%E4%BB%A4"><span class="nav-text">13.8 IPC命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-9-%E5%9C%A8%E8%BF%9B%E7%A8%8B%E9%97%B4%E4%BC%A0%E9%80%92%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="nav-text">13.9 在进程间传递文件描述符</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+            
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2021</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Huan Lee</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv" class="busuanzi_container_site_uv">
+                        VISITOR COUNT&nbsp;<span id="busuanzi_value_site_uv" class="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="busuanzi_container_site_pv">
+                        TOTAL PAGE VIEWS&nbsp;<span id="busuanzi_value_site_pv" class="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            <span class="powered-by-container">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a></span>
+                <br>
+            <span class="theme-version-container">THEME&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.3.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+        ],
+        containers: ["#swup"],
+    });
+
+    swup.on("pageView", () => {
+        Global.refresh();
+    });
+
+    // if (document.readyState === "complete") {
+    //
+    // } else {
+    //     document.addEventListener("DOMContentLoaded", () => init());
+    // }
+</script>
+
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/navbarShrink.js"></script>
+
+<script src="/js/tools/scrollTopBottom.js"></script>
+
+<script src="/js/tools/lightDarkSwitch.js"></script>
+
+<script src="/js/layouts/categoryList.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+</div>
+
+
+</body>
+</html>

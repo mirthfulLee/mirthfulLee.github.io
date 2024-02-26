@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Huan Lee">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://mirthfullee.github.io/2023/08/20/notion-第九章 io复用-b67d62ab/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="IO复用使得程序能同时监听多个文件描述符，这对提高程序的性能至关重要。通常，网络程序在下列情况下需要使用&#x2F;O复用技术：  客户端程序要同时处理多个socket。.比如本章将要讨论的非阻塞connect技术。 客户端程序要同时处理用户输入和网络连接。比如本章将要讨论的聊天室程序。 TCP服务器要同时处理监听socket和连接socket。这是I&#x2F;O复用使用最多的场合。后续章节将展">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第九章 IO复用">
+<meta property="og:url" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/index.html">
+<meta property="og:site_name" content="沐梓驿站">
+<meta property="og:description" content="IO复用使得程序能同时监听多个文件描述符，这对提高程序的性能至关重要。通常，网络程序在下列情况下需要使用&#x2F;O复用技术：  客户端程序要同时处理多个socket。.比如本章将要讨论的非阻塞connect技术。 客户端程序要同时处理用户输入和网络连接。比如本章将要讨论的聊天室程序。 TCP服务器要同时处理监听socket和连接socket。这是I&#x2F;O复用使用最多的场合。后续章节将展">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/cf5f5b47_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/b5be4a83_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/f9ad5e58_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/aa5b114b_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/37312740_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/7a40d1d6_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/b7bbf5b4_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/5f7ce7d8_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/d5d1c3bf_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/73e4abb0_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/a1b7d042_Untitled.png">
+<meta property="article:published_time" content="2023-08-20T08:08:09.000Z">
+<meta property="article:modified_time" content="2024-02-26T04:53:15.293Z">
+<meta property="article:author" content="Huan Lee">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="《Linux高性能服务器编程》">
+<meta property="article:tag" content="IO">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/cf5f5b47_Untitled.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/logo.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            第九章 IO复用 -
+        
+        MirthfulLee
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    let Global = window.Global || {};
+    Global.hexo_config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
+    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.3.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
+    Global.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    Global.data_config = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+    
+
+    
+
+    <div class="main-content-container">
+        
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                MirthfulLee
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        HOME
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-bars"></i>
+                                        
+                                        CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories/Learning">LEARNING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Project">PROJECT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Application">APPLICATION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Sharing">SHARING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Disscussion">DISCUSSION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Others">OTHERS
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-grip"></i>
+                                        
+                                        MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories">ARCHIVES
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/tags">TAGS
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/about">ABOUT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer">
+        <ul class="drawer-navbar-list">
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                HOME
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-bars"></i>
+                                
+                                CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Learning">LEARNING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Project">PROJECT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Application">APPLICATION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Sharing">SHARING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Disscussion">DISCUSSION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Others">OTHERS</a>
+                            </li>
+                        
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-grip"></i>
+                                
+                                MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories">ARCHIVES</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/tags">TAGS</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/about">ABOUT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">第九章 IO复用</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/logo.png">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Huan Lee</span>
+                        
+                            <span class="author-label">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-08-20 08:08:09</span>
+        <span class="mobile">2023-08-20 08:08:09</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-02-26 04:53:15</span>
+            <span class="mobile">2024-02-26 04:53:15</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Learning/">Learning</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/c/">c++</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/IO/">IO</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>IO复用使得程序能同时监听多个文件描述符，这对提高程序的性能至关重要。通常，网络程序在下列情况下需要使用&#x2F;O复用技术：</p>
+<ul>
+<li>客户端程序要同时处理多个socket。.比如本章将要讨论的非阻塞connect技术。</li>
+<li>客户端程序要同时处理用户输入和网络连接。比如本章将要讨论的聊天室程序。</li>
+<li>TCP服务器要同时处理监听socket和连接socket。这是I&#x2F;O复用使用最多的场合。后续章节将展示很多这方面的例子。</li>
+<li>服务器要同时处理TCP请求和UDP请求。比如本章将要讨论的回射服务器。</li>
+<li>服务器要同时监听多个端口，或者处理多种服务。比如本章将要讨论的xinetd服务器。</li>
+</ul>
+<blockquote>
+<p>需要指出的是，&#x2F;O复用虽然能同时监听多个文件描述符，但它本身是阻塞的。并且当多个文件描述符同时就绪时，如果不采取额外的措施，程序就只能按顺序依次处理其中的每一个文件描述符，这使得服务器程序看起来像是串行工作的。如果要实现并发，只能使用多进程或多线程等编程手段。</p>
+</blockquote>
+<h2 id="9-1-select系统调用"><a href="#9-1-select系统调用" class="headerlink" title="9.1 select系统调用"></a>9.1 select系统调用</h2><p>select系统调用的用途是: 在一段指定时间内, 监听用户感兴趣的文件描述符上的可读, 可写和异常等事件.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;sys/select.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">select</span><span class="params">(<span class="type">int</span> nfds, fd_set* readfds, fd_set* writefds, fd_set* exceptfds, </span></span></span><br><span class="line"><span class="params"><span class="function">      <span class="keyword">struct</span> timeval* timeout)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><p>nfds 监听的文件描述符总数</p>
+</li>
+<li><p>readfds, writefds, exceptfds分别指向可读, 可写和异常事件对应的文件描述符集合. select调用返回时, 内核将修改他们来通知应用程序哪些文件描述符已经就绪.</p>
+<ul>
+<li>fd_set结构体仅包含一个整型数组, 该数组的每个元素的每一位标记一个文件描述符</li>
+</ul>
+</li>
+</ul>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 由于位操作过于烦琐, 可以使用一系列宏简化</span></span><br><span class="line"><span class="built_in">FD_ZERO</span>(fd_set *fdset );  <span class="comment">/*清除fdset的所有位*/</span></span><br><span class="line"><span class="built_in">FD_SET</span>(<span class="type">int</span> fd, fd_set *fdset );  <span class="comment">/*设置fdset的位fd*/</span></span><br><span class="line"><span class="built_in">FD_CLR</span>(<span class="type">int</span> fd, fd_set *fdset );  <span class="comment">/*清除fdset的位fd*/</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">FD_ISSET</span><span class="params">(<span class="type">int</span> fd, fd_set*fdset)</span></span>;  <span class="comment">/*测试fdset的位fd是否被设置*/</span></span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>timeout可以设置超时时间(精确到微秒). 如果传入NULL, 则select将一直阻塞, 知道某个文件描述符就绪.</li>
+<li>select成功时返回就绪（可读、可写和异常）文件描述符的总数。如果在超时时间内没有任何文件描述符就绪，select将返回0。select失败时返回-l并设置errno。如果在select等待期间，程序接收到信号，则select立即返回-1, 并设置errno为EINTR。</li>
+</ul>
+<h3 id="文件描述符就绪条件"><a href="#文件描述符就绪条件" class="headerlink" title="文件描述符就绪条件"></a>文件描述符就绪条件</h3><p>可读:</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/cf5f5b47_Untitled.png" alt="Untitled"></p>
+<p>可写:</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/b5be4a83_Untitled.png" alt="Untitled"></p>
+<h3 id="带外数据"><a href="#带外数据" class="headerlink" title="带外数据"></a>带外数据</h3><p>socket收到带外数据也将使select返回, 不同于接收到普通数据的socket, 前者处于异常状态</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 对于接收普通数据的就绪socket</span></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">FD_ISSET</span>(connfd, &amp;read_fds))&#123;</span><br><span class="line"> ret = <span class="built_in">recv</span>(connfd, buf, <span class="built_in">sizeof</span>(buf)<span class="number">-1</span>, <span class="number">0</span>);</span><br><span class="line"> ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 对于接收带外数据的就绪socket</span></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">FD_ISSET</span>(connfd, &amp;exception_fds)) &#123;</span><br><span class="line"> ret = <span class="built_in">recv</span>(connfd, buf, <span class="built_in">sizeof</span>(buf)<span class="number">-1</span>, MSG_OOB);</span><br><span class="line"> ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="9-2-poll系统调用"><a href="#9-2-poll系统调用" class="headerlink" title="9.2 poll系统调用"></a>9.2 poll系统调用</h2><p>poll与select类似, 也是在指定时间内轮询一定数量的文件描述符, 以测试其中是否有就绪者.</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;poll.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">poll</span><span class="params">(<span class="keyword">struct</span> pollfd* fds, <span class="type">nfds_t</span> nfds, <span class="type">int</span> timeout)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/f9ad5e58_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/aa5b114b_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/37312740_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>timeout的单位是毫秒, 值为-1时, poll将永远阻塞, 直至某个事件发生.</li>
+</ul>
+<h2 id="9-3-epoll系列系统调用"><a href="#9-3-epoll系列系统调用" class="headerlink" title="9.3 epoll系列系统调用"></a>9.3 epoll系列系统调用</h2><p>epoll是Linux特有的IO复用函数, 在实现和使用上与select, poll有很大差异.</p>
+<ul>
+<li><strong>epoll使用一组函数</strong>来完成任务，而不是单个函数。</li>
+<li>epoll把用户关心的文件描述符上的<strong>事件放在内核里的一个事件表中</strong>，从而无须像select和poll那样每次调用都要重复传入文件描述符集或事件集。但epoll需要使用一个额外的文件描述符，来唯一标识内核中的这个事件表。</li>
+</ul>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;sys/epoll.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">epoll_create</span><span class="params">(<span class="type">int</span> size)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>size参数暂时不起作用, 只是提示内核这个事件表需要多大, 该函数返回的文件描述符将用作其他所有epoll系统调用的第一个参数, 以指定访问的内核事件表.</li>
+</ul>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">epoll_ctl</span><span class="params">(<span class="type">int</span> epfd, <span class="type">int</span> op, <span class="type">int</span> fd, <span class="keyword">struct</span> epoll_event *event)</span></span>;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">epoll_event</span> &#123;</span><br><span class="line"> <span class="type">__uint32_t</span> events; <span class="comment">// epoll 事件</span></span><br><span class="line"> <span class="type">epoll_data_t</span> data; <span class="comment">// 用户数据</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">union</span> <span class="title class_">epoll_data</span> &#123;</span><br><span class="line"> <span class="type">void</span>* ptr;</span><br><span class="line"> <span class="type">int</span> fd;</span><br><span class="line"> <span class="type">uint32_t</span> u32;</span><br><span class="line"> <span class="type">uint64_t</span> u64;</span><br><span class="line">&#125; <span class="type">epoll_data_t</span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>fd指明要操作的文件描述符, op则指定操作类型:</p>
+<ul>
+<li>EPOLL_CTL_ADD: 往事件表中注册fd上的事件</li>
+<li>EPOLL_CTL_MOD: 修改fd上的注册事件</li>
+<li>EPOLL_CTL_DEL: 删除fd上的注册事件</li>
+</ul>
+<p>epoll支持的事件类型与poll类似, 在poll对应的宏前加上’E’. 但epoll有额外的两个事件类型(EPOLLET和EPOLLONESHOT)</p>
+<p>epoll_data_t是一个联合体, 使用最多的fd, 用于指定事件所丛书的目标文件描述符; ptr指定与fd相关的用户数据.</p>
+<h3 id="epoll-wait函数"><a href="#epoll-wait函数" class="headerlink" title="epoll_wait函数"></a>epoll_wait函数</h3><p>epoll系列的主要接口, 在一段超时时间内等待一组文件描述符上的事件</p>
+<div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">epoll_wait</span><span class="params">(<span class="type">int</span> epfd, <span class="keyword">struct</span> epoll_event* events, <span class="type">int</span> maxevents, <span class="type">int</span> timeout)</span></span>;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>timeout单位是毫秒</li>
+<li>maxevents 指定最多监听多少个事件, 必须大于0</li>
+<li>epoll_wait函数如果检测到事件, 就将所有就绪的事件从内核事件表复制到events指向的数组中(这个数组只用于存储就绪事件, 不用于输入).</li>
+</ul>
+<h3 id="LT和ET模式"><a href="#LT和ET模式" class="headerlink" title="LT和ET模式"></a>LT和ET模式</h3><p>epoll对文件描述符的操作有两种模式：LT(Level Trigger,电平触发)模式和ET(Edge Trigger,边沿触发)模式。LT模式是默认的工作模式，这种模式下epoll相当于一个效率较高的poll。当往epoll内核事件表中注册一个文件描述符上的EPOLLET事件时，epoll将以ET模式来操作该文件描述符。ET模式是epoll的高效工作模式。</p>
+<p>对于采用LT工作模式的文件描述符，当epoll_wait检测到其上有事件发生并将此事件通知应用程序后，应用程序可以不立即处理该事件。这样，当应用程序下一次调用epoll_wait时，<strong>epoll_wait还会再次向应用程序通告此事件，直到该事件被处理</strong>。而对于采用ET工作模式的文件描述符，当epoll_wait检测到其上有事件发生并将此事件通知应用程序后，<strong>应用程序必须立即处理该事件</strong>，因为后续的epoll_wait调用将不再向应用程序通知这一事件。可见，<strong>ET模式在很大程度上降低了同一个epoll事件被重复触发的次数，因此效率要比LT模式高。</strong></p>
+<h3 id="EPOLLONESHOT事件"><a href="#EPOLLONESHOT事件" class="headerlink" title="EPOLLONESHOT事件"></a>EPOLLONESHOT事件</h3><p>在并发模式中, 可能出现某个连接的新数据被另一个线程操作的情况, 即两个线程同时操作一个socket. 为避免这种情况, 可以使用epoll的EPOLLONESHOT事件实现.</p>
+<p>对于注册了EPOLLONESHOT事件的文件描述符，操作系统最多触发其上注册的一个可读、可写或者异常事件，且只触发一次，除非我们使用epoll_ctl函数重置该文件描述符上注册的EPOLLONESHOT事件。这样，当一个线程在处理某个socket时，其他线程是不可能有机会操作该socket的。但反过来思考，注册了EPOLLONESHOT事件的socket一旦被某个线程处理完毕，该线程就应该立即重置这个socket上的EPOLLONESHOT事件，以确保这个socket下一次可读时，其EPOLLIN事件能被触发，进而让其他工作线程有机会继续处理这个socket。</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/7a40d1d6_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/b7bbf5b4_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/5f7ce7d8_Untitled.png" alt="Untitled"></p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/d5d1c3bf_Untitled.png" alt="Untitled"></p>
+<p>工作线程的核心部分. 用休眠5s模拟处理socket之前的请求, 结束之后, 工作线程等待5s后仍然没有收到socket上的下一批客户数据, 则退出, 否则继续为它服务.</p>
+<h2 id="9-4-三组IO复用函数的比较"><a href="#9-4-三组IO复用函数的比较" class="headerlink" title="9.4 三组IO复用函数的比较"></a>9.4 三组IO复用函数的比较</h2><p>select, poll, epoll三组IO复用都能同时监听多个文件描述符.</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/73e4abb0_Untitled.png" alt="Untitled"></p>
+<blockquote>
+<p>epoll_wait采取回调方式来检测就绪事件, 其算法时间复杂度为O(1), 但是当活动连接较多时, epoll_wait的效率未必比select和poll高, 因为此时回调函数被触发地过于频繁. 所以epoll_wait适用于连接数量多, 但是活动连接比较少地情况.</p>
+</blockquote>
+<h2 id="9-5-IO复用地高级应用1-非阻塞connect"><a href="#9-5-IO复用地高级应用1-非阻塞connect" class="headerlink" title="9.5 IO复用地高级应用1: 非阻塞connect"></a>9.5 IO复用地高级应用1: 非阻塞connect</h2><p>当非阻塞地socket调用connect, 而连接又没有立即建立时, 会一个errno值为<strong>EINPROGRESS</strong>的错误. 这种情况下, 可以通过select, poll等监听这个连接失败的socket上的可写事件, 当函数返回后, 在利用getsockopt来读取错误码和清除该socket上的错误. 如果错误码是0, 则表示连接成功.</p>
+<ul>
+<li>示例代理基于select系列实现</li>
+</ul>
+<h2 id="9-6-IO复用的高级应用2-聊天室程序"><a href="#9-6-IO复用的高级应用2-聊天室程序" class="headerlink" title="9.6 IO复用的高级应用2: 聊天室程序"></a>9.6 IO复用的高级应用2: 聊天室程序</h2><p>该聊天室程序能让所有用户同时在线群聊，它分为客户端和服务器两个部分。</p>
+<p>客户端程序有两个功能：</p>
+<ol>
+<li><p>从标准输入终端读入用户数据，并将用户数据发送至服务器：</p>
+</li>
+<li><p>往标准输出终端打印服务器发送给它的数据。</p>
+</li>
+</ol>
+<p>服务器的功能: 接收客户数据，并把客户数据发送给每一个登录到该服务器上的客户端（数据发送者除外）。</p>
+<ul>
+<li>示例代码基于poll系列实现</li>
+</ul>
+<h2 id="9-7-IO复用的高级应用3-同时处理TCP和UDP服务"><a href="#9-7-IO复用的高级应用3-同时处理TCP和UDP服务" class="headerlink" title="9.7 IO复用的高级应用3: 同时处理TCP和UDP服务"></a>9.7 IO复用的高级应用3: 同时处理TCP和UDP服务</h2><p>一个socket只能监听一个端口, 因此, 服务器如果要同时监听多个端口, 就必须创建多个socket, 并将它们分别绑定到各个端口上. 同理, 同一个端口, 同时处理TCP和UDP也需要创建两个socket.</p>
+<ul>
+<li>示例代码基于epoll实现</li>
+<li>使用epoll的事件表同时管理多个socket, 针对不同socket的就绪事件采取不同的措施.</li>
+</ul>
+<h2 id="9-8-超级服务xinetd"><a href="#9-8-超级服务xinetd" class="headerlink" title="9.8 超级服务xinetd"></a>9.8 超级服务xinetd</h2><p>xinetd管理的子服务中有的是标准服务，比如时间日期服务daytime、回射服务echo和丢弃服务discard。xinetd服务器在内部直接处理这些服务。还有的子服务则需要调用外部的服务器程序来处理。xinetd通过调用fork和exec函数来加载运行这些服务器程序。比如telnet、fp服务都是这种类型的子服务。</p>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B9%9D%E7%AB%A0%20IO%E5%A4%8D%E7%94%A8-b67d62ab/a1b7d042_Untitled.png" alt="Untitled"></p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 第九章 IO复用</li>
+        <li><strong>Author:</strong> Huan Lee</li>
+        <li><strong>Created at:</strong> 2023-08-20 08:08:09</li>
+        
+            <li>
+                <strong>Updated at:</strong> 2024-02-26 04:53:15
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://www.mirthfullee.com/2023/08/20/notion-第九章 IO复用-b67d62ab/
+        </li>
+        <li>
+            <strong>License:</strong> This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>.
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/c/">#c++</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">#《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/IO/">#IO</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/08/20/notion-%E7%AC%AC%E5%8D%81%E7%AB%A0%20%E4%BF%A1%E5%8F%B7-b2fb3ea2/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第十章 信号</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第八章 高性能服务器程序框架</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">第九章 IO复用</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#9-1-select%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">9.1 select系统调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6%E5%B0%B1%E7%BB%AA%E6%9D%A1%E4%BB%B6"><span class="nav-text">文件描述符就绪条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%A6%E5%A4%96%E6%95%B0%E6%8D%AE"><span class="nav-text">带外数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-2-poll%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">9.2 poll系统调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-3-epoll%E7%B3%BB%E5%88%97%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">9.3 epoll系列系统调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#epoll-wait%E5%87%BD%E6%95%B0"><span class="nav-text">epoll_wait函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LT%E5%92%8CET%E6%A8%A1%E5%BC%8F"><span class="nav-text">LT和ET模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EPOLLONESHOT%E4%BA%8B%E4%BB%B6"><span class="nav-text">EPOLLONESHOT事件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-4-%E4%B8%89%E7%BB%84IO%E5%A4%8D%E7%94%A8%E5%87%BD%E6%95%B0%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-text">9.4 三组IO复用函数的比较</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-5-IO%E5%A4%8D%E7%94%A8%E5%9C%B0%E9%AB%98%E7%BA%A7%E5%BA%94%E7%94%A81-%E9%9D%9E%E9%98%BB%E5%A1%9Econnect"><span class="nav-text">9.5 IO复用地高级应用1: 非阻塞connect</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-6-IO%E5%A4%8D%E7%94%A8%E7%9A%84%E9%AB%98%E7%BA%A7%E5%BA%94%E7%94%A82-%E8%81%8A%E5%A4%A9%E5%AE%A4%E7%A8%8B%E5%BA%8F"><span class="nav-text">9.6 IO复用的高级应用2: 聊天室程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-7-IO%E5%A4%8D%E7%94%A8%E7%9A%84%E9%AB%98%E7%BA%A7%E5%BA%94%E7%94%A83-%E5%90%8C%E6%97%B6%E5%A4%84%E7%90%86TCP%E5%92%8CUDP%E6%9C%8D%E5%8A%A1"><span class="nav-text">9.7 IO复用的高级应用3: 同时处理TCP和UDP服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-8-%E8%B6%85%E7%BA%A7%E6%9C%8D%E5%8A%A1xinetd"><span class="nav-text">9.8 超级服务xinetd</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+            
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2021</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Huan Lee</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv" class="busuanzi_container_site_uv">
+                        VISITOR COUNT&nbsp;<span id="busuanzi_value_site_uv" class="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="busuanzi_container_site_pv">
+                        TOTAL PAGE VIEWS&nbsp;<span id="busuanzi_value_site_pv" class="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            <span class="powered-by-container">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a></span>
+                <br>
+            <span class="theme-version-container">THEME&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.3.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+        ],
+        containers: ["#swup"],
+    });
+
+    swup.on("pageView", () => {
+        Global.refresh();
+    });
+
+    // if (document.readyState === "complete") {
+    //
+    // } else {
+    //     document.addEventListener("DOMContentLoaded", () => init());
+    // }
+</script>
+
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/navbarShrink.js"></script>
+
+<script src="/js/tools/scrollTopBottom.js"></script>
+
+<script src="/js/tools/lightDarkSwitch.js"></script>
+
+<script src="/js/layouts/categoryList.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+</div>
+
+
+</body>
+</html>

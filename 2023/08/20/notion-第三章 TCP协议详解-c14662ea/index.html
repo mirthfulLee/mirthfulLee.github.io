@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Huan Lee">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://mirthfullee.github.io/2023/08/20/notion-第三章 tcp协议详解-c14662ea/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="3.1 TCP服务的特点 面向连接: 通信双方必须先建立连接才能进行通信 字节流: 与UDP的基于数据报不同, 应用程序对数据的发送和接收没有边界限制. 具体来讲, 发送端和接收方各自维护缓存区, 两端执行的读写操作没有数量关系.    可靠传输: 采用应答机制和超时重传机制, 保证数据被接收方收到.  3.2 TCP头部  序号: 报文段中携带数据的编号, 具体值为ISN(初始序号值) + 数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第三章 TCP协议详解">
+<meta property="og:url" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/index.html">
+<meta property="og:site_name" content="沐梓驿站">
+<meta property="og:description" content="3.1 TCP服务的特点 面向连接: 通信双方必须先建立连接才能进行通信 字节流: 与UDP的基于数据报不同, 应用程序对数据的发送和接收没有边界限制. 具体来讲, 发送端和接收方各自维护缓存区, 两端执行的读写操作没有数量关系.    可靠传输: 采用应答机制和超时重传机制, 保证数据被接收方收到.  3.2 TCP头部  序号: 报文段中携带数据的编号, 具体值为ISN(初始序号值) + 数据">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/4f4dfe1d_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/62087c76_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/016f3fef_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/ece03263_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/d6a2ec8a_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/089db006_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/e9ed87f7_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/7578dc1d_Untitled.png">
+<meta property="og:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/e5148b76_Untitled.png">
+<meta property="article:published_time" content="2023-08-20T07:07:53.000Z">
+<meta property="article:modified_time" content="2024-02-26T04:53:15.241Z">
+<meta property="article:author" content="Huan Lee">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="《Linux高性能服务器编程》">
+<meta property="article:tag" content="计网">
+<meta property="article:tag" content="TCP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mirthfullee.github.io/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/4f4dfe1d_Untitled.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/logo.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/logo.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            第三章 TCP协议详解 -
+        
+        MirthfulLee
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    let Global = window.Global || {};
+    Global.hexo_config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
+    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.3.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
+    Global.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    Global.data_config = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+    
+
+    
+
+    <div class="main-content-container">
+        
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/logo.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                MirthfulLee
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        HOME
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-bars"></i>
+                                        
+                                        CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories/Learning">LEARNING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Project">PROJECT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Application">APPLICATION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Sharing">SHARING
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Disscussion">DISCUSSION
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/categories/Others">OTHERS
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-grip"></i>
+                                        
+                                        MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a href="/categories">ARCHIVES
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/tags">TAGS
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a href="/about">ABOUT
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer">
+        <ul class="drawer-navbar-list">
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="" 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                HOME
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-bars"></i>
+                                
+                                CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Learning">LEARNING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Project">PROJECT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Application">APPLICATION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Sharing">SHARING</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Disscussion">DISCUSSION</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories/Others">OTHERS</a>
+                            </li>
+                        
+                    
+            
+                
+                    <li class="drawer-navbar-item flex-center">
+                        <a class="has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-grip"></i>
+                                
+                                MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/categories">ARCHIVES</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/tags">TAGS</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" href="/about">ABOUT</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
+                            </li>
+                        
+                            <li class="dropdown-item flex-center">
+                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">第三章 TCP协议详解</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/logo.png">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Huan Lee</span>
+                        
+                            <span class="author-label">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-08-20 07:07:53</span>
+        <span class="mobile">2023-08-20 07:07:53</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-02-26 04:53:15</span>
+            <span class="mobile">2024-02-26 04:53:15</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Learning/">Learning</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/c/">c++</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E8%AE%A1%E7%BD%91/">计网</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/TCP/">TCP</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <h2 id="3-1-TCP服务的特点"><a href="#3-1-TCP服务的特点" class="headerlink" title="3.1 TCP服务的特点"></a>3.1 TCP服务的特点</h2><ul>
+<li>面向连接: 通信双方必须先建立连接才能进行通信</li>
+<li>字节流: 与UDP的基于数据报不同, 应用程序对数据的发送和接收没有边界限制. 具体来讲, 发送端和接收方各自维护缓存区, 两端执行的读写操作没有数量关系.</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/4f4dfe1d_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>可靠传输: 采用应答机制和超时重传机制, 保证数据被接收方收到.</li>
+</ul>
+<h2 id="3-2-TCP头部"><a href="#3-2-TCP头部" class="headerlink" title="3.2 TCP头部"></a>3.2 TCP头部</h2><p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/62087c76_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>序号: 报文段中携带数据的编号, 具体值为ISN(初始序号值) + 数据部分第一字节在字节流中的偏移</li>
+<li>确认号: 用于确认对数据的接收, 其值为收到的报文段序号的值+1</li>
+<li>头部长度: 以4字节为单位, 因此头部最长为(2^4 - 1) * 4 &#x3D; 60 字节</li>
+</ul>
+<p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/016f3fef_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>窗口大小: RWND接收窗口的大小, 用于进行流量控制</li>
+<li>校验和: 采用CRC算法对整个TCP报文段进行校验</li>
+<li>紧急指针: 也可称为紧急偏移, 是一个正的偏移量, 与序号相加表示紧急数据结束的位置(紧急数据最后一字节的下一字节序号)</li>
+</ul>
+<h2 id="3-3-TCP连接的建立与关闭"><a href="#3-3-TCP连接的建立与关闭" class="headerlink" title="3.3 TCP连接的建立与关闭"></a>3.3 TCP连接的建立与关闭</h2><p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/ece03263_Untitled.png" alt="Untitled"></p>
+<h3 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h3><ol>
+<li><p>同步报文段发起连接: 主机A发送带有<code>SYN标志和A端初始序号</code> 的报文段到主机B</p>
+</li>
+<li><p>同步报文段同意连接: 主机B接收后返回带有 <code>SYN标志, B端初始序号以及确认号</code> 的报文段到主机A</p>
+</li>
+<li><p>确认第二个同步报文段: 主机A向主机B发送第二个同步报文段的确认报文段</p>
+</li>
+</ol>
+<h3 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h3><ol>
+<li><p>第一个结束报文段: 主机A发送带有FIN标志的结束报文段</p>
+</li>
+<li><p>主机B确认第一个结束报文段</p>
+</li>
+<li><p>第二个结束报文段: 主机B发送带有FIN标志的结束报文段</p>
+</li>
+<li><p>主机A确认第二个结束报文段</p>
+</li>
+</ol>
+<p>注:</p>
+<ul>
+<li><p>服务端和客户端都可以主动结束连接</p>
+</li>
+<li><p>第一个确认报文段的必要性:</p>
+<ul>
+<li></li>
+</ul>
+</li>
+</ul>
+<h3 id="半关闭状态"><a href="#半关闭状态" class="headerlink" title="半关闭状态"></a>半关闭状态</h3><p>TCP连接是全双工的, 双方都可以接发数据. 双方也都可以主动发送结束报文段表示数据发送结束, 但另一方依旧可以继续发送数据(以及接受确认报文段), 直至另一方也发送结束报文段结束TCP连接, 这种状态就是半关闭状态. 不过, 使用半关闭状态的程序比较少见.</p>
+<h3 id="连接超时"><a href="#连接超时" class="headerlink" title="连接超时"></a>连接超时</h3><p>建立连接时, 若发起方未收到确认报文段, 则会先尝试多次重连. 发送间隔为2^n, 即1s, 2s, 4s, 8s, 16s…. 具体重连次数由内核定义.</p>
+<h2 id="3-4-状态转移"><a href="#3-4-状态转移" class="headerlink" title="3.4 状态转移"></a>3.4 状态转移</h2><p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/d6a2ec8a_Untitled.png" alt="Untitled"></p>
+<p>粗虚线表示典型的服务端连接的状态转移; 粗实线表示典型的客户端连接的状态转移.</p>
+<p>补充:</p>
+<ul>
+<li><p>正常的由客户端发起的四次挥手是 ESTABLISHED→ FIN_WAIT_1 → FIN_WAIT_2 → TIME_WAIT; FIN_WAIT_1状态时, 服务端的状态时CLOSE_WAIT; FIN_WAIT_2 相当于半关闭状态.</p>
+<ul>
+<li><p>若FIN_WAIT_1状态的客户端直接收到带有ACK信息的结束报文段 (不进行第二次挥手而直接第三次挥手), 则可直接转到TIME_WAIT状态</p>
+</li>
+<li><p>同时关闭: 客户端主动关闭连接进入到FIN_WAIT_1后, 也收到了服务端的主动关闭连接报文段, 则发送ACK报文段, 然后进入CLOSING, 收到ACK后也转移到TIME_WAIT</p>
+</li>
+</ul>
+</li>
+</ul>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/089db006_Untitled.png" alt="Untitled"></p>
+<p>TIME_WAIT状态的意义:</p>
+<ol>
+<li><p>可靠地结束TCP连接: 要保证 第四次挥手的确认报文段能够被对方接收</p>
+</li>
+<li><p>保证让迟来的TCP报文段有足够的时间被识别和丢弃: 让应用程序保持对端口的占用, 避免在连接完全结束前被其他应用程序使用.</p>
+</li>
+</ol>
+<h2 id="3-5-复位报文段"><a href="#3-5-复位报文段" class="headerlink" title="3.5 复位报文段"></a>3.5 复位报文段</h2><p>某些情况下, TCP一端会向另一端发送带有RST标志的复位报文段, 以通知对方关闭或重新建立连接:</p>
+<ul>
+<li>访问不存在的端口(或该端口仍被处于TIME_WAIT状态的连接占用): 第一次握手指向的端口不存在, 则返回一个带有 <code>RST标志, 接收窗口为0</code> 的确认报文段</li>
+<li>异常终止连接: 发送复位报文段后, 发送端所有等待发送的数据将被丢弃</li>
+<li>处理半打开连接: 当一端系统关闭或异常终止连接, 而另一端没有接收到结束报文段, 则另一端处于半打开状态. 若此时另一端继续尝试往这个半打开状态的连接写入数据, 则对方会回应一个复位报文段</li>
+</ul>
+<h2 id="3-6-TCP交互数据流"><a href="#3-6-TCP交互数据流" class="headerlink" title="3.6 TCP交互数据流"></a>3.6 TCP交互数据流</h2><p>TCP报文段根据携带数据长度分为 <code>交互数据</code> 和 <code>成块数据</code></p>
+<ul>
+<li><p>交互数据仅包含很少的字节, 对实时性要求高, 如ssh, telnet</p>
+</li>
+<li><p>成块数据的长度通常为TCP报文段允许的最大数据长度, 对传输效率高, 如ftp</p>
+<ul>
+<li>当发送大量大块数据时, 发送方会连续发送多个TCP报文段</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-8-带外数据"><a href="#3-8-带外数据" class="headerlink" title="3.8 带外数据??????"></a>3.8 带外数据??????</h2><p>有些传输层协议具有带外(Out Of Band, OOB)数据的概念, 用于迅速通告对方本段发生的重要事件. 因此带外数据比普通数据有更高的优先级, 总是被立即发送.</p>
+<ul>
+<li>UDP没有实现带外数据传输;</li>
+<li>而TCP利用头部的紧急指针标志 <code>URG</code> 和紧急指针来模拟</li>
+</ul>
+<h2 id="3-9-TCP超时重传"><a href="#3-9-TCP超时重传" class="headerlink" title="3.9 TCP超时重传"></a>3.9 TCP超时重传</h2><p>TCP模块为每个TCP报文段都维护了一个重传定时器, 当超过时间未收到确认报文段, 则重新发送报文段, 每次重传超时时间都会增加一倍, 直至放弃连接.</p>
+<h2 id="3-10-拥塞控制"><a href="#3-10-拥塞控制" class="headerlink" title="3.10 拥塞控制"></a>3.10 拥塞控制</h2><p>拥塞控制能够提高网络利用率, 包含四个部分:</p>
+<ol>
+<li><p>慢启动</p>
+</li>
+<li><p>拥塞避免</p>
+</li>
+<li><p>快速启动</p>
+</li>
+<li><p>快速恢复</p>
+</li>
+</ol>
+<ul>
+<li>拥塞控制的最终受控变量是发送窗口(SWND)即发送端向网络一次连续写入的数据量(报文段数量)</li>
+<li>为了实现拥塞控制, 发送端引入一个拥塞窗口(CWND)的状态变量. 实际的SWND是RWND和CWND的较小值</li>
+</ul>
+<h3 id="慢启动和拥塞避免"><a href="#慢启动和拥塞避免" class="headerlink" title="慢启动和拥塞避免"></a>慢启动和拥塞避免</h3><p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/e9ed87f7_Untitled.png" alt="Untitled"></p>
+<ul>
+<li>慢启动: 每接收到一个报文段的确认, 就CWND增加一个该报文段的数据大小</li>
+<li>慢启动使得CWND能够指数型增加, 但这很可能导致网络拥塞, 因此TCP还定义了一个重要的状态变量 - 慢启动门限, 当CWND超过该值时, 进入拥塞避免状态.</li>
+<li>拥塞避免状态使得CWND能够线性增加, 有如下两种实现方式:</li>
+</ul>
+<p> <img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/7578dc1d_Untitled.png" alt="Untitled"></p>
+<ul>
+<li><p>法一是根据时间线性增加</p>
+</li>
+<li><p>法二的公式等价于$ \frac{SMSS}{CWND&#x2F;SMSS} $, 可以近似理解为, 收到当前所有发出的报文段才使CWND+1个SMSS</p>
+</li>
+</ul>
+<p>拥塞的发生包含两种情况:</p>
+<ol>
+<li>传输超时, 即TCP重传定时器溢出 → 慢启动和拥塞避免</li>
+</ol>
+<blockquote>
+<p>此时, 更新状态变量: $ ssthresh &#x3D;max(FlightSize &#x2F; 2, 2*SMSS)  $, $ CWND&lt;&#x3D; SMSS $</p>
+</blockquote>
+<ol>
+<li>接收到重复的确认报文段 → 快速重传和快速恢复</li>
+</ol>
+<blockquote>
+<p>如果该情况发生在传输超时之后, 则也被当做第一种情况对待.</p>
+</blockquote>
+<h3 id="快速重传和快速恢复"><a href="#快速重传和快速恢复" class="headerlink" title="快速重传和快速恢复"></a>快速重传和快速恢复</h3><p><img lazyload src="/images/loading.svg" data-src="/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/e5148b76_Untitled.png" alt="Untitled"></p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 第三章 TCP协议详解</li>
+        <li><strong>Author:</strong> Huan Lee</li>
+        <li><strong>Created at:</strong> 2023-08-20 07:07:53</li>
+        
+            <li>
+                <strong>Updated at:</strong> 2024-02-26 04:53:15
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://www.mirthfullee.com/2023/08/20/notion-第三章 TCP协议详解-c14662ea/
+        </li>
+        <li>
+            <strong>License:</strong> This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>.
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/c/">#c++</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E3%80%8ALinux%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%96%E7%A8%8B%E3%80%8B/">#《Linux高性能服务器编程》</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E8%AE%A1%E7%BD%91/">#计网</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/TCP/">#TCP</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第五章 Linux网络编程基础API</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/08/20/notion-%E7%AC%AC%E4%BA%8C%E7%AB%A0%20IP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-d11fac78/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">第二章 IP协议详解</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">第三章 TCP协议详解</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-TCP%E6%9C%8D%E5%8A%A1%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-text">3.1 TCP服务的特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-TCP%E5%A4%B4%E9%83%A8"><span class="nav-text">3.2 TCP头部</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-TCP%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%BB%BA%E7%AB%8B%E4%B8%8E%E5%85%B3%E9%97%AD"><span class="nav-text">3.3 TCP连接的建立与关闭</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-text">三次握手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="nav-text">四次挥手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8A%E5%85%B3%E9%97%AD%E7%8A%B6%E6%80%81"><span class="nav-text">半关闭状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E8%B6%85%E6%97%B6"><span class="nav-text">连接超时</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB"><span class="nav-text">3.4 状态转移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-%E5%A4%8D%E4%BD%8D%E6%8A%A5%E6%96%87%E6%AE%B5"><span class="nav-text">3.5 复位报文段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-6-TCP%E4%BA%A4%E4%BA%92%E6%95%B0%E6%8D%AE%E6%B5%81"><span class="nav-text">3.6 TCP交互数据流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-8-%E5%B8%A6%E5%A4%96%E6%95%B0%E6%8D%AE"><span class="nav-text">3.8 带外数据??????</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-9-TCP%E8%B6%85%E6%97%B6%E9%87%8D%E4%BC%A0"><span class="nav-text">3.9 TCP超时重传</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-10-%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-text">3.10 拥塞控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%85%A2%E5%90%AF%E5%8A%A8%E5%92%8C%E6%8B%A5%E5%A1%9E%E9%81%BF%E5%85%8D"><span class="nav-text">慢启动和拥塞避免</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0%E5%92%8C%E5%BF%AB%E9%80%9F%E6%81%A2%E5%A4%8D"><span class="nav-text">快速重传和快速恢复</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+            
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info">
+            &copy;
+            
+              <span>2021</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Huan Lee</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                    <span id="busuanzi_container_site_uv" class="busuanzi_container_site_uv">
+                        VISITOR COUNT&nbsp;<span id="busuanzi_value_site_uv" class="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="busuanzi_container_site_pv">
+                        TOTAL PAGE VIEWS&nbsp;<span id="busuanzi_value_site_pv" class="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            <span class="powered-by-container">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a></span>
+                <br>
+            <span class="theme-version-container">THEME&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.3.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-expand-width flex-center">
+            <i class="fa-regular fa-expand"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+
+</main>
+
+
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+        ],
+        containers: ["#swup"],
+    });
+
+    swup.on("pageView", () => {
+        Global.refresh();
+    });
+
+    // if (document.readyState === "complete") {
+    //
+    // } else {
+    //     document.addEventListener("DOMContentLoaded", () => init());
+    // }
+</script>
+
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/layouts/navbarShrink.js"></script>
+
+<script src="/js/tools/scrollTopBottom.js"></script>
+
+<script src="/js/tools/lightDarkSwitch.js"></script>
+
+<script src="/js/layouts/categoryList.js"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js"></script>
+
+<script src="/js/layouts/toc.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+<script src="/js/plugins/tabs.js"></script>
+
+    
+</div>
+
+
+</body>
+</html>
