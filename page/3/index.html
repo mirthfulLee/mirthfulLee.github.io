@@ -9,7 +9,7 @@
     <!-- preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
+
     
     <!--- Seo Part-->
     
@@ -40,8 +40,174 @@
         
         MirthfulLee
     </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+        <style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    
+<script src="/js/libs/anime.min.js"></script>
+
+    <h1 class="ml13">
+        MirthfulLee
+    </h1>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+
+        anime.timeline({loop: true})
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [100,0],
+                translateZ: 0,
+                opacity: [0,1],
+                easing: "easeOutExpo",
+                duration: 1400,
+                delay: (el, i) => 300 + 30 * i
+            }).add({
+            targets: '.ml13 .letter',
+            translateY: [0,-100],
+            opacity: [1,0],
+            easing: "easeInExpo",
+            duration: 1200,
+            delay: (el, i) => 100 + 30 * i
+        });
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            hidePreloaderAfterTimeout(1000); // Hide after 1000 milliseconds once the window has loaded
+        });
+
+        // Backup failsafe: Hide preloader after a maximum of 5000 milliseconds, regardless of the window load event
+        hidePreloaderAfterTimeout(5000);
+
+        function hidePreloaderAfterTimeout(delay) {
+            setTimeout(function () {
+                var preloader = document.querySelector('.preloader');
+                preloader.style.opacity = '0';
+                setTimeout(function () {
+                    preloader.style.display = 'none';
+                }, 200);
+            }, delay);
+        }
+    </script>
+</div>
+    
+
     
 <link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
 
     
 <link rel="stylesheet" href="/fonts/fonts.css">
@@ -49,23 +215,18 @@
     
 <link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
 
-    
-<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
-
     <!--- Font Part-->
     
     
     
     
 
-    <!--- Inject Part-->
-    
+
     <script id="hexo-configurations">
-    let Global = window.Global || {};
-    Global.hexo_config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
-    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.3.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
-    Global.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
-    Global.data_config = {"masonry":false};
+    window.config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left","headings_top_spacing":{"h1":"5rem","h2":"4rem","h3":"2.8rem","h4":"2.5rem","h5":"2.2rem","h6":"2rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.6.1","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
   </script>
     
     <!--- Fontawesome Part-->
@@ -94,15 +255,14 @@
 
     
         <span class="pjax-progress-bar"></span>
-        <span class="swup-progress-icon">
-            <i class="fa-solid fa-circle-notch fa-spin"></i>
-        </span>
+<!--        <span class="swup-progress-icon">-->
+<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+<!--        </span>-->
     
 </div>
 
 
 <main class="page-container" id="swup">
-    
 
     
         <style>
@@ -133,19 +293,21 @@
     }
 </style>
 
-<div class="home-banner-background">
+<div class="home-banner-background transition-fade fixed top-0 left-0 w-screen h-screen scale-125 sm:scale-110 box-border will-change-transform bg-cover">
+    <img src="/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg" alt="home-banner-background" class="w-full h-full object-cover dark:hidden">
+    <img src="/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg" alt="home-banner-background" class="w-full h-full object-cover hidden dark:block">
 </div>
 
 
     
 
     <div class="main-content-container">
-        
+
 
         <div class="main-content-header">
-            <header class="navbar-container">
-    
-    <div class="navbar-content">
+            <header class="navbar-container px-6 md:px-12">
+
+    <div class="navbar-content ">
         <div class="left">
             
                 <a class="logo-image" href="/">
@@ -165,112 +327,126 @@
                 <ul class="navbar-list">
                     
                         
+                            
+
                             <li class="navbar-item">
                                 <!-- Menu -->
-                                <a class="active" 
-                                    href="/"  >
-                                    
-                                        
-                                            <i class="fa-regular fa-house"></i>
-                                        
-                                        HOME
+                                <a class="active"
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
                                     
                                 </a>
+
                                 <!-- Submenu -->
                                 
                             </li>
                     
                         
+                            
+
                             <li class="navbar-item">
                                 <!-- Menu -->
-                                <a class="has-dropdown" 
-                                    href="#" onClick="return false;">
-                                    
-                                        
-                                            <i class="fa-regular fa-bars"></i>
-                                        
-                                        CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
-                                    
+                                <a class="has-dropdown"
+                                   href="#"
+                                        onClick=&#34;return false;&#34;>
+                                    <i class="fa-regular fa-bars fa-fw"></i>
+                                    CATEGORIES
+                                    <i class="fa-solid fa-chevron-down fa-fw"></i>
                                 </a>
+
                                 <!-- Submenu -->
                                 
                                     <ul class="sub-menu">
-                                    
-                                        <li>
-                                        <a href="/categories/Learning">LEARNING
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/categories/Project">PROJECT
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/categories/Application">APPLICATION
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/categories/Sharing">SHARING
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/categories/Disscussion">DISCUSSION
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/categories/Others">OTHERS
-                                        </a>
-                                        </li>
-                                    
+                                        
+                                            <li>
+                                                <a href="/categories/Learning">
+                                                    LEARNING
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/categories/Project">
+                                                    PROJECT
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/categories/Application">
+                                                    APPLICATION
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/categories/Sharing">
+                                                    SHARING
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/categories/Disscussion">
+                                                    DISCUSSION
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/categories/Others">
+                                                    OTHERS
+                                                </a>
+                                            </li>
+                                        
                                     </ul>
                                 
                             </li>
                     
                         
+                            
+
                             <li class="navbar-item">
                                 <!-- Menu -->
-                                <a class="has-dropdown" 
-                                    href="#" onClick="return false;">
-                                    
-                                        
-                                            <i class="fa-regular fa-grip"></i>
-                                        
-                                        MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
-                                    
+                                <a class="has-dropdown"
+                                   href="#"
+                                        onClick=&#34;return false;&#34;>
+                                    <i class="fa-regular fa-grip fa-fw"></i>
+                                    MORE
+                                    <i class="fa-solid fa-chevron-down fa-fw"></i>
                                 </a>
+
                                 <!-- Submenu -->
                                 
                                     <ul class="sub-menu">
-                                    
-                                        <li>
-                                        <a href="/categories">ARCHIVES
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/tags">TAGS
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/about">ABOUT
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE
-                                        </a>
-                                        </li>
-                                    
+                                        
+                                            <li>
+                                                <a href="/categories">
+                                                    ARCHIVES
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/tags">
+                                                    TAGS
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/about">
+                                                    ABOUT
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">
+                                                    GITHUB
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">
+                                                    WEBSITE
+                                                </a>
+                                            </li>
+                                        
                                     </ul>
                                 
                             </li>
@@ -288,105 +464,152 @@
         </div>
     </div>
 
-    <!-- Mobile drawer -->
-    <div class="navbar-drawer">
-        <ul class="drawer-navbar-list">
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-screen w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
             
                 
-                    <li class="drawer-navbar-item flex-center">
-                        <a class="active" 
-                        href="/"  >
-                             
-                                
-                                    <i class="fa-regular fa-house"></i>
-                                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/"
+                        >
+                            <span>
                                 HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
                             
                         </a>
+                        
+
+                        
                     </li>
-                    <!-- Submenu -->
-                    
             
                 
-                    <li class="drawer-navbar-item flex-center">
-                        <a class="has-dropdown" 
-                        href="#" onClick="return false;">
-                            
-                                
-                                    <i class="fa-regular fa-bars"></i>
-                                
-                                CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
-                            
-                        </a>
-                    </li>
-                    <!-- Submenu -->
-                              
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories/Learning">LEARNING</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories/Project">PROJECT</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories/Application">APPLICATION</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories/Sharing">SHARING</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories/Disscussion">DISCUSSION</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories/Others">OTHERS</a>
-                            </li>
-                        
                     
+
+                    <li class="drawer-navbar-item-sub text-base my-1.5 flex flex-col w-full">
+                        
+                        <div class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                             navbar-data-toggle="submenu-Categories"
+                        >
+                            <span>
+                                CATEGORIES
+                            </span>
+                            
+                                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all"></i>
+                            
+                        </div>
+                        
+
+                        
+                            <div class="flex-col items-start px-2 py-2 hidden" data-target="submenu-Categories">
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories/Learning">LEARNING</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories/Project">PROJECT</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories/Application">APPLICATION</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories/Sharing">SHARING</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories/Disscussion">DISCUSSION</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories/Others">OTHERS</a>
+                                    </div>
+                                
+                            </div>
+                        
+                    </li>
             
                 
-                    <li class="drawer-navbar-item flex-center">
-                        <a class="has-dropdown" 
-                        href="#" onClick="return false;">
-                            
-                                
-                                    <i class="fa-regular fa-grip"></i>
-                                
-                                MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
-                            
-                        </a>
-                    </li>
-                    <!-- Submenu -->
-                              
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories">ARCHIVES</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/tags">TAGS</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/about">ABOUT</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
-                            </li>
-                        
                     
+
+                    <li class="drawer-navbar-item-sub text-base my-1.5 flex flex-col w-full">
+                        
+                        <div class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                             navbar-data-toggle="submenu-More"
+                        >
+                            <span>
+                                MORE
+                            </span>
+                            
+                                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all"></i>
+                            
+                        </div>
+                        
+
+                        
+                            <div class="flex-col items-start px-2 py-2 hidden" data-target="submenu-More">
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories">ARCHIVES</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/tags">TAGS</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/about">ABOUT</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
+                                    </div>
+                                
+                            </div>
+                        
+                    </li>
             
 
+            
+            
         </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">61</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">6</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">71</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
     </div>
 
     <div class="window-mask"></div>
@@ -411,22 +634,23 @@
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/25/notion-%E7%AC%AC7%E7%AB%A0%20%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8-4955ac0d/">
+                            第7章 压缩列表
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/25/notion-%E7%AC%AC7%E7%AB%A0%20%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8-4955ac0d/">
-                        第7章 压缩列表
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        压缩列表(ziplist)时列表键和哈希键地底层实现之一. 当一个列表键只包含少量列表项, 并且每个列表项要么就是小整数值, 要么就是长度比较短的字符串, 那么Redis就会使用压缩列表来做列表键的底层实现.
+                    <div class="home-article-content markdown-body">
+                        
+                            压缩列表(ziplist)时列表键和哈希键地底层实现之一. 当一个列表键只包含少量列表项, 并且每个列表项要么就是小整数值, 要么就是长度比较短的字符串, 那么Redis就会使用压缩列表来做列表键的底层实现.
 7.1 压缩列表的构成压缩列表是Redi...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Fri Aug 25 2023 19:47:54 GMT+0000">
@@ -480,6 +704,7 @@
     <a href="/2023/08/25/notion-%E7%AC%AC7%E7%AB%A0%20%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8-4955ac0d/">Read more<span class="seo-reader-text">第7章 压缩列表</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -487,23 +712,24 @@
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/24/notion-%E7%AC%AC6%E7%AB%A0%20%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88-6dbc8af8/">
+                            第6章 整数集合
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/24/notion-%E7%AC%AC6%E7%AB%A0%20%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88-6dbc8af8/">
-                        第6章 整数集合
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        整数集合(intset)是集合键的底层实现之一, 当一个集合只包含整数值元素, 并且这个集合的元素数量不多时, 则使用整数集合作为底层实现.
+                    <div class="home-article-content markdown-body">
+                        
+                            整数集合(intset)是集合键的底层实现之一, 当一个集合只包含整数值元素, 并且这个集合的元素数量不多时, 则使用整数集合作为底层实现.
 整数集合的保存类型为int16_t, int32_t, int64_t的整型, 集合中不会有重复元素.
 6....
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Thu Aug 24 2023 14:37:32 GMT+0000">
@@ -557,6 +783,7 @@
     <a href="/2023/08/24/notion-%E7%AC%AC6%E7%AB%A0%20%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88-6dbc8af8/">Read more<span class="seo-reader-text">第6章 整数集合</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -564,22 +791,23 @@
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/24/notion-%E7%AC%AC5%E7%AB%A0%20%E8%B7%B3%E8%B7%83%E8%A1%A8-295025c7/">
+                            第5章 跳跃表
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/24/notion-%E7%AC%AC5%E7%AB%A0%20%E8%B7%B3%E8%B7%83%E8%A1%A8-295025c7/">
-                        第5章 跳跃表
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        https://www.jianshu.com/p/9d8296562806 
+                    <div class="home-article-content markdown-body">
+                        
+                            https://www.jianshu.com/p/9d8296562806 
 跳跃表(skiplist)是一种有序数据结构, 它通过在每个节点中维持多个指向其他节点的指针, 从而达到快速访问节点的目的. 跳跃表支持平均O(logN), 最坏O(N)...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Thu Aug 24 2023 10:13:23 GMT+0000">
@@ -633,6 +861,7 @@
     <a href="/2023/08/24/notion-%E7%AC%AC5%E7%AB%A0%20%E8%B7%B3%E8%B7%83%E8%A1%A8-295025c7/">Read more<span class="seo-reader-text">第5章 跳跃表</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -640,22 +869,23 @@
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/24/notion-%E7%AC%AC4%E7%AB%A0%20%E5%AD%97%E5%85%B8-1d0f2603/">
+                            第4章 字典
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/24/notion-%E7%AC%AC4%E7%AB%A0%20%E5%AD%97%E5%85%B8-1d0f2603/">
-                        第4章 字典
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        字典又称符号表(symbol table), 关联数组(associative array), 映射(map), 是一种用于保存键值对的数据结构. 字典中的每个键都是独一无二的.
+                    <div class="home-article-content markdown-body">
+                        
+                            字典又称符号表(symbol table), 关联数组(associative array), 映射(map), 是一种用于保存键值对的数据结构. 字典中的每个键都是独一无二的.
 Redis的数据库就是使用字典来作为底层实现的, 对数据库的增删查改操...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Thu Aug 24 2023 10:12:54 GMT+0000">
@@ -709,6 +939,7 @@ Redis的数据库就是使用字典来作为底层实现的, 对数据库的增�
     <a href="/2023/08/24/notion-%E7%AC%AC4%E7%AB%A0%20%E5%AD%97%E5%85%B8-1d0f2603/">Read more<span class="seo-reader-text">第4章 字典</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -716,27 +947,28 @@ Redis的数据库就是使用字典来作为底层实现的, 对数据库的增�
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/24/notion-%E7%AC%AC3%E7%AB%A0%20%E9%93%BE%E8%A1%A8-e2cfe5ab/">
+                            第3章 链表
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/24/notion-%E7%AC%AC3%E7%AB%A0%20%E9%93%BE%E8%A1%A8-e2cfe5ab/">
-                        第3章 链表
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        链表在Redis中应用广泛, 如列表键, 发布与订阅, 慢查询, 监视器等功能.
+                    <div class="home-article-content markdown-body">
+                        
+                            链表在Redis中应用广泛, 如列表键, 发布与订阅, 慢查询, 监视器等功能.
 3.1 链表和链表节点表示  
   
 
 dup函数用于复制链表节点所保存的值
 free函数用于释放链表节点所保存的值
 match函数用于对比链表节点所保存的值是否与输入...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Thu Aug 24 2023 10:11:24 GMT+0000">
@@ -790,6 +1022,7 @@ match函数用于对比链表节点所保存的值是否与输入...
     <a href="/2023/08/24/notion-%E7%AC%AC3%E7%AB%A0%20%E9%93%BE%E8%A1%A8-e2cfe5ab/">Read more<span class="seo-reader-text">第3章 链表</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -797,22 +1030,23 @@ match函数用于对比链表节点所保存的值是否与输入...
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/24/notion-%E7%AC%AC2%E7%AB%A0%20%E7%AE%80%E5%8D%95%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2-7992ce8b/">
+                            第2章 简单动态字符串
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/24/notion-%E7%AC%AC2%E7%AB%A0%20%E7%AE%80%E5%8D%95%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2-7992ce8b/">
-                        第2章 简单动态字符串
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        Rdis没有直接使用C语言传统的字符串表示（以空字符结尾的字符数组，以下简称C字符串)，而是自己构建了一种名为简单动态字符串(simple dynamic string,SDS)的抽象类型，并将SDS用作Redis的默认字符串表示。
+                    <div class="home-article-content markdown-body">
+                        
+                            Rdis没有直接使用C语言传统的字符串表示（以空字符结尾的字符数组，以下简称C字符串)，而是自己构建了一种名为简单动态字符串(simple dynamic string,SDS)的抽象类型，并将SDS用作Redis的默认字符串表示。
 Redis中所有...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Thu Aug 24 2023 10:10:49 GMT+0000">
@@ -866,6 +1100,7 @@ Redis中所有...
     <a href="/2023/08/24/notion-%E7%AC%AC2%E7%AB%A0%20%E7%AE%80%E5%8D%95%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2-7992ce8b/">Read more<span class="seo-reader-text">第2章 简单动态字符串</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -873,26 +1108,27 @@ Redis中所有...
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/22/C++%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/">
+                            C++面试准备
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/22/C++%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/">
-                        C++面试准备
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        参考github 
+                    <div class="home-article-content markdown-body">
+                        
+                            参考github 
 面试准备计算机基础知识复习
 将上面你学习过的内容，包含下面关键词的，都重新复习、做笔记一下
 C、C++、数据库原理与设计、操作系统、计算机网络、Linux程序设计、Shell、MySQL、Redis
 
 面试常考内容复习（所谓的八股...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Tue Aug 22 2023 11:35:00 GMT+0000">
@@ -941,6 +1177,7 @@ C、C++、数据库原理与设计、操作系统、计算机网络、Linux程�
     <a href="/2023/08/22/C++%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/">Read more<span class="seo-reader-text">C++面试准备</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -948,17 +1185,18 @@ C、C++、数据库原理与设计、操作系统、计算机网络、Linux程�
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/22/C++%E7%A7%91%E7%8F%AD%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/">
+                            C++科班学习路线
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/22/C++%E7%A7%91%E7%8F%AD%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/">
-                        C++科班学习路线
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        参考github 
+                    <div class="home-article-content markdown-body">
+                        
+                            参考github 
 找资料推荐几个网站
 
 https://xmsoushu.com/#/ 
@@ -967,10 +1205,10 @@ https://www.jiumodiary.com/
 
 顺序，从上到下依次学习，尽量不要跳跃计算机导论
 计算...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Tue Aug 22 2023 10:35:00 GMT+0000">
@@ -1019,6 +1257,7 @@ https://www.jiumodiary.com/
     <a href="/2023/08/22/C++%E7%A7%91%E7%8F%AD%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/">Read more<span class="seo-reader-text">C++科班学习路线</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -1026,24 +1265,25 @@ https://www.jiumodiary.com/
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/22/C++%E5%B2%97%E4%BD%8D%E6%96%B9%E5%90%91%E7%A9%B7%E4%B8%BE/">
+                            C++岗位方向穷举
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/22/C++%E5%B2%97%E4%BD%8D%E6%96%B9%E5%90%91%E7%A9%B7%E4%B8%BE/">
-                        C++岗位方向穷举
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        转载自知乎 
+                    <div class="home-article-content markdown-body">
+                        
+                            转载自知乎 
 我按照不同的方式分类讨论，并且按照各个分类中耳熟能详的程度进行了排名按照公司列举腾讯
 几乎所有部门的产品，后端都使用C++，尽管有许多新业务使用Go，以及部分旧业务在做Go的迁移，但C++仍然占有很大的技术栈
 游戏使用虚幻引擎开发的，都...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Tue Aug 22 2023 09:54:00 GMT+0000">
@@ -1092,6 +1332,7 @@ https://www.jiumodiary.com/
     <a href="/2023/08/22/C++%E5%B2%97%E4%BD%8D%E6%96%B9%E5%90%91%E7%A9%B7%E4%B8%BE/">Read more<span class="seo-reader-text">C++岗位方向穷举</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -1099,17 +1340,18 @@ https://www.jiumodiary.com/
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/21/%E8%AF%AD%E8%A8%80%E7%9A%84%E9%80%89%E6%8B%A9/">
+                            c++和java的选择
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/21/%E8%AF%AD%E8%A8%80%E7%9A%84%E9%80%89%E6%8B%A9/">
-                        c++和java的选择
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        每个想要当程序员的人总是离不开几个经典问题:
+                    <div class="home-article-content markdown-body">
+                        
+                            每个想要当程序员的人总是离不开几个经典问题:
 
 做开发还是算法?
 做前端还是后端?
@@ -1117,10 +1359,10 @@ https://www.jiumodiary.com/
 
 作为一个软件工程的学生, 不管是前端后端, java亦或c++我都接触过. 这里想主要针对c++和java之间的选择简单谈谈.
 提...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Mon Aug 21 2023 21:15:29 GMT+0000">
@@ -1169,11 +1411,12 @@ https://www.jiumodiary.com/
     <a href="/2023/08/21/%E8%AF%AD%E8%A8%80%E7%9A%84%E9%80%89%E6%8B%A9/">Read more<span class="seo-reader-text">c++和java的选择</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
     </ul>
 
-    <div class="home-paginator">
+    <div class="home-paginator px-7 py-5">
         <div class="paginator">
     <a class="extend prev" rel="prev" href="/page/2/"><i class="fa-regular fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/"><i class="fa-regular fa-angle-right"></i></a>
 </div>
@@ -1185,36 +1428,37 @@ https://www.jiumodiary.com/
                 
 
             </div>
-            
+
             
                 <div class="home-sidebar-container">
-    <div class="sticky-container">
+    <div class="sticky-container sticky">
+        
         
             
             <div class="sidebar-content" >
-                <div class="avatar">
-                    <img src="/images/logo.png">
-                </div>
-                <div class="author">
-                    <div class="name">Huan Lee</div>
-                    
-                        <div class="label">Lv5</div>
-                    
-                </div>
-                <div class="statistics">
-                    <a class="item" href="/tags">
-                        <div class="number">61</div>
-                        <div class="label">Tags</div>
-                    </a>
-                    <a class="item" href="/categories">
-                        <div class="number">6</div>
-                        <div class="label">Categories</div>
-                    </a>
-                    <a class="item" href="/archives">
-                        <div class="number">71</div>
-                        <div class="label">Posts</div>
-                    </a>
-                </div>
+                <div class="avatar flex justify-center">
+    <img src="/images/logo.png">
+</div>
+                <div class="author flex flex-col justify-center my-2.5 mx-0">
+    <div class="name">Huan Lee</div>
+    
+        <div class="label">Lv5</div>
+    
+</div>
+                <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">61</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">6</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">71</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
             </div>
         
 
@@ -1226,42 +1470,52 @@ https://www.jiumodiary.com/
         </div>
 
         <div class="main-content-footer">
-            <footer class="footer">
-    <div class="info-container">
-        <div class="copyright-info">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
             &copy;
             
               <span>2021</span>
               -
             
             2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Huan Lee</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        71 posts in total
+                    </span>
+                    
+                </p>
+            
         </div>
         
             <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-            <div class="website-count info-item">
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
                 
-                    <span id="busuanzi_container_site_uv" class="busuanzi_container_site_uv">
-                        VISITOR COUNT&nbsp;<span id="busuanzi_value_site_uv" class="busuanzi_value_site_uv"></span>
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
                     </span>
                 
                 
-                    <span id="busuanzi_container_site_pv" class="busuanzi_container_site_pv">
-                        TOTAL PAGE VIEWS&nbsp;<span id="busuanzi_value_site_pv" class="busuanzi_value_site_pv"></span>
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
                     </span>
                 
             </div>
         
-        <div class="theme-info info-item">
-            <span class="powered-by-container">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a></span>
-                <br>
-            <span class="theme-version-container">THEME&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.3.0</a></span>
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.6.1</a></span>
         </div>
         
         
             <div>
                 Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
             </div>
-        
         
         
             <script data-swup-reload-script>
@@ -1292,19 +1546,15 @@ https://www.jiumodiary.com/
     <div class="right-side-tools-container">
         <div class="side-tools-container">
     <ul class="hidden-tools-list">
-        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
             <i class="fa-regular fa-magnifying-glass-plus"></i>
         </li>
 
-        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
             <i class="fa-regular fa-magnifying-glass-minus"></i>
         </li>
 
-        <li class="right-bottom-tools tool-expand-width flex-center">
-            <i class="fa-regular fa-expand"></i>
-        </li>
-
-        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
             <i class="fa-regular fa-moon"></i>
         </li>
 
@@ -1313,17 +1563,17 @@ https://www.jiumodiary.com/
 
         
 
-        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
             <i class="fa-regular fa-arrow-down"></i>
         </li>
     </ul>
 
     <ul class="visible-tools-list">
-        <li class="right-bottom-tools toggle-tools-list flex-center">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
             <i class="fa-regular fa-cog fa-spin"></i>
         </li>
         
-            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
                 <i class="arrow-up fas fa-arrow-up"></i>
                 <span class="percent"></span>
             </li>
@@ -1341,10 +1591,10 @@ https://www.jiumodiary.com/
 
     
 
-
 </main>
 
 
+    
 <script src="/js/libs/Swup.min.js"></script>
 
 <script src="/js/libs/SwupSlideTheme.min.js"></script>
@@ -1354,6 +1604,8 @@ https://www.jiumodiary.com/
 <script src="/js/libs/SwupProgressPlugin.min.js"></script>
 
 <script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
 
 <script>
     const swup = new Swup({
@@ -1368,19 +1620,10 @@ https://www.jiumodiary.com/
             new SwupSlideTheme({
                 mainElement: ".main-content-body",
             }),
+            new SwupPreloadPlugin(),
         ],
         containers: ["#swup"],
     });
-
-    swup.on("pageView", () => {
-        Global.refresh();
-    });
-
-    // if (document.readyState === "complete") {
-    //
-    // } else {
-    //     document.addEventListener("DOMContentLoaded", () => init());
-    // }
 </script>
 
 
@@ -1388,30 +1631,34 @@ https://www.jiumodiary.com/
 
 
 
-<script src="/js/utils.js"></script>
-
-<script src="/js/main.js"></script>
-
-<script src="/js/layouts/navbarShrink.js"></script>
-
-<script src="/js/tools/scrollTopBottom.js"></script>
-
-<script src="/js/tools/lightDarkSwitch.js"></script>
-
-<script src="/js/layouts/categoryList.js"></script>
 
 
+<script src="/js/tools/imageViewer.js" type="module"></script>
 
+<script src="/js/utils.js" type="module"></script>
 
+<script src="/js/main.js" type="module"></script>
 
-    
-<script src="/js/tools/codeBlock.js"></script>
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
 
 
 
 
     
-<script src="/js/layouts/lazyload.js"></script>
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
 
 
 
@@ -1432,7 +1679,9 @@ https://www.jiumodiary.com/
 <script src="/js/libs/Typed.min.js"></script>
 
   
-<script src="/js/plugins/typed.js"></script>
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
 
 
 
@@ -1443,13 +1692,11 @@ https://www.jiumodiary.com/
 <div class="post-scripts" data-swup-reload-script>
     
         
-<script src="/js/tools/tocToggle.js"></script>
+<script src="/js/tools/tocToggle.js" type="module"></script>
 
-<script src="/js/layouts/toc.js"></script>
+<script src="/js/layouts/toc.js" type="module"></script>
 
-<script src="/js/libs/anime.min.js"></script>
-
-<script src="/js/plugins/tabs.js"></script>
+<script src="/js/plugins/tabs.js" type="module"></script>
 
     
 </div>

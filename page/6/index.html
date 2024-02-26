@@ -9,7 +9,7 @@
     <!-- preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
+
     
     <!--- Seo Part-->
     
@@ -40,8 +40,174 @@
         
         MirthfulLee
     </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+        <style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    
+<script src="/js/libs/anime.min.js"></script>
+
+    <h1 class="ml13">
+        MirthfulLee
+    </h1>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+
+        anime.timeline({loop: true})
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [100,0],
+                translateZ: 0,
+                opacity: [0,1],
+                easing: "easeOutExpo",
+                duration: 1400,
+                delay: (el, i) => 300 + 30 * i
+            }).add({
+            targets: '.ml13 .letter',
+            translateY: [0,-100],
+            opacity: [1,0],
+            easing: "easeInExpo",
+            duration: 1200,
+            delay: (el, i) => 100 + 30 * i
+        });
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            hidePreloaderAfterTimeout(1000); // Hide after 1000 milliseconds once the window has loaded
+        });
+
+        // Backup failsafe: Hide preloader after a maximum of 5000 milliseconds, regardless of the window load event
+        hidePreloaderAfterTimeout(5000);
+
+        function hidePreloaderAfterTimeout(delay) {
+            setTimeout(function () {
+                var preloader = document.querySelector('.preloader');
+                preloader.style.opacity = '0';
+                setTimeout(function () {
+                    preloader.style.display = 'none';
+                }, 200);
+            }, delay);
+        }
+    </script>
+</div>
+    
+
     
 <link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
 
     
 <link rel="stylesheet" href="/fonts/fonts.css">
@@ -49,23 +215,18 @@
     
 <link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
 
-    
-<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
-
     <!--- Font Part-->
     
     
     
     
 
-    <!--- Inject Part-->
-    
+
     <script id="hexo-configurations">
-    let Global = window.Global || {};
-    Global.hexo_config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
-    Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.3.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
-    Global.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
-    Global.data_config = {"masonry":false};
+    window.config = {"hostname":"mirthfullee.github.io","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left","headings_top_spacing":{"h1":"5rem","h2":"4rem","h3":"2.8rem","h4":"2.5rem","h5":"2.2rem","h6":"2rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg","dark":"/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg"},"title":"沐梓驿站","subtitle":{"text":["有追求的咸鱼少年每天都在忙什么?","有追求的咸鱼少年每天都在学什么?","有追求的咸鱼少年每天都在折腾什么?"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/mirthfulLee","instagram":null,"zhihu":"https://www.zhihu.com/people/muzzzzz","twitter":null,"email":"lihuan0530@gmail.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.6.1","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Categories":{"icon":"fa-regular fa-bars","submenus":{"Learning":"/categories/Learning","Project":"/categories/Project","Application":"/categories/Application","Sharing":"/categories/Sharing","Discussion":"/categories/Disscussion","Others":"/categories/Others"}},"More":{"icon":"fa-regular fa-grip","submenus":{"Archives":"/categories","Tags":"/tags","About":"/about","Github":"https://github.com/mirthfulLee","Website":"https://www.mirthfullee.com"}}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"cloud"},"home":{"sidebar":{"enable":true,"position":"right","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":1},"tags":{"enable":true,"limit":5}},"footerStart":"2021/9/1 11:45:14"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
   </script>
     
     <!--- Fontawesome Part-->
@@ -94,15 +255,14 @@
 
     
         <span class="pjax-progress-bar"></span>
-        <span class="swup-progress-icon">
-            <i class="fa-solid fa-circle-notch fa-spin"></i>
-        </span>
+<!--        <span class="swup-progress-icon">-->
+<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+<!--        </span>-->
     
 </div>
 
 
 <main class="page-container" id="swup">
-    
 
     
         <style>
@@ -133,19 +293,21 @@
     }
 </style>
 
-<div class="home-banner-background">
+<div class="home-banner-background transition-fade fixed top-0 left-0 w-screen h-screen scale-125 sm:scale-110 box-border will-change-transform bg-cover">
+    <img src="/images/HermelinSchnee_ZH-CN8839783506_1920x1080.jpg" alt="home-banner-background" class="w-full h-full object-cover dark:hidden">
+    <img src="/images/CenoteDiver_ZH-CN7334440742_1920x1080.jpg" alt="home-banner-background" class="w-full h-full object-cover hidden dark:block">
 </div>
 
 
     
 
     <div class="main-content-container">
-        
+
 
         <div class="main-content-header">
-            <header class="navbar-container">
-    
-    <div class="navbar-content">
+            <header class="navbar-container px-6 md:px-12">
+
+    <div class="navbar-content ">
         <div class="left">
             
                 <a class="logo-image" href="/">
@@ -165,112 +327,126 @@
                 <ul class="navbar-list">
                     
                         
+                            
+
                             <li class="navbar-item">
                                 <!-- Menu -->
-                                <a class="active" 
-                                    href="/"  >
-                                    
-                                        
-                                            <i class="fa-regular fa-house"></i>
-                                        
-                                        HOME
+                                <a class="active"
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
                                     
                                 </a>
+
                                 <!-- Submenu -->
                                 
                             </li>
                     
                         
+                            
+
                             <li class="navbar-item">
                                 <!-- Menu -->
-                                <a class="has-dropdown" 
-                                    href="#" onClick="return false;">
-                                    
-                                        
-                                            <i class="fa-regular fa-bars"></i>
-                                        
-                                        CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
-                                    
+                                <a class="has-dropdown"
+                                   href="#"
+                                        onClick=&#34;return false;&#34;>
+                                    <i class="fa-regular fa-bars fa-fw"></i>
+                                    CATEGORIES
+                                    <i class="fa-solid fa-chevron-down fa-fw"></i>
                                 </a>
+
                                 <!-- Submenu -->
                                 
                                     <ul class="sub-menu">
-                                    
-                                        <li>
-                                        <a href="/categories/Learning">LEARNING
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/categories/Project">PROJECT
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/categories/Application">APPLICATION
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/categories/Sharing">SHARING
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/categories/Disscussion">DISCUSSION
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/categories/Others">OTHERS
-                                        </a>
-                                        </li>
-                                    
+                                        
+                                            <li>
+                                                <a href="/categories/Learning">
+                                                    LEARNING
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/categories/Project">
+                                                    PROJECT
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/categories/Application">
+                                                    APPLICATION
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/categories/Sharing">
+                                                    SHARING
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/categories/Disscussion">
+                                                    DISCUSSION
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/categories/Others">
+                                                    OTHERS
+                                                </a>
+                                            </li>
+                                        
                                     </ul>
                                 
                             </li>
                     
                         
+                            
+
                             <li class="navbar-item">
                                 <!-- Menu -->
-                                <a class="has-dropdown" 
-                                    href="#" onClick="return false;">
-                                    
-                                        
-                                            <i class="fa-regular fa-grip"></i>
-                                        
-                                        MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
-                                    
+                                <a class="has-dropdown"
+                                   href="#"
+                                        onClick=&#34;return false;&#34;>
+                                    <i class="fa-regular fa-grip fa-fw"></i>
+                                    MORE
+                                    <i class="fa-solid fa-chevron-down fa-fw"></i>
                                 </a>
+
                                 <!-- Submenu -->
                                 
                                     <ul class="sub-menu">
-                                    
-                                        <li>
-                                        <a href="/categories">ARCHIVES
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/tags">TAGS
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a href="/about">ABOUT
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB
-                                        </a>
-                                        </li>
-                                    
-                                        <li>
-                                        <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE
-                                        </a>
-                                        </li>
-                                    
+                                        
+                                            <li>
+                                                <a href="/categories">
+                                                    ARCHIVES
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/tags">
+                                                    TAGS
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a href="/about">
+                                                    ABOUT
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://github.com/mirthfulLee">
+                                                    GITHUB
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://www.mirthfullee.com">
+                                                    WEBSITE
+                                                </a>
+                                            </li>
+                                        
                                     </ul>
                                 
                             </li>
@@ -288,105 +464,152 @@
         </div>
     </div>
 
-    <!-- Mobile drawer -->
-    <div class="navbar-drawer">
-        <ul class="drawer-navbar-list">
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-screen w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
             
                 
-                    <li class="drawer-navbar-item flex-center">
-                        <a class="active" 
-                        href="/"  >
-                             
-                                
-                                    <i class="fa-regular fa-house"></i>
-                                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
+                           href="/"
+                        >
+                            <span>
                                 HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
                             
                         </a>
+                        
+
+                        
                     </li>
-                    <!-- Submenu -->
-                    
             
                 
-                    <li class="drawer-navbar-item flex-center">
-                        <a class="has-dropdown" 
-                        href="#" onClick="return false;">
-                            
-                                
-                                    <i class="fa-regular fa-bars"></i>
-                                
-                                CATEGORIES&nbsp;<i class="fa-solid fa-chevron-down"></i>
-                            
-                        </a>
-                    </li>
-                    <!-- Submenu -->
-                              
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories/Learning">LEARNING</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories/Project">PROJECT</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories/Application">APPLICATION</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories/Sharing">SHARING</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories/Disscussion">DISCUSSION</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories/Others">OTHERS</a>
-                            </li>
-                        
                     
+
+                    <li class="drawer-navbar-item-sub text-base my-1.5 flex flex-col w-full">
+                        
+                        <div class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                             navbar-data-toggle="submenu-Categories"
+                        >
+                            <span>
+                                CATEGORIES
+                            </span>
+                            
+                                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all"></i>
+                            
+                        </div>
+                        
+
+                        
+                            <div class="flex-col items-start px-2 py-2 hidden" data-target="submenu-Categories">
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories/Learning">LEARNING</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories/Project">PROJECT</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories/Application">APPLICATION</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories/Sharing">SHARING</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories/Disscussion">DISCUSSION</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories/Others">OTHERS</a>
+                                    </div>
+                                
+                            </div>
+                        
+                    </li>
             
                 
-                    <li class="drawer-navbar-item flex-center">
-                        <a class="has-dropdown" 
-                        href="#" onClick="return false;">
-                            
-                                
-                                    <i class="fa-regular fa-grip"></i>
-                                
-                                MORE&nbsp;<i class="fa-solid fa-chevron-down"></i>
-                            
-                        </a>
-                    </li>
-                    <!-- Submenu -->
-                              
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/categories">ARCHIVES</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/tags">TAGS</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" href="/about">ABOUT</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
-                            </li>
-                        
-                            <li class="dropdown-item flex-center">
-                                <a class="dropdown-item" target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
-                            </li>
-                        
                     
+
+                    <li class="drawer-navbar-item-sub text-base my-1.5 flex flex-col w-full">
+                        
+                        <div class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                             navbar-data-toggle="submenu-More"
+                        >
+                            <span>
+                                MORE
+                            </span>
+                            
+                                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all"></i>
+                            
+                        </div>
+                        
+
+                        
+                            <div class="flex-col items-start px-2 py-2 hidden" data-target="submenu-More">
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/categories">ARCHIVES</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/tags">TAGS</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/about">ABOUT</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://github.com/mirthfulLee">GITHUB</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://www.mirthfullee.com">WEBSITE</a>
+                                    </div>
+                                
+                            </div>
+                        
+                    </li>
             
 
+            
+            
         </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">61</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">6</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">71</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
     </div>
 
     <div class="window-mask"></div>
@@ -411,17 +634,18 @@
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/">
+                            第八章 高性能服务器程序框架
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/">
-                        第八章 高性能服务器程序框架
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        根据服务器程序的一般原理, 将服务器解构为三个主要模块:
+                    <div class="home-article-content markdown-body">
+                        
+                            根据服务器程序的一般原理, 将服务器解构为三个主要模块:
 
 IO处理单元. 本章介绍四种IO模型和两种高效事件处理模式
 
@@ -434,10 +658,10 @@ IO处理单元. 本章介绍四种IO模型和两种高效事件处理模式
 请求队列是各单元之间通信方式的抽象.
 
 8.1 服务器...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Sun Aug 20 2023 08:08:08 GMT+0000">
@@ -486,6 +710,7 @@ IO处理单元. 本章介绍四种IO模型和两种高效事件处理模式
     <a href="/2023/08/20/notion-%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E9%AB%98%E6%80%A7%E8%83%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E6%A1%86%E6%9E%B6-ad4f9420/">Read more<span class="seo-reader-text">第八章 高性能服务器程序框架</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -493,25 +718,26 @@ IO处理单元. 本章介绍四种IO模型和两种高效事件处理模式
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/20/notion-%E7%AC%AC%E4%B8%83%E7%AB%A0%20Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E8%A7%84%E8%8C%83-4e5cab6a/">
+                            第七章 Linux服务器程序规范
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/20/notion-%E7%AC%AC%E4%B8%83%E7%AB%A0%20Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E8%A7%84%E8%8C%83-4e5cab6a/">
-                        第七章 Linux服务器程序规范
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
+                    <div class="home-article-content markdown-body">
                         
+                            
 7.1 日志Linux系统日志
 Linux提供一个守护进程syslogd来处理系统日志, 不过现在都用的都是升级版rsyslogd
 
 123#include&lt;syslog.h&gt;void syslog(int priority, cons...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Sun Aug 20 2023 08:08:07 GMT+0000">
@@ -565,6 +791,7 @@ Linux提供一个守护进程syslogd来处理系统日志, 不过现在都用的
     <a href="/2023/08/20/notion-%E7%AC%AC%E4%B8%83%E7%AB%A0%20Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%A8%8B%E5%BA%8F%E8%A7%84%E8%8C%83-4e5cab6a/">Read more<span class="seo-reader-text">第七章 Linux服务器程序规范</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -572,24 +799,25 @@ Linux提供一个守护进程syslogd来处理系统日志, 不过现在都用的
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/">
+                            第六章 高级IO函数
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/">
-                        第六章 高级IO函数
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        Linux提供了很多高级的IO函数, 与网络编程相关的主要分为三类:
+                    <div class="home-article-content markdown-body">
+                        
+                            Linux提供了很多高级的IO函数, 与网络编程相关的主要分为三类:
 
 用于创建文件描述符的函数, 包括pipe, dup&#x2F;dup2函数
 用于读写数据的函数, 包括readv&#x2F;writev, sendfile, mmap&#x2F...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Sun Aug 20 2023 07:07:56 GMT+0000">
@@ -643,6 +871,7 @@ Linux提供一个守护进程syslogd来处理系统日志, 不过现在都用的
     <a href="/2023/08/20/notion-%E7%AC%AC%E5%85%AD%E7%AB%A0%20%E9%AB%98%E7%BA%A7IO%E5%87%BD%E6%95%B0-9b6df7a3/">Read more<span class="seo-reader-text">第六章 高级IO函数</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -650,17 +879,18 @@ Linux提供一个守护进程syslogd来处理系统日志, 不过现在都用的
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/">
+                            第五章 Linux网络编程基础API
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/">
-                        第五章 Linux网络编程基础API
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        socket是什么? (个人理解)
+                    <div class="home-article-content markdown-body">
+                        
+                            socket是什么? (个人理解)
 socket是操作系统对主机之间网络连接的抽象和封装, 是一套专门的系统调用.
 
 应用程序通过socket控制网络连接的细节和资源,
@@ -668,10 +898,10 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
 更形象的比喻: 主机-不同部门, 应用程序-人, socket-电话座机;
 
 ...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Sun Aug 20 2023 07:07:55 GMT+0000">
@@ -725,6 +955,7 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
     <a href="/2023/08/20/notion-%E7%AC%AC%E4%BA%94%E7%AB%A0%20Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80API-8348d8ee/">Read more<span class="seo-reader-text">第五章 Linux网络编程基础API</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -732,27 +963,28 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/">
+                            第三章 TCP协议详解
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/">
-                        第三章 TCP协议详解
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        3.1 TCP服务的特点
+                    <div class="home-article-content markdown-body">
+                        
+                            3.1 TCP服务的特点
 面向连接: 通信双方必须先建立连接才能进行通信
 字节流: 与UDP的基于数据报不同, 应用程序对数据的发送和接收没有边界限制. 具体来讲, 发送端和接收方各自维护缓存区, 两端执行的读写操作没有数量关系.
 
 
 
 可靠传输: ...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Sun Aug 20 2023 07:07:53 GMT+0000">
@@ -811,6 +1043,7 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
     <a href="/2023/08/20/notion-%E7%AC%AC%E4%B8%89%E7%AB%A0%20TCP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-c14662ea/">Read more<span class="seo-reader-text">第三章 TCP协议详解</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -818,17 +1051,18 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/20/notion-%E7%AC%AC%E4%BA%8C%E7%AB%A0%20IP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-d11fac78/">
+                            第二章 IP协议详解
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/20/notion-%E7%AC%AC%E4%BA%8C%E7%AB%A0%20IP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-d11fac78/">
-                        第二章 IP协议详解
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        2.1 IP协议的特点
+                    <div class="home-article-content markdown-body">
+                        
+                            2.1 IP协议的特点
 无状态: 通信双方不同步传输数据的状态信息, 每个报文的行为都相互独立, 没有上下文关系.
 无连接: IP双方不长久地维护对方的任何信息.
 不可靠: 不能保证数据报到达接收端的必然性和准确性.
@@ -836,10 +1070,10 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
 2.2 IPv4 头部结构
 
 ...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Sun Aug 20 2023 07:07:50 GMT+0000">
@@ -898,6 +1132,7 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
     <a href="/2023/08/20/notion-%E7%AC%AC%E4%BA%8C%E7%AB%A0%20IP%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3-d11fac78/">Read more<span class="seo-reader-text">第二章 IP协议详解</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -905,17 +1140,18 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/08/20/notion-%E7%AC%AC%E4%B8%80%E7%AB%A0%20TCP-IP%E5%8D%8F%E8%AE%AE%E6%97%8F-4ef1f319/">
+                            第一章 TCP/IP协议族
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/08/20/notion-%E7%AC%AC%E4%B8%80%E7%AB%A0%20TCP-IP%E5%8D%8F%E8%AE%AE%E6%97%8F-4ef1f319/">
-                        第一章 TCP/IP协议族
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        1.1 体系结构与主要协议族
+                    <div class="home-article-content markdown-body">
+                        
+                            1.1 体系结构与主要协议族
 
 
 封装: 上层协议基于下层协议实现, 但上层协议不关注下层的实现细节
@@ -924,10 +1160,10 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
 链路层
 使用物理(MAC)地址寻址机器
 通过ARP和...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Sun Aug 20 2023 07:07:48 GMT+0000">
@@ -991,6 +1227,7 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
     <a href="/2023/08/20/notion-%E7%AC%AC%E4%B8%80%E7%AB%A0%20TCP-IP%E5%8D%8F%E8%AE%AE%E6%97%8F-4ef1f319/">Read more<span class="seo-reader-text">第一章 TCP/IP协议族</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -998,22 +1235,23 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/05/28/%E8%B0%B7%E6%AD%8C%E5%AD%A6%E6%9C%AF%E6%A3%80%E7%B4%A2%E8%AE%BA%E6%96%87/">
+                            谷歌学术检索论文
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/05/28/%E8%B0%B7%E6%AD%8C%E5%AD%A6%E6%9C%AF%E6%A3%80%E7%B4%A2%E8%AE%BA%E6%96%87/">
-                        谷歌学术检索论文
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        前言最近用谷歌学术检索论文的时候需要指定论文的来源（期刊 &#x2F; 会议），网上搜索了相关教程。然而排名靠前的文章提供的方法都不好使：），后面在 b 站上发现了一个视频教程 ，实测有效，在此记录一下。
+                    <div class="home-article-content markdown-body">
+                        
+                            前言最近用谷歌学术检索论文的时候需要指定论文的来源（期刊 &#x2F; 会议），网上搜索了相关教程。然而排名靠前的文章提供的方法都不好使：），后面在 b 站上发现了一个视频教程 ，实测有效，在此记录一下。
 教程首先，假设检索的关键词是 Dimensi...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Sun May 28 2023 16:16:47 GMT+0000">
@@ -1062,6 +1300,7 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
     <a href="/2023/05/28/%E8%B0%B7%E6%AD%8C%E5%AD%A6%E6%9C%AF%E6%A3%80%E7%B4%A2%E8%AE%BA%E6%96%87/">Read more<span class="seo-reader-text">谷歌学术检索论文</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -1069,22 +1308,23 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/05/28/C++%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83%EF%BC%88%E5%8F%82%E8%80%83Google%E3%80%81%E5%8D%8E%E4%B8%BA%EF%BC%89/">
+                            C++编程规范（参考Google、华为）
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/05/28/C++%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83%EF%BC%88%E5%8F%82%E8%80%83Google%E3%80%81%E5%8D%8E%E4%B8%BA%EF%BC%89/">
-                        C++编程规范（参考Google、华为）
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        文件名及版权信息1、文件名C++文件名全部都是小写，且单词之间用_分割，如：verilog_parse.cpp
+                    <div class="home-article-content markdown-body">
+                        
+                            文件名及版权信息1、文件名C++文件名全部都是小写，且单词之间用_分割，如：verilog_parse.cpp
 2、版权信息所有文件均需要统一格式的版权信息头文件 1、在.h中使用#define来防止头文件被多重包含，并在最后注释出宏的名字命名格式：...
-                    
-                </div>
+                        
+                    </div>
 
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Sun May 28 2023 16:16:44 GMT+0000">
@@ -1133,6 +1373,7 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
     <a href="/2023/05/28/C++%E7%BC%96%E7%A8%8B%E8%A7%84%E8%8C%83%EF%BC%88%E5%8F%82%E8%80%83Google%E3%80%81%E5%8D%8E%E4%B8%BA%EF%BC%89/">Read more<span class="seo-reader-text">C++编程规范（参考Google、华为）</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
             <li class="home-article-item">
@@ -1140,21 +1381,22 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
                 
 
                 
+
                 
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/05/28/VSCode%20debug%E9%85%8D%E7%BD%AE%E5%AF%B9%E6%AF%94/">
+                            VSCode debug配置对比
+                        </a>
+                    </h3>
 
-                <h3 class="home-article-title">
-                    <a href="/2023/05/28/VSCode%20debug%E9%85%8D%E7%BD%AE%E5%AF%B9%E6%AF%94/">
-                        VSCode debug配置对比
-                    </a>
-                </h3>
+                    <div class="home-article-content markdown-body">
+                        
+                            text123456789101112131415161718192021222324# 测试c++代码#include &lt;iostream&gt;#include &lt;string&gt;#include &lt;vector&gt;us...
+                        
+                    </div>
 
-                <div class="home-article-content markdown-body">
-                    
-                        text123456789101112131415161718192021222324# 测试c++代码#include &lt;iostream&gt;#include &lt;string&gt;#include &lt;vector&gt;us...
-                    
-                </div>
-
-                <div class="home-article-meta-info-container">
+                    <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
             <span class="home-article-date" data-date="Sun May 28 2023 16:16:29 GMT+0000">
@@ -1213,11 +1455,12 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
     <a href="/2023/05/28/VSCode%20debug%E9%85%8D%E7%BD%AE%E5%AF%B9%E6%AF%94/">Read more<span class="seo-reader-text">VSCode debug配置对比</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
+                </div>
             </li>
         
     </ul>
 
-    <div class="home-paginator">
+    <div class="home-paginator px-7 py-5">
         <div class="paginator">
     <a class="extend prev" rel="prev" href="/page/5/"><i class="fa-regular fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/7/"><i class="fa-regular fa-angle-right"></i></a>
 </div>
@@ -1229,36 +1472,37 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
                 
 
             </div>
-            
+
             
                 <div class="home-sidebar-container">
-    <div class="sticky-container">
+    <div class="sticky-container sticky">
+        
         
             
             <div class="sidebar-content" >
-                <div class="avatar">
-                    <img src="/images/logo.png">
-                </div>
-                <div class="author">
-                    <div class="name">Huan Lee</div>
-                    
-                        <div class="label">Lv5</div>
-                    
-                </div>
-                <div class="statistics">
-                    <a class="item" href="/tags">
-                        <div class="number">61</div>
-                        <div class="label">Tags</div>
-                    </a>
-                    <a class="item" href="/categories">
-                        <div class="number">6</div>
-                        <div class="label">Categories</div>
-                    </a>
-                    <a class="item" href="/archives">
-                        <div class="number">71</div>
-                        <div class="label">Posts</div>
-                    </a>
-                </div>
+                <div class="avatar flex justify-center">
+    <img src="/images/logo.png">
+</div>
+                <div class="author flex flex-col justify-center my-2.5 mx-0">
+    <div class="name">Huan Lee</div>
+    
+        <div class="label">Lv5</div>
+    
+</div>
+                <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">61</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">6</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">71</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
             </div>
         
 
@@ -1270,42 +1514,52 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
         </div>
 
         <div class="main-content-footer">
-            <footer class="footer">
-    <div class="info-container">
-        <div class="copyright-info">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
             &copy;
             
               <span>2021</span>
               -
             
             2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Huan Lee</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        71 posts in total
+                    </span>
+                    
+                </p>
+            
         </div>
         
             <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-            <div class="website-count info-item">
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
                 
-                    <span id="busuanzi_container_site_uv" class="busuanzi_container_site_uv">
-                        VISITOR COUNT&nbsp;<span id="busuanzi_value_site_uv" class="busuanzi_value_site_uv"></span>
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
                     </span>
                 
                 
-                    <span id="busuanzi_container_site_pv" class="busuanzi_container_site_pv">
-                        TOTAL PAGE VIEWS&nbsp;<span id="busuanzi_value_site_pv" class="busuanzi_value_site_pv"></span>
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
                     </span>
                 
             </div>
         
-        <div class="theme-info info-item">
-            <span class="powered-by-container">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" href="https://hexo.io">Hexo</a></span>
-                <br>
-            <span class="theme-version-container">THEME&nbsp;<a class="theme-version" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.3.0</a></span>
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.6.1</a></span>
         </div>
         
         
             <div>
                 Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
             </div>
-        
         
         
             <script data-swup-reload-script>
@@ -1336,19 +1590,15 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
     <div class="right-side-tools-container">
         <div class="side-tools-container">
     <ul class="hidden-tools-list">
-        <li class="right-bottom-tools tool-font-adjust-plus flex-center">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
             <i class="fa-regular fa-magnifying-glass-plus"></i>
         </li>
 
-        <li class="right-bottom-tools tool-font-adjust-minus flex-center">
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
             <i class="fa-regular fa-magnifying-glass-minus"></i>
         </li>
 
-        <li class="right-bottom-tools tool-expand-width flex-center">
-            <i class="fa-regular fa-expand"></i>
-        </li>
-
-        <li class="right-bottom-tools tool-dark-light-toggle flex-center">
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
             <i class="fa-regular fa-moon"></i>
         </li>
 
@@ -1357,17 +1607,17 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
 
         
 
-        <li class="right-bottom-tools tool-scroll-to-bottom flex-center">
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
             <i class="fa-regular fa-arrow-down"></i>
         </li>
     </ul>
 
     <ul class="visible-tools-list">
-        <li class="right-bottom-tools toggle-tools-list flex-center">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
             <i class="fa-regular fa-cog fa-spin"></i>
         </li>
         
-            <li class="right-bottom-tools tool-scroll-to-top flex-center">
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
                 <i class="arrow-up fas fa-arrow-up"></i>
                 <span class="percent"></span>
             </li>
@@ -1385,10 +1635,10 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
 
     
 
-
 </main>
 
 
+    
 <script src="/js/libs/Swup.min.js"></script>
 
 <script src="/js/libs/SwupSlideTheme.min.js"></script>
@@ -1398,6 +1648,8 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
 <script src="/js/libs/SwupProgressPlugin.min.js"></script>
 
 <script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
 
 <script>
     const swup = new Swup({
@@ -1412,19 +1664,10 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
             new SwupSlideTheme({
                 mainElement: ".main-content-body",
             }),
+            new SwupPreloadPlugin(),
         ],
         containers: ["#swup"],
     });
-
-    swup.on("pageView", () => {
-        Global.refresh();
-    });
-
-    // if (document.readyState === "complete") {
-    //
-    // } else {
-    //     document.addEventListener("DOMContentLoaded", () => init());
-    // }
 </script>
 
 
@@ -1432,30 +1675,34 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
 
 
 
-<script src="/js/utils.js"></script>
-
-<script src="/js/main.js"></script>
-
-<script src="/js/layouts/navbarShrink.js"></script>
-
-<script src="/js/tools/scrollTopBottom.js"></script>
-
-<script src="/js/tools/lightDarkSwitch.js"></script>
-
-<script src="/js/layouts/categoryList.js"></script>
 
 
+<script src="/js/tools/imageViewer.js" type="module"></script>
 
+<script src="/js/utils.js" type="module"></script>
 
+<script src="/js/main.js" type="module"></script>
 
-    
-<script src="/js/tools/codeBlock.js"></script>
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
 
 
 
 
     
-<script src="/js/layouts/lazyload.js"></script>
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
 
 
 
@@ -1476,7 +1723,9 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
 <script src="/js/libs/Typed.min.js"></script>
 
   
-<script src="/js/plugins/typed.js"></script>
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
 
 
 
@@ -1487,13 +1736,11 @@ socket是操作系统对主机之间网络连接的抽象和封装, 是一套专
 <div class="post-scripts" data-swup-reload-script>
     
         
-<script src="/js/tools/tocToggle.js"></script>
+<script src="/js/tools/tocToggle.js" type="module"></script>
 
-<script src="/js/layouts/toc.js"></script>
+<script src="/js/layouts/toc.js" type="module"></script>
 
-<script src="/js/libs/anime.min.js"></script>
-
-<script src="/js/plugins/tabs.js"></script>
+<script src="/js/plugins/tabs.js" type="module"></script>
 
     
 </div>
